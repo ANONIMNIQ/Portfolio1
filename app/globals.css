@@ -411,7 +411,7 @@
   .projects-trigger-wrap,
   .content-close-wrap,
   .content-close-wrap-mobile {
-    bottom: calc(env(safe-area-inset-bottom) + 72px) !important;
+    bottom: calc(env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px) + 12px) !important;
   }
 
   .content-close-wrap-mobile {

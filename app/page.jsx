@@ -17,8 +17,6 @@ import { copy, EMOJIS, projects } from "./lib/siteData";
 export default function Home() {
   const canvasRef = useRef(null);
   const collapseIntentRef = useRef(false);
-  const maxVhRef = useRef(0);
-  const maxFullVhRef = useRef(0);
 
   const [activeProject, setActiveProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -58,10 +56,10 @@ export default function Home() {
       const screenHeight = typeof window.screen?.height === "number" ? window.screen.height : 0;
       const visualHeight = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0);
       const fullHeight = Math.max(visualHeight, screenHeight || 0);
-      maxVhRef.current = Math.max(maxVhRef.current, visualHeight);
-      maxFullVhRef.current = Math.max(maxFullVhRef.current, fullHeight);
-      document.documentElement.style.setProperty("--app-vh", `${maxVhRef.current}px`);
-      document.documentElement.style.setProperty("--app-full-vh", `${maxFullVhRef.current}px`);
+      const browserUiOffset = Math.min(Math.max(fullHeight - visualHeight, 0), 220);
+      document.documentElement.style.setProperty("--app-vh", `${visualHeight}px`);
+      document.documentElement.style.setProperty("--app-full-vh", `${fullHeight}px`);
+      document.documentElement.style.setProperty("--browser-ui-offset", `${browserUiOffset}px`);
     };
 
     setViewportHeight();
