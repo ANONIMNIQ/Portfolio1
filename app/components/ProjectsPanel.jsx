@@ -14,7 +14,7 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.33, 1, 0.68, 1] } },
 };
 
-export default function ProjectsPanel({ projects, onOpenProject, setShowProjects, isModalOpen, isContactOpen, lang, text, onOpenContact, onThemeChange }) {
+export default function ProjectsPanel({ projects, onOpenProject, setShowProjects, isModalOpen, isContactOpen, lang, text, onOpenContact, onThemeChange, isSmallViewport = false }) {
   return (
     <motion.section
       className="content"
@@ -77,7 +77,15 @@ export default function ProjectsPanel({ projects, onOpenProject, setShowProjects
         </motion.footer>
       </motion.div>
 
-      <motion.div className="content-close-wrap" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }}>
+      <motion.div
+        className="content-close-wrap"
+        initial={isSmallViewport ? { opacity: 0, y: 8 } : { scale: 0, opacity: 0 }}
+        animate={
+          isSmallViewport
+            ? { opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }
+            : { scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }
+        }
+      >
         <Magnet strength={0.3}>
           <button className="content-close" type="button" aria-label="Hide projects" onClick={() => setShowProjects(false)}>
             <X size={20} />

@@ -50,6 +50,25 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    const setViewportHeight = () => {
+      const vvHeight = window.visualViewport?.height ?? 0;
+      const height = Math.max(window.innerHeight, vvHeight || 0);
+      document.documentElement.style.setProperty("--app-vh", `${height}px`);
+    };
+
+    setViewportHeight();
+    window.addEventListener("resize", setViewportHeight);
+    window.visualViewport?.addEventListener("resize", setViewportHeight);
+    window.visualViewport?.addEventListener("scroll", setViewportHeight);
+
+    return () => {
+      window.removeEventListener("resize", setViewportHeight);
+      window.visualViewport?.removeEventListener("resize", setViewportHeight);
+      window.visualViewport?.removeEventListener("scroll", setViewportHeight);
+    };
+  }, []);
+
+  useEffect(() => {
     if (isSmallViewport && isExpanded) {
       setIsExpanded(false);
       collapseIntentRef.current = false;
@@ -196,6 +215,7 @@ export default function Home() {
               text={text}
               onOpenContact={() => setIsContactOpen(true)}
               onThemeChange={setTheme}
+              isSmallViewport={isSmallViewport}
             />
           )}
         </AnimatePresence>
