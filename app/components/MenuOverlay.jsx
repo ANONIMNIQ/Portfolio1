@@ -16,7 +16,7 @@ export default function MenuOverlay({ isOpen, onClose, onOpenProjects, onOpenAbo
       {isOpen && (
         <motion.div
           initial={{ clipPath: "circle(0% at calc(100% - 62px) 54px)" }}
-          animate={{ clipPath: "circle(220% at calc(100% - 62px) 54px)" }}
+          animate={{ clipPath: "circle(300% at calc(100% - 62px) 54px)" }}
           exit={{ clipPath: "circle(0% at calc(100% - 62px) 54px)", transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1], delay: 0.1 } }}
           transition={{ duration: 0.62, ease: [0.22, 1, 0.36, 1] }}
           className="menu-overlay"

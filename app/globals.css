@@ -512,3 +512,101 @@
     padding-bottom: calc(156px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px)) !important;
   }
 }
+
+/* Definitive mobile bottom coverage: panels reach browser bottom, controls stay tappable */
+@media (max-width: 1024px) {
+  :root {
+    --mobile-bottom-overdraw: max(env(safe-area-inset-bottom), var(--browser-ui-offset, 0px));
+  }
+
+  .menu-overlay,
+  .about-overlay,
+  .modal,
+  .modal-backdrop {
+    min-height: 100lvh !important;
+  }
+
+  .menu-overlay,
+  .about-overlay,
+  .modal {
+    overflow: visible !important;
+  }
+
+  .menu-overlay,
+  .about-overlay {
+    height: 100lvh !important;
+    max-height: 100lvh !important;
+  }
+
+  .menu-overlay::after,
+  .about-overlay::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(-1 * var(--mobile-bottom-overdraw));
+    height: var(--mobile-bottom-overdraw);
+    background: inherit;
+    pointer-events: none;
+  }
+
+  .modal {
+    height: 100lvh !important;
+    max-height: 100lvh !important;
+  }
+
+  .modal-backdrop {
+    z-index: 1;
+  }
+
+  .modal-card {
+    z-index: 2;
+    bottom: 0 !important;
+    max-height: calc(100lvh - 96px) !important;
+    height: calc(100lvh - 96px) !important;
+  }
+
+  .modal.is-expanded .modal-card {
+    max-height: 100lvh !important;
+    height: 100lvh !important;
+  }
+
+  .contact-modal-card {
+    bottom: 0 !important;
+    margin-top: 0 !important;
+    max-height: 100lvh !important;
+    height: 100lvh !important;
+  }
+
+  .modal.is-open::after,
+  .modal.is-closing::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(-1 * var(--mobile-bottom-overdraw));
+    height: var(--mobile-bottom-overdraw);
+    pointer-events: none;
+    z-index: 0;
+    background: transparent;
+  }
+
+  .project-modal.is-open[data-theme="one"]::after,
+  .project-modal.is-closing[data-theme="one"]::after {
+    background: linear-gradient(135deg, #fff5f7, #ffe0e6);
+  }
+
+  .project-modal.is-open[data-theme="two"]::after,
+  .project-modal.is-closing[data-theme="two"]::after {
+    background: linear-gradient(135deg, #f3f0ff, #e0e6ff);
+  }
+
+  .project-modal.is-open[data-theme="three"]::after,
+  .project-modal.is-closing[data-theme="three"]::after {
+    background: linear-gradient(135deg, #eefaf8, #d0f5f0);
+  }
+
+  .contact-modal.is-open::after {
+    background: linear-gradient(135deg, #f8f8ff 0%, #eef0ff 100%);
+  }
+}

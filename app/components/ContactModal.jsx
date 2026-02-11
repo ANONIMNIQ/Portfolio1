@@ -9,7 +9,7 @@ export default function ContactModal({ isOpen, onClose, text }) {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <div className={`modal ${isOpen ? "is-open" : ""}`} aria-hidden={!isOpen}>
+    <div className={`modal contact-modal ${isOpen ? "is-open" : ""}`} aria-hidden={!isOpen}>
       <div className="modal-backdrop" onClick={onClose} />
       <AnimatePresence>
         {isOpen && (
