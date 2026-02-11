@@ -100,6 +100,16 @@ export default function Home() {
 
   const handleModalWheel = (event) => {
     const target = event.currentTarget;
+    const isAtTop = target.scrollTop <= 2;
+    const hasScrollableOverflow = target.scrollHeight > target.clientHeight + 1;
+
+    if (isExpanded && event.deltaY < 0 && (isAtTop || !hasScrollableOverflow)) {
+      collapseIntentRef.current = false;
+      setIsExpanded(false);
+      setLastCollapseAt(Date.now());
+      return;
+    }
+
     if (event.deltaY < 0 && target.scrollTop <= 16) {
       collapseIntentRef.current = true;
     } else if (event.deltaY > 0) {
