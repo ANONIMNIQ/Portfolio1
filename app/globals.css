@@ -546,8 +546,12 @@
     right: 0;
     bottom: calc(-1 * var(--mobile-bottom-overdraw));
     height: var(--mobile-bottom-overdraw);
-    background: inherit;
+    background: transparent;
     pointer-events: none;
+  }
+
+  .menu-overlay::after {
+    background: #fff;
   }
 
   .modal {
@@ -557,6 +561,8 @@
 
   .modal-backdrop {
     z-index: 1;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
   }
 
   .modal-card {
@@ -593,20 +599,20 @@
 
   .project-modal.is-open[data-theme="one"]::after,
   .project-modal.is-closing[data-theme="one"]::after {
-    background: linear-gradient(135deg, #fff5f7, #ffe0e6);
+    background: #ffe0e6;
   }
 
   .project-modal.is-open[data-theme="two"]::after,
   .project-modal.is-closing[data-theme="two"]::after {
-    background: linear-gradient(135deg, #f3f0ff, #e0e6ff);
+    background: #e0e6ff;
   }
 
   .project-modal.is-open[data-theme="three"]::after,
   .project-modal.is-closing[data-theme="three"]::after {
-    background: linear-gradient(135deg, #eefaf8, #d0f5f0);
+    background: #d0f5f0;
   }
 
   .contact-modal.is-open::after {
-    background: linear-gradient(135deg, #f8f8ff 0%, #eef0ff 100%);
+    background: #eef0ff;
   }
 }
