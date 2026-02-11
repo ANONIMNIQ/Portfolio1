@@ -23,7 +23,7 @@ export default function VisualAside({
       <div className="visual-surface">
         <canvas ref={canvasRef} className="webgl" aria-hidden="true" />
 
-        <div className="visual-overlay">
+        <div className={`visual-overlay ${isMenuOpen ? "menu-open" : ""}`}>
           <BrandTicker isMenuOpen={isMenuOpen} />
 
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
