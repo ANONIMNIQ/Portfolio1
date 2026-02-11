@@ -23,7 +23,6 @@ export default function MenuOverlay({ isOpen, onClose, onOpenProjects, onOpenAbo
           style={{ willChange: "clip-path, opacity, transform", transform: "translateZ(0)", backfaceVisibility: "hidden" }}
         >
           <div className="menu-header">
-            <div className="menu-brand">WE BUILD WEB PAGES</div>
             <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }}>
               <Magnet strength={0.2}>
                 <button className="menu-close" onClick={onClose} aria-label="Close menu">
