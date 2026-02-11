@@ -394,14 +394,14 @@
   .visual,
   .visual-surface,
   .webgl {
-    min-height: 100lvh !important;
-    height: 100lvh !important;
+    min-height: var(--app-full-vh, 100vh) !important;
+    height: var(--app-full-vh, 100vh) !important;
   }
 
   .content {
-    min-height: 100lvh !important;
-    height: 100lvh !important;
-    max-height: 100lvh !important;
+    min-height: var(--app-full-vh, 100vh) !important;
+    height: var(--app-full-vh, 100vh) !important;
+    max-height: var(--app-full-vh, 100vh) !important;
   }
 
   .content-inner {

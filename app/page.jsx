@@ -18,6 +18,7 @@ export default function Home() {
   const canvasRef = useRef(null);
   const collapseIntentRef = useRef(false);
   const maxVhRef = useRef(0);
+  const maxFullVhRef = useRef(0);
 
   const [activeProject, setActiveProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -54,9 +55,13 @@ export default function Home() {
   useEffect(() => {
     const setViewportHeight = () => {
       const vvHeight = window.visualViewport?.height ?? 0;
-      const current = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0);
-      maxVhRef.current = Math.max(maxVhRef.current, current);
+      const screenHeight = typeof window.screen?.height === "number" ? window.screen.height : 0;
+      const visualHeight = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0);
+      const fullHeight = Math.max(visualHeight, screenHeight || 0);
+      maxVhRef.current = Math.max(maxVhRef.current, visualHeight);
+      maxFullVhRef.current = Math.max(maxFullVhRef.current, fullHeight);
       document.documentElement.style.setProperty("--app-vh", `${maxVhRef.current}px`);
+      document.documentElement.style.setProperty("--app-full-vh", `${maxFullVhRef.current}px`);
     };
 
     setViewportHeight();
