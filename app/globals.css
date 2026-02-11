@@ -467,13 +467,30 @@
   transition: color 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.visual-overlay.menu-open {
-  z-index: 140;
+.brand-layer {
+  position: fixed;
+  top: 32px;
+  left: 40px;
+  z-index: 220;
   pointer-events: none;
 }
 
-.visual.menu-open {
-  z-index: 140;
+.brand-spacer {
+  width: max-content;
+  min-width: 220px;
+  height: 16px;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .brand-layer {
+    top: 18px;
+    left: 14px;
+  }
+
+  .brand-spacer {
+    min-width: 190px;
+  }
 }
 
 /* Desktop project modal behavior: natural content height first, fullscreen on expand */

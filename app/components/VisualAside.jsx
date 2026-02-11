@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Ellipsis, Info, List } from "lucide-react";
 import Magnet from "./Magnet";
-import BrandTicker from "./BrandTicker";
 
 export default function VisualAside({
   canvasRef,
@@ -19,12 +18,12 @@ export default function VisualAside({
   isMenuOpen,
 }) {
   return (
-    <aside className={`visual ${isMenuOpen ? "menu-open" : ""}`}>
+    <aside className="visual">
       <div className="visual-surface">
         <canvas ref={canvasRef} className="webgl" aria-hidden="true" />
 
-        <div className={`visual-overlay ${isMenuOpen ? "menu-open" : ""}`}>
-          <BrandTicker isMenuOpen={isMenuOpen} />
+        <div className="visual-overlay">
+          <div className="brand-spacer" aria-hidden="true" />
 
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             {showLangSwitch && (

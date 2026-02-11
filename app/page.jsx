@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import IntroLoader from "./components/IntroLoader";
 import EmojiBurst from "./components/EmojiBurst";
+import BrandTicker from "./components/BrandTicker";
 import MenuOverlay from "./components/MenuOverlay";
 import AboutOverlay from "./components/AboutOverlay";
 import ContactModal from "./components/ContactModal";
@@ -180,6 +181,10 @@ export default function Home() {
       </AnimatePresence>
 
       <EmojiBurst items={burstItems} />
+
+      <div className="brand-layer">
+        <BrandTicker isMenuOpen={isMenuOpen} />
+      </div>
 
       <MenuOverlay
         isOpen={isMenuOpen}
