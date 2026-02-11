@@ -16,6 +16,7 @@ import { copy, EMOJIS, projects } from "./lib/siteData";
 export default function Home() {
   const canvasRef = useRef(null);
   const collapseIntentRef = useRef(false);
+  const maxVhRef = useRef(0);
 
   const [activeProject, setActiveProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -52,19 +53,18 @@ export default function Home() {
   useEffect(() => {
     const setViewportHeight = () => {
       const vvHeight = window.visualViewport?.height ?? 0;
-      const height = Math.max(window.innerHeight, vvHeight || 0);
-      document.documentElement.style.setProperty("--app-vh", `${height}px`);
+      const current = Math.max(window.innerHeight, vvHeight || 0);
+      maxVhRef.current = Math.max(maxVhRef.current, current);
+      document.documentElement.style.setProperty("--app-vh", `${maxVhRef.current}px`);
     };
 
     setViewportHeight();
     window.addEventListener("resize", setViewportHeight);
     window.visualViewport?.addEventListener("resize", setViewportHeight);
-    window.visualViewport?.addEventListener("scroll", setViewportHeight);
 
     return () => {
       window.removeEventListener("resize", setViewportHeight);
       window.visualViewport?.removeEventListener("resize", setViewportHeight);
-      window.visualViewport?.removeEventListener("scroll", setViewportHeight);
     };
   }, []);
 

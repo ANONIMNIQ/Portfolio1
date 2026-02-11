@@ -79,10 +79,10 @@ export default function ProjectsPanel({ projects, onOpenProject, setShowProjects
 
       <motion.div
         className="content-close-wrap"
-        initial={isSmallViewport ? { opacity: 0, y: 8 } : { scale: 0, opacity: 0 }}
+        initial={isSmallViewport ? { scale: 0.75, opacity: 0 } : { scale: 0, opacity: 0 }}
         animate={
           isSmallViewport
-            ? { opacity: 1, y: 0, transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] } }
+            ? { scale: 1, opacity: 1, transition: { delay: 0.62, duration: 0.34, ease: [0.34, 1.56, 0.64, 1] } }
             : { scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }
         }
       >

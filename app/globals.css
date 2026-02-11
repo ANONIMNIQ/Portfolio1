@@ -303,10 +303,13 @@
     align-self: auto;
     z-index: 80;
     will-change: transform, opacity;
+    transform: translateZ(0);
   }
 
   .content {
     height: var(--app-vh, 100vh);
+    min-height: var(--app-vh, 100vh);
+    max-height: var(--app-vh, 100vh);
     overscroll-behavior-y: contain;
   }
 }
