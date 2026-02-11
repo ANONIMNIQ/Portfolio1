@@ -148,6 +148,12 @@ export default function Home() {
     const isAtTop = target.scrollTop <= 2;
     const hasScrollableOverflow = target.scrollHeight > target.clientHeight + 1;
 
+    if (!isExpanded && event.deltaY > 0) {
+      collapseIntentRef.current = false;
+      setIsExpanded(true);
+      return;
+    }
+
     if (isExpanded && event.deltaY < 0 && (isAtTop || !hasScrollableOverflow)) {
       collapseIntentRef.current = false;
       setIsExpanded(false);

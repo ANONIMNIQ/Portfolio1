@@ -15,7 +15,7 @@ const wordVariants = {
   exit: { y: "100%", transition: { duration: 0.5, ease: [0.76, 0, 0.24, 1] } },
 };
 
-export default function BrandTicker() {
+export default function BrandTicker({ isMenuOpen = false }) {
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
@@ -26,6 +26,7 @@ export default function BrandTicker() {
   return (
     <AnimatePresence mode="wait">
       <motion.div
+        className={`brand-ticker ${isMenuOpen ? "is-menu-open" : ""}`}
         key={tick}
         variants={containerVariants}
         initial="hidden"
@@ -40,7 +41,7 @@ export default function BrandTicker() {
           fontSize: "14px",
           letterSpacing: "0.08em",
           fontWeight: 600,
-          color: "#f1eef9",
+          color: isMenuOpen ? "#1f1f28" : "#f1eef9",
         }}
       >
         {WORDS.map((word) => (

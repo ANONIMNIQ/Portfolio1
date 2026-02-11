@@ -24,7 +24,7 @@ export default function VisualAside({
         <canvas ref={canvasRef} className="webgl" aria-hidden="true" />
 
         <div className="visual-overlay">
-          <BrandTicker />
+          <BrandTicker isMenuOpen={isMenuOpen} />
 
           <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
             {showLangSwitch && (

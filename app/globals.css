@@ -459,6 +459,49 @@
   border-radius: 0;
 }
 
+/* Keep brand visible above menu overlay and switch contrast on white menu background */
+.brand-ticker {
+  position: fixed;
+  top: 32px;
+  left: 40px;
+  z-index: 140;
+  pointer-events: none;
+  transition: color 0.28s ease;
+}
+
+@media (max-width: 768px) {
+  .brand-ticker {
+    top: 18px;
+    left: 14px;
+  }
+}
+
+/* Desktop project modal behavior: natural content height first, fullscreen on expand */
+@media (min-width: 1025px) {
+  .project-modal .modal-card {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+  }
+
+  .project-modal .modal-body {
+    overflow-y: visible;
+    padding-bottom: 72px;
+  }
+
+  .project-modal.is-expanded .modal-card {
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0;
+  }
+
+  .project-modal.is-expanded .modal-body {
+    height: calc(100vh - 48px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Unified mobile overlay sizing (menu/contact/project/about) */
 @media (max-width: 1024px) {
   .about-overlay,
