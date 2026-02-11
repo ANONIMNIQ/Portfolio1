@@ -306,6 +306,16 @@
     transform: translateZ(0);
   }
 
+  .content-close-wrap-mobile {
+    position: fixed;
+    right: 12px;
+    bottom: calc(env(safe-area-inset-bottom) + 12px);
+    z-index: 90;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    pointer-events: auto;
+  }
+
   .content {
     height: var(--app-vh, 100vh);
     min-height: var(--app-vh, 100vh);
@@ -365,11 +375,13 @@
   }
 
   .contact-modal-card {
-    max-height: calc(var(--app-vh, 100vh) - 8px);
+    max-height: calc(var(--app-vh, 100vh) - max(6px, env(safe-area-inset-top)));
     height: auto;
+    margin-top: max(6px, env(safe-area-inset-top));
   }
 
   .contact-modal-body {
-    padding-top: max(18px, env(safe-area-inset-top)) !important;
+    padding-top: max(14px, env(safe-area-inset-top)) !important;
+    padding-bottom: calc(130px + env(safe-area-inset-bottom)) !important;
   }
 }

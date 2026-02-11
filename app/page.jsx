@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
 import IntroLoader from "./components/IntroLoader";
 import EmojiBurst from "./components/EmojiBurst";
 import MenuOverlay from "./components/MenuOverlay";
@@ -53,7 +54,8 @@ export default function Home() {
   useEffect(() => {
     const setViewportHeight = () => {
       const vvHeight = window.visualViewport?.height ?? 0;
-      const current = Math.max(window.innerHeight, vvHeight || 0);
+      const screenHeight = typeof window.screen?.height === "number" ? window.screen.height : 0;
+      const current = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0, screenHeight || 0);
       maxVhRef.current = Math.max(maxVhRef.current, current);
       document.documentElement.style.setProperty("--app-vh", `${maxVhRef.current}px`);
     };
@@ -217,6 +219,16 @@ export default function Home() {
               onThemeChange={setTheme}
               isSmallViewport={isSmallViewport}
             />
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {isSmallViewport && showProjects && !isModalOpen && !isContactOpen && (
+            <motion.div className="content-close-wrap-mobile" initial={{ scale: 0.72, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { delay: 0.62, duration: 0.34, ease: [0.34, 1.56, 0.64, 1] } }} exit={{ scale: 0.85, opacity: 0, transition: { duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}>
+              <button className="content-close" type="button" aria-label="Hide projects" onClick={() => setShowProjects(false)}>
+                <X size={20} />
+              </button>
+            </motion.div>
           )}
         </AnimatePresence>
 

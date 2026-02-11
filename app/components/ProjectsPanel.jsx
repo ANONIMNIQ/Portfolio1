@@ -77,21 +77,15 @@ export default function ProjectsPanel({ projects, onOpenProject, setShowProjects
         </motion.footer>
       </motion.div>
 
-      <motion.div
-        className="content-close-wrap"
-        initial={isSmallViewport ? { scale: 0.75, opacity: 0 } : { scale: 0, opacity: 0 }}
-        animate={
-          isSmallViewport
-            ? { scale: 1, opacity: 1, transition: { delay: 0.62, duration: 0.34, ease: [0.34, 1.56, 0.64, 1] } }
-            : { scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }
-        }
-      >
-        <Magnet strength={0.3}>
-          <button className="content-close" type="button" aria-label="Hide projects" onClick={() => setShowProjects(false)}>
-            <X size={20} />
-          </button>
-        </Magnet>
-      </motion.div>
+      {!isSmallViewport && (
+        <motion.div className="content-close-wrap" initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { delay: 0.8, duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } }}>
+          <Magnet strength={0.3}>
+            <button className="content-close" type="button" aria-label="Hide projects" onClick={() => setShowProjects(false)}>
+              <X size={20} />
+            </button>
+          </Magnet>
+        </motion.div>
+      )}
     </motion.section>
   );
 }
