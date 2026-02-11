@@ -17,6 +17,8 @@ import { copy, EMOJIS, projects } from "./lib/siteData";
 export default function Home() {
   const canvasRef = useRef(null);
   const collapseIntentRef = useRef(false);
+  const maxVisualVhRef = useRef(0);
+  const maxFullVhRef = useRef(0);
 
   const [activeProject, setActiveProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -56,9 +58,11 @@ export default function Home() {
       const screenHeight = typeof window.screen?.height === "number" ? window.screen.height : 0;
       const visualHeight = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0);
       const fullHeight = Math.max(visualHeight, screenHeight || 0);
-      const browserUiOffset = Math.min(Math.max(fullHeight - visualHeight, 0), 220);
-      document.documentElement.style.setProperty("--app-vh", `${visualHeight}px`);
-      document.documentElement.style.setProperty("--app-full-vh", `${fullHeight}px`);
+      maxVisualVhRef.current = Math.max(maxVisualVhRef.current, visualHeight);
+      maxFullVhRef.current = Math.max(maxFullVhRef.current, fullHeight);
+      const browserUiOffset = Math.min(Math.max(maxFullVhRef.current - maxVisualVhRef.current, 0), 220);
+      document.documentElement.style.setProperty("--app-vh", `${maxVisualVhRef.current}px`);
+      document.documentElement.style.setProperty("--app-full-vh", `${maxFullVhRef.current}px`);
       document.documentElement.style.setProperty("--browser-ui-offset", `${browserUiOffset}px`);
     };
 
