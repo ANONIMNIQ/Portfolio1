@@ -292,3 +292,49 @@
     font-size: clamp(1.35rem, 2.6vw, 2.6rem);
   }
 }
+
+@media (max-width: 1024px) {
+  /* keep close button stable while scrolling project list on touch devices */
+  .content-close-wrap {
+    position: fixed;
+    right: 14px;
+    bottom: max(22px, calc(env(safe-area-inset-bottom) + 12px));
+    margin-right: 0;
+    align-self: auto;
+    z-index: 80;
+  }
+
+  .content {
+    height: 100dvh;
+    overscroll-behavior-y: contain;
+  }
+}
+
+@supports (height: 100lvh) {
+  @media (max-width: 1024px) {
+    /* draw background/content through the full large viewport behind browser UI */
+    html,
+    body,
+    .app,
+    .visual,
+    .visual-surface,
+    .webgl {
+      min-height: 100lvh;
+      height: 100lvh;
+    }
+
+    .content {
+      height: 100lvh;
+    }
+
+    .modal-card {
+      max-height: calc(100lvh - 96px);
+      height: calc(100lvh - 96px);
+    }
+
+    .contact-modal-card {
+      max-height: calc(100lvh - 24px);
+      height: calc(100lvh - 24px);
+    }
+  }
+}

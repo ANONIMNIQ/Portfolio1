@@ -33,12 +33,28 @@ export default function Home() {
   const [showLoader, setShowLoader] = useState(true);
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [burstItems, setBurstItems] = useState([]);
+  const [isSmallViewport, setIsSmallViewport] = useState(false);
 
   const text = copy[lang];
   const hiddenByOverlay = isMenuOpen || showProjects || isModalOpen || isAboutOpen || isContactOpen;
   const showProjectsLike = showProjects || isAboutOpen || isContactOpen;
 
   useWebGLBackground(canvasRef, !showLoader);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 1024px)");
+    const syncViewport = () => setIsSmallViewport(media.matches);
+    syncViewport();
+    media.addEventListener("change", syncViewport);
+    return () => media.removeEventListener("change", syncViewport);
+  }, []);
+
+  useEffect(() => {
+    if (isSmallViewport && isExpanded) {
+      setIsExpanded(false);
+      collapseIntentRef.current = false;
+    }
+  }, [isSmallViewport, isExpanded]);
 
   useEffect(() => {
     if (!showLoader) {
@@ -87,6 +103,8 @@ export default function Home() {
   };
 
   const handleModalScroll = (event) => {
+    if (isSmallViewport) return;
+
     const target = event.currentTarget;
     if (target.scrollTop > 20 && !isExpanded) {
       collapseIntentRef.current = false;
@@ -99,6 +117,8 @@ export default function Home() {
   };
 
   const handleModalWheel = (event) => {
+    if (isSmallViewport) return;
+
     const target = event.currentTarget;
     const isAtTop = target.scrollTop <= 2;
     const hasScrollableOverflow = target.scrollHeight > target.clientHeight + 1;
