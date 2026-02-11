@@ -254,3 +254,16 @@
   transform: translateZ(0);
   backface-visibility: hidden;
 }
+
+/* Faster modal animations */
+.modal-backdrop {
+  transition: opacity 0.35s cubic-bezier(0.22, 0.8, 0.22, 1);
+}
+
+.modal-card {
+  transition:
+    transform 0.42s cubic-bezier(0.22, 0.8, 0.22, 1),
+    height 0.38s cubic-bezier(0.25, 0.8, 0.25, 1),
+    max-height 0.38s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-radius 0.34s ease;
+}

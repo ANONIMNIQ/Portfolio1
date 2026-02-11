@@ -16,7 +16,6 @@ import { copy, EMOJIS, projects } from "./lib/siteData";
 export default function Home() {
   const canvasRef = useRef(null);
   const collapseIntentRef = useRef(false);
-  const expandedAtRef = useRef(0);
 
   const [activeProject, setActiveProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,21 +83,15 @@ export default function Home() {
       setTheme("one");
       setIsExpanded(false);
       setIsClosing(false);
-    }, 800);
+    }, 450);
   };
 
   const handleModalScroll = (event) => {
     const target = event.currentTarget;
     if (target.scrollTop > 20 && !isExpanded) {
-      expandedAtRef.current = Date.now();
       collapseIntentRef.current = false;
       setIsExpanded(true);
-    } else if (
-      target.scrollTop <= 2 &&
-      isExpanded &&
-      collapseIntentRef.current &&
-      Date.now() - expandedAtRef.current > 450
-    ) {
+    } else if (target.scrollTop <= 2 && isExpanded && collapseIntentRef.current) {
       collapseIntentRef.current = false;
       setIsExpanded(false);
       setLastCollapseAt(Date.now());
@@ -107,13 +100,13 @@ export default function Home() {
 
   const handleModalWheel = (event) => {
     const target = event.currentTarget;
-    if (event.deltaY < 0 && target.scrollTop <= 2) {
+    if (event.deltaY < 0 && target.scrollTop <= 16) {
       collapseIntentRef.current = true;
     } else if (event.deltaY > 0) {
       collapseIntentRef.current = false;
     }
 
-    const cooldownPassed = Date.now() - lastCollapseAt > 1400;
+    const cooldownPassed = Date.now() - lastCollapseAt > 220;
     if (!isExpanded && target.scrollTop <= 0 && event.deltaY < 0 && cooldownPassed) {
       closeProjectModal();
     }
