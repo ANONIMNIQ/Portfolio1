@@ -1,0 +1,539 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap");
+
+:root {
+  --ink: #2c2cd6;
+  --ink-dark: #1a1a86;
+  --text: #1f1f28;
+  --muted: #5b5f78;
+  --surface: #f7f7fb;
+  --line: rgba(46, 52, 102, 0.2);
+  --dark: #0b0b12;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Manrope", sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body.modal-open .content,
+body.modal-open .visual {
+  filter: blur(2px) saturate(0.9);
+  transform: scale(0.995);
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(45%, 1fr) minmax(40%, 520px);
+  height: 100vh;
+}
+
+.visual {
+  position: relative;
+  background: radial-gradient(circle at 20% 20%, #2a2a4b, #0b0b12 70%);
+  overflow: hidden;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 60%, rgba(255, 180, 200, 0.25), transparent 60%);
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.4s ease, background 0.4s ease;
+}
+
+body[data-theme="one"] .visual::after {
+  background: radial-gradient(circle at 30% 60%, rgba(255, 180, 200, 0.35), transparent 60%);
+}
+
+body[data-theme="two"] .visual::after {
+  background: radial-gradient(circle at 30% 60%, rgba(140, 120, 255, 0.28), transparent 60%);
+}
+
+body[data-theme="three"] .visual::after {
+  background: radial-gradient(circle at 30% 60%, rgba(120, 220, 210, 0.3), transparent 60%);
+}
+
+#webgl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+.visual-overlay {
+  position: relative;
+  z-index: 2;
+  padding: 32px 40px;
+  color: #f1eef9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visual-sub {
+  color: rgba(241, 238, 249, 0.7);
+  letter-spacing: 0.12em;
+  font-size: 12px;
+}
+
+.content {
+  background: #ffffff;
+  border-left: 1px solid rgba(20, 20, 40, 0.08);
+  overflow-y: auto;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.content-inner {
+  padding: 48px 48px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+}
+
+.kicker {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+h1 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.2rem, 3.2vw, 3.6rem);
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+}
+
+.note {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  color: var(--ink-dark);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.link {
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: left;
+}
+
+.emotion {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  background: linear-gradient(90deg, rgba(64, 92, 255, 0.08), rgba(64, 92, 255, 0.0));
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.emotion .tag {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.project-list {
+  display: grid;
+  gap: 24px;
+}
+
+.project-card {
+  display: grid;
+  gap: 18px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.4s ease;
+}
+
+.project-media {
+  height: 220px;
+  border-radius: 18px;
+  background: radial-gradient(circle at 30% 30%, rgba(109, 134, 255, 0.6), rgba(10, 10, 20, 0.85));
+  box-shadow: 0 24px 48px rgba(26, 26, 60, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s ease;
+}
+
+.project-hover {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 18px;
+  color: #f8f4ff;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.project-hover .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(248, 244, 255, 0.9);
+  display: inline-block;
+}
+
+.project-card:hover {
+  transform: translateY(-6px);
+}
+
+.project-card:hover .project-hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.project-card:hover .project-media {
+  transform: scale(1.02);
+}
+
+.project-media.placeholder-one {
+  background: radial-gradient(circle at 35% 35%, rgba(255, 182, 193, 0.7), rgba(16, 18, 30, 0.9));
+}
+
+.project-media.placeholder-two {
+  background: radial-gradient(circle at 30% 30%, rgba(40, 40, 40, 0.5), rgba(10, 10, 18, 0.95));
+}
+
+.project-media.placeholder-three {
+  background: radial-gradient(circle at 30% 30%, rgba(80, 120, 255, 0.55), rgba(12, 12, 22, 0.9));
+}
+
+.project-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 0.35));
+  mix-blend-mode: screen;
+  opacity: 0.6;
+}
+
+.project-card:hover .project-media::after {
+  opacity: 0.9;
+}
+
+.project-media.alt {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 132, 132, 0.55), rgba(15, 18, 30, 0.9));
+}
+
+.project-media.accent {
+  background: radial-gradient(circle at 30% 30%, rgba(100, 224, 210, 0.55), rgba(15, 18, 30, 0.9));
+}
+
+.project-info h2 {
+  font-family: "Playfair Display", serif;
+  color: var(--ink-dark);
+  font-size: 1.6rem;
+}
+
+.project-card:hover .project-info h2 {
+  color: var(--ink);
+}
+
+.project-info p {
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.content-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.footer-links {
+  display: flex;
+  gap: 16px;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 20;
+}
+
+.modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 10, 18, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.modal-card {
+  position: relative;
+  width: min(860px, 90vw);
+  background: #ffffff;
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(10, 10, 18, 0.45);
+  transform: translateY(30px) scale(0.96);
+  transform-origin: var(--origin-x, 50%) var(--origin-y, 40%);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 1;
+}
+
+.modal.is-open .modal-card {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 28px;
+  border-bottom: 1px solid rgba(20, 20, 40, 0.08);
+  gap: 16px;
+}
+
+.modal-header-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chip {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(64, 92, 255, 0.12);
+  color: var(--ink);
+}
+
+.chip.outline {
+  background: transparent;
+  border: 1px solid rgba(64, 92, 255, 0.3);
+}
+
+.modal-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reaction {
+  font-size: 12px;
+  color: var(--muted);
+  margin-right: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 20, 40, 0.12);
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--ink);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(20, 20, 40, 0.12);
+}
+
+.icon-btn.solid {
+  background: var(--ink);
+  color: #fff;
+  border: none;
+}
+
+.modal-body {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 28px;
+  padding: 28px 32px 36px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-text {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.modal-media {
+  height: 360px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 30% 30%, rgba(109, 134, 255, 0.6), rgba(10, 10, 20, 0.85));
+  box-shadow: 0 26px 54px rgba(10, 10, 20, 0.35);
+}
+
+.modal-title {
+  font-family: "Playfair Display", serif;
+  color: var(--ink);
+  font-size: 2rem;
+}
+
+.modal-tags {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.modal-desc {
+  color: var(--ink-dark);
+  line-height: 1.7;
+}
+
+.modal-paragraph {
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 15px;
+}
+
+.modal-cta {
+  align-self: start;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+
+@media (max-width: 980px) {
+  body {
+    overflow: auto;
+  }
+
+  .split {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .visual {
+    min-height: 56vh;
+  }
+
+  .content {
+    overflow: visible;
+  }
+
+  .modal-body {
+    grid-template-columns: 1fr;
+    max-height: 75vh;
+  }
+}
+
+@media (max-width: 640px) {
+  .content-inner {
+    padding: 32px 24px;
+  }
+
+  h1 {
+    font-size: 2.1rem;
+  }
+
+  .content-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal-media {
+    height: 220px;
+  }
+
+  .modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
