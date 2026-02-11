@@ -5,6 +5,13 @@ export const metadata = {
   description: "Минималистично портфолио за AI‑изработени сайтове.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#f5f5f8",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="bg">
