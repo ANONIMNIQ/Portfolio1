@@ -385,3 +385,47 @@
     padding-bottom: calc(130px + env(safe-area-inset-bottom)) !important;
   }
 }
+
+/* Final mobile viewport/button alignment overrides */
+@media (max-width: 1024px) {
+  html,
+  body,
+  .app,
+  .visual,
+  .visual-surface,
+  .webgl {
+    min-height: 100lvh !important;
+    height: 100lvh !important;
+  }
+
+  .content {
+    min-height: 100lvh !important;
+    height: 100lvh !important;
+    max-height: 100lvh !important;
+  }
+
+  .content-inner {
+    padding-bottom: calc(188px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .projects-trigger-wrap,
+  .content-close-wrap,
+  .content-close-wrap-mobile {
+    bottom: calc(env(safe-area-inset-bottom) + 72px) !important;
+  }
+
+  .content-close-wrap-mobile {
+    right: 12px !important;
+  }
+
+  .contact-modal-card {
+    margin-top: max(6px, env(safe-area-inset-top)) !important;
+    max-height: calc(100dvh - max(6px, env(safe-area-inset-top))) !important;
+    height: calc(100dvh - max(6px, env(safe-area-inset-top))) !important;
+  }
+
+  .contact-modal-body {
+    padding-top: 20px !important;
+    padding-bottom: calc(156px + env(safe-area-inset-bottom)) !important;
+  }
+}

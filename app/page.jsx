@@ -54,8 +54,7 @@ export default function Home() {
   useEffect(() => {
     const setViewportHeight = () => {
       const vvHeight = window.visualViewport?.height ?? 0;
-      const screenHeight = typeof window.screen?.height === "number" ? window.screen.height : 0;
-      const current = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0, screenHeight || 0);
+      const current = Math.max(window.innerHeight, vvHeight || 0, document.documentElement.clientHeight || 0);
       maxVhRef.current = Math.max(maxVhRef.current, current);
       document.documentElement.style.setProperty("--app-vh", `${maxVhRef.current}px`);
     };
