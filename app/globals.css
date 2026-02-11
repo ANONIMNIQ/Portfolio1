@@ -430,57 +430,57 @@
   }
 }
 
+/* Avoid persistent haze on iOS when modals are closed */
+.modal-backdrop {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
+.modal.is-open .modal-backdrop {
+  -webkit-backdrop-filter: blur(6px) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+/* Unified mobile overlay sizing (menu/contact/project/about) */
 @media (max-width: 1024px) {
   .about-overlay,
   .menu-overlay,
   .modal,
   .modal-backdrop {
+    inset: 0 !important;
     min-height: var(--app-full-vh, 100vh) !important;
     height: var(--app-full-vh, 100vh) !important;
+    max-height: var(--app-full-vh, 100vh) !important;
+  }
+
+  .menu-overlay,
+  .about-overlay {
+    padding-bottom: calc(32px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px)) !important;
   }
 
   .modal-card {
-    max-height: calc(var(--app-vh, 100vh) - 96px) !important;
-    height: calc(var(--app-vh, 100vh) - 96px) !important;
+    bottom: 0 !important;
+    max-height: calc(var(--app-full-vh, 100vh) - 96px) !important;
+    height: calc(var(--app-full-vh, 100vh) - 96px) !important;
   }
 
   .app.modal-expanded .modal-card {
-    max-height: var(--app-vh, 100vh) !important;
-    height: var(--app-vh, 100vh) !important;
+    max-height: var(--app-full-vh, 100vh) !important;
+    height: var(--app-full-vh, 100vh) !important;
   }
 
   .contact-modal-card {
+    bottom: 0 !important;
     margin-top: 0 !important;
     max-height: var(--app-full-vh, 100vh) !important;
     height: var(--app-full-vh, 100vh) !important;
   }
 
-  .menu-overlay,
-  .about-overlay {
-    padding-bottom: calc(32px + env(safe-area-inset-bottom)) !important;
+  .modal-body {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px)) !important;
   }
 
   .contact-modal-body {
     padding-bottom: calc(156px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px)) !important;
-  }
-}
-
-/* Mobile bottom-coverage hard fix: keep overlays/cards behind browser controls */
-@media (max-width: 1024px) {
-  .menu-overlay,
-  .about-overlay,
-  .modal,
-  .modal-backdrop {
-    inset: 0 0 calc(-1 * var(--browser-ui-offset, 0px)) 0 !important;
-    height: auto !important;
-    min-height: auto !important;
-  }
-
-  .modal-card {
-    bottom: calc(-1 * var(--browser-ui-offset, 0px)) !important;
-  }
-
-  .contact-modal-card {
-    bottom: calc(-1 * var(--browser-ui-offset, 0px)) !important;
   }
 }
