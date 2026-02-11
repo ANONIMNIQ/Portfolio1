@@ -472,6 +472,10 @@
   pointer-events: none;
 }
 
+.visual.menu-open {
+  z-index: 140;
+}
+
 /* Desktop project modal behavior: natural content height first, fullscreen on expand */
 @media (min-width: 1025px) {
   .project-modal .modal-card {

@@ -19,7 +19,7 @@ export default function VisualAside({
   isMenuOpen,
 }) {
   return (
-    <aside className="visual">
+    <aside className={`visual ${isMenuOpen ? "menu-open" : ""}`}>
       <div className="visual-surface">
         <canvas ref={canvasRef} className="webgl" aria-hidden="true" />
 
