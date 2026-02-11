@@ -14,14 +14,14 @@ export default function ContactModal({ isOpen, onClose, text }) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="modal-card"
+            className="modal-card contact-modal-card"
             role="dialog"
             aria-modal="true"
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            style={{ background: "linear-gradient(135deg, #f8f8ff 0%, #eef0ff 100%)", height: "auto", maxHeight: "90vh" }}
+            style={{ background: "linear-gradient(135deg, #f8f8ff 0%, #eef0ff 100%)" }}
           >
             <div className="modal-header">
               <div className="modal-header-left">
@@ -36,7 +36,7 @@ export default function ContactModal({ isOpen, onClose, text }) {
               </div>
             </div>
 
-            <div className="modal-body" style={{ padding: "48px 64px 64px" }}>
+            <div className="modal-body contact-modal-body" style={{ padding: "48px 64px 64px" }}>
               <div className="modal-text" style={{ maxWidth: "600px", margin: "0 auto" }}>
                 <h2 className="modal-title" style={{ textAlign: "center", marginBottom: "40px" }}>
                   {text.contactTitle}

@@ -172,3 +172,85 @@
     height: 32px;
   }
 }
+
+/* iOS/Small-screen viewport safety fixes */
+@supports (height: 100dvh) {
+  body,
+  .app,
+  .visual,
+  .visual-surface,
+  .webgl {
+    min-height: 100dvh;
+    height: 100dvh;
+  }
+}
+
+.projects-trigger-wrap {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 1024px) {
+  .projects-trigger-wrap {
+    bottom: max(24px, calc(env(safe-area-inset-bottom) + 14px));
+  }
+
+  .content-inner {
+    padding-bottom: calc(140px + env(safe-area-inset-bottom));
+  }
+
+  .content-close-wrap {
+    bottom: max(18px, calc(env(safe-area-inset-bottom) + 8px));
+  }
+
+  .modal-card {
+    max-height: calc(100dvh - 96px);
+    height: calc(100dvh - 96px);
+  }
+
+  .modal-body {
+    padding-bottom: calc(42px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.contact-modal-card {
+  height: auto;
+  max-height: 90vh;
+}
+
+@supports (height: 100dvh) {
+  .contact-modal-card {
+    max-height: 90dvh;
+  }
+}
+
+.contact-modal-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .contact-modal-card {
+    max-height: calc(100dvh - 24px);
+    height: calc(100dvh - 24px);
+    border-radius: 18px 18px 0 0;
+  }
+
+  .contact-modal-body {
+    padding: 24px 18px calc(130px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .contact-modal-body .modal-title {
+    margin-bottom: 28px !important;
+  }
+}
+
+.menu-overlay {
+  overflow: hidden;
+  contain: paint;
+  -webkit-font-smoothing: antialiased;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
