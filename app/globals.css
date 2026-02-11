@@ -461,18 +461,17 @@
 
 /* Unified mobile overlay sizing (menu/contact/project/about) */
 @media (max-width: 1024px) {
-  body {
-    background: #0b0b12 !important;
-  }
-
   .about-overlay,
   .menu-overlay,
   .modal,
   .modal-backdrop {
     inset: 0 !important;
     min-height: var(--app-full-vh, 100vh) !important;
+    min-height: 100lvh !important;
     height: var(--app-full-vh, 100vh) !important;
+    height: 100lvh !important;
     max-height: var(--app-full-vh, 100vh) !important;
+    max-height: 100lvh !important;
   }
 
   .menu-overlay,
@@ -483,20 +482,26 @@
   .modal-card {
     bottom: 0 !important;
     max-height: calc(var(--app-full-vh, 100vh) - 96px) !important;
+    max-height: calc(100lvh - 96px) !important;
     height: calc(var(--app-full-vh, 100vh) - 96px) !important;
+    height: calc(100lvh - 96px) !important;
   }
 
   .app.modal-expanded .modal-card,
   .modal.is-expanded .modal-card {
     max-height: var(--app-full-vh, 100vh) !important;
+    max-height: 100lvh !important;
     height: var(--app-full-vh, 100vh) !important;
+    height: 100lvh !important;
   }
 
   .contact-modal-card {
     bottom: 0 !important;
     margin-top: 0 !important;
     max-height: var(--app-full-vh, 100vh) !important;
+    max-height: 100lvh !important;
     height: var(--app-full-vh, 100vh) !important;
+    height: 100lvh !important;
   }
 
   .modal-body {
