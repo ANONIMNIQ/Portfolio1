@@ -235,18 +235,20 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
-
-        <ProjectModal
-          isOpen={isModalOpen}
-          isClosing={isClosing}
-          activeProject={activeProject}
-          text={text}
-          lang={lang}
-          onClose={closeProjectModal}
-          onScroll={handleModalScroll}
-          onWheel={handleModalWheel}
-        />
       </motion.div>
+
+      <ProjectModal
+        isOpen={isModalOpen}
+        isClosing={isClosing}
+        isExpanded={isExpanded}
+        activeProject={activeProject}
+        text={text}
+        lang={lang}
+        theme={theme}
+        onClose={closeProjectModal}
+        onScroll={handleModalScroll}
+        onWheel={handleModalWheel}
+      />
     </>
   );
 }

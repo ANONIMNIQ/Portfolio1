@@ -441,8 +441,30 @@
   backdrop-filter: blur(6px) !important;
 }
 
+.modal[data-theme="one"] .modal-card {
+  background: linear-gradient(135deg, #fff5f7, #ffe0e6);
+}
+
+.modal[data-theme="two"] .modal-card {
+  background: linear-gradient(135deg, #f3f0ff, #e0e6ff);
+}
+
+.modal[data-theme="three"] .modal-card {
+  background: linear-gradient(135deg, #eefaf8, #d0f5f0);
+}
+
+.modal.is-expanded .modal-card {
+  height: 100vh;
+  max-height: 100vh;
+  border-radius: 0;
+}
+
 /* Unified mobile overlay sizing (menu/contact/project/about) */
 @media (max-width: 1024px) {
+  body {
+    background: #0b0b12 !important;
+  }
+
   .about-overlay,
   .menu-overlay,
   .modal,
@@ -464,7 +486,8 @@
     height: calc(var(--app-full-vh, 100vh) - 96px) !important;
   }
 
-  .app.modal-expanded .modal-card {
+  .app.modal-expanded .modal-card,
+  .modal.is-expanded .modal-card {
     max-height: var(--app-full-vh, 100vh) !important;
     height: var(--app-full-vh, 100vh) !important;
   }

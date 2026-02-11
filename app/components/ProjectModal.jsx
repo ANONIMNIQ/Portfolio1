@@ -3,9 +3,9 @@
 import { ExternalLink, X } from "lucide-react";
 import Magnet from "./Magnet";
 
-export default function ProjectModal({ isOpen, isClosing, activeProject, text, lang, onClose, onScroll, onWheel }) {
+export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   return (
-    <div className={`modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""}`} aria-hidden={!isOpen && !isClosing}>
+    <div className={`modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
       <div className="modal-backdrop" onClick={onClose} />
       {activeProject && (
         <div className="modal-card" role="dialog" aria-modal="true">
