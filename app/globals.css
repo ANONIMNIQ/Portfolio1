@@ -644,7 +644,7 @@
 .hero-slider-shell {
   position: fixed;
   left: 50%;
-  top: 56%;
+  top: 50%;
   transform: translate(-50%, -50%);
   z-index: 8;
   width: min(860px, 76vw);
@@ -670,7 +670,7 @@
   left: 0;
   top: 0;
   width: min(360px, 40vw);
-  aspect-ratio: 0.72;
+  aspect-ratio: 16 / 10;
   border: none;
   border-radius: 20px;
   overflow: hidden;
@@ -690,7 +690,8 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
+  object-fit: contain;
+  background: #0b0b12;
 }
 
 .hero-slide-glow {
@@ -740,7 +741,7 @@
 @media (max-width: 1024px) {
   .hero-slider-shell {
     width: min(94vw, 680px);
-    top: 58%;
+    top: 50%;
   }
 
   .hero-slider-stack {
@@ -756,7 +757,7 @@
 
 @media (max-width: 768px) {
   .hero-slider-shell {
-    top: 60%;
+    top: 50%;
   }
 
   .hero-slider-stack {
