@@ -33,7 +33,8 @@ export default function Home() {
   const [isContactOpen, setIsContactOpen] = useState(false);
 
   const [showLoader, setShowLoader] = useState(true);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [topControlsVisible, setTopControlsVisible] = useState(false);
+  const [bottomControlsVisible, setBottomControlsVisible] = useState(false);
   const [burstItems, setBurstItems] = useState([]);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
 
@@ -82,10 +83,20 @@ export default function Home() {
   }, [isSmallViewport, isExpanded]);
 
   useEffect(() => {
-    if (!showLoader) {
-      const timer = setTimeout(() => setHasLoadedOnce(true), 3500);
-      return () => clearTimeout(timer);
+    if (showLoader) {
+      setTopControlsVisible(false);
+      setBottomControlsVisible(false);
+      return undefined;
     }
+
+    // Wait for the wordmark dock transition, then reveal controls in sequence.
+    const topTimer = setTimeout(() => setTopControlsVisible(true), 1150);
+    const bottomTimer = setTimeout(() => setBottomControlsVisible(true), 1480);
+
+    return () => {
+      clearTimeout(topTimer);
+      clearTimeout(bottomTimer);
+    };
   }, [showLoader]);
 
   const triggerEmojiBurst = () => {
@@ -200,9 +211,10 @@ export default function Home() {
       >
         <VisualAside
           canvasRef={canvasRef}
-          showLangSwitch={!hiddenByOverlay && hasLoadedOnce}
-          showInfoTrigger={!hiddenByOverlay && hasLoadedOnce}
-          hasLoadedOnce={hasLoadedOnce}
+          showLangSwitch={!hiddenByOverlay && topControlsVisible}
+          showMenuTrigger={topControlsVisible}
+          showInfoTrigger={!hiddenByOverlay && bottomControlsVisible}
+          showProjectsTrigger={bottomControlsVisible}
           lang={lang}
           onToggleLang={() => setLang((value) => (value === "bg" ? "en" : "bg"))}
           onOpenMenu={() => setIsMenuOpen(true)}
