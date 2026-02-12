@@ -1,9 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ExternalLink, X } from "lucide-react";
 import Magnet from "./Magnet";
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsImageLoaded(false);
+  }, [activeProject?.id]);
+
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
       <div className="modal-backdrop" onClick={onClose} />
@@ -28,7 +35,17 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
           <div className="modal-body" onScroll={onScroll} onWheel={onWheel}>
             <div className="modal-content-wrap">
-              <img src={activeProject.image} alt={activeProject[lang].title} className="modal-media-img" />
+              <div className={`modal-media-wrap ${isImageLoaded ? "is-loaded" : ""}`}>
+                <div className="modal-media-skeleton" aria-hidden="true" />
+                <img
+                  src={activeProject.image}
+                  alt={activeProject[lang].title}
+                  className={`modal-media-img ${isImageLoaded ? "is-loaded" : ""}`}
+                  onLoad={() => setIsImageLoaded(true)}
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
               <div className="modal-text">
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
