@@ -45,11 +45,10 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
       <div className="hero-slider-stage">
         <div className="hero-slider-stack" role="region" aria-label="Featured projects slider">
           {stack.map(({ project, index, depth }) => {
-            const x = depth * 96;
-            const y = depth * 12;
-            const scale = 1 - depth * 0.08;
-            const rotateY = -depth * 7;
-            const opacity = 1 - depth * 0.15;
+            const x = depth * 88;
+            const y = depth * 6;
+            const scale = 1 - depth * 0.07;
+            const opacity = 1 - depth * 0.2;
 
             return (
               <motion.button
@@ -57,14 +56,17 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
                 className="hero-slide-card"
                 type="button"
                 onClick={() => onOpenProject(project)}
-                initial={{ x: 680 + depth * 80, y, scale: 0.84, rotateY: -18, opacity: 0 }}
-                animate={isVisible ? { x, y, scale, rotateY, opacity } : { x: -560, y, scale: 0.84, rotateY: 10, opacity: 0 }}
+                initial={{ x: 720 + depth * 60, y, scale: 0.84, opacity: 0 }}
+                animate={isVisible ? { x, y, scale, opacity } : { x: -620, y, scale: 0.84, opacity: 0 }}
                 transition={{
                   duration: isVisible ? 0.42 : 0.3,
                   delay: isVisible ? depth * 0.08 : 0,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                style={{ zIndex: 20 - depth }}
+                style={{
+                  zIndex: 30 - depth,
+                  filter: depth === 0 ? "none" : `saturate(${1 - depth * 0.08}) brightness(${1 - depth * 0.1})`,
+                }}
                 aria-label={`Open project ${project[lang].title}`}
               >
                 <img src={project.image} alt={project[lang].title} className="hero-slide-image" />
