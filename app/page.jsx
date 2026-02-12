@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
 import { X } from "lucide-react";
 import IntroLoader from "./components/IntroLoader";
 import EmojiBurst from "./components/EmojiBurst";
@@ -175,7 +175,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <LayoutGroup>
       <AnimatePresence mode="wait">
         {showLoader && <IntroLoader onComplete={() => setShowLoader(false)} />}
       </AnimatePresence>
@@ -191,9 +191,11 @@ export default function Home() {
         text={text}
       />
 
-      <div className="brand-layer">
-        <BrandTicker isMenuOpen={isMenuOpen} />
-      </div>
+      {!showLoader && (
+        <div className="brand-layer">
+          <BrandTicker isMenuOpen={isMenuOpen} />
+        </div>
+      )}
 
       <AboutOverlay isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} text={text} />
 
@@ -260,6 +262,6 @@ export default function Home() {
         onScroll={handleModalScroll}
         onWheel={handleModalWheel}
       />
-    </>
+    </LayoutGroup>
   );
 }

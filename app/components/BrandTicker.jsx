@@ -26,6 +26,7 @@ export default function BrandTicker({ isMenuOpen = false }) {
   return (
     <AnimatePresence mode="wait">
       <motion.div
+        layoutId="site-brand-wordmark"
         className="brand-ticker"
         key={tick}
         variants={containerVariants}

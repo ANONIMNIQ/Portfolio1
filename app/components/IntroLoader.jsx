@@ -19,7 +19,7 @@ export default function IntroLoader({ onComplete }) {
         overflow: "hidden",
       }}
     >
-      <div style={{ display: "flex", gap: "0.4em", padding: "0 20px" }}>
+      <motion.div layoutId="site-brand-wordmark" style={{ display: "flex", gap: "0.4em", padding: "0 20px" }}>
         {WORDS.map((word, idx) => (
           <div key={word} style={{ overflow: "hidden" }}>
             <motion.span
@@ -47,7 +47,7 @@ export default function IntroLoader({ onComplete }) {
             </motion.span>
           </div>
         ))}
-      </div>
+      </motion.div>
       <motion.div
         initial={{ scale: 0.7, opacity: 0 }}
         animate={{ scale: 1.3, opacity: 0.2 }}
