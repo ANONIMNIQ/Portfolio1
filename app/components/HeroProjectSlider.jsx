@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX }) {
+function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX, isFocused, onFocusedHover, onFocusedWheel }) {
   const [hoverOffset, setHoverOffset] = useState({ x: 0, y: 0 });
 
   const absDepth = Math.abs(depth);
   const baseX = 0;
   const baseY = offset === 0 ? 0 : `${offset > 0 ? "" : "-"}50vh`;
-  const hoverY = offset === 0 ? hoverOffset.y : `calc(${baseY} + ${hoverOffset.y}px)`;
+  const hoverY = isFocused ? hoverOffset.y : `calc(${baseY} + ${hoverOffset.y}px)`;
   const scale = offset === 0 ? 1 : 0.82;
   const opacity = offset === 0 ? 1 : 0.72;
-  const depthParallaxFactor = 1 - absDepth * 0.18;
+  const effectiveParallaxX = isFocused ? parallaxX : 0;
 
   return (
     <motion.button
@@ -21,16 +21,28 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
       type="button"
       onClick={() => onOpenProject(project)}
       onMouseMove={(event) => {
+        if (!isFocused) return;
         const rect = event.currentTarget.getBoundingClientRect();
         const x = (event.clientX - (rect.left + rect.width / 2)) * 0.08;
         const y = (event.clientY - (rect.top + rect.height / 2)) * 0.08;
         setHoverOffset({ x, y });
       }}
-      onMouseLeave={() => setHoverOffset({ x: 0, y: 0 })}
+      onMouseEnter={() => {
+        if (isFocused) onFocusedHover(true);
+      }}
+      onMouseLeave={() => {
+        setHoverOffset({ x: 0, y: 0 });
+        if (isFocused) onFocusedHover(false);
+      }}
+      onWheel={(event) => {
+        if (!isFocused) return;
+        event.preventDefault();
+        onFocusedWheel(event.deltaY);
+      }}
       initial={{ x: 760, y: baseY, scale: 0.84, opacity: 0 }}
       animate={
         isVisible
-          ? { x: baseX + hoverOffset.x + parallaxX * depthParallaxFactor, y: hoverY, scale, opacity }
+          ? { x: baseX + hoverOffset.x + effectiveParallaxX, y: hoverY, scale, opacity }
           : { x: -700, y: baseY, scale: 0.84, opacity: 0 }
       }
       transition={{
@@ -41,6 +53,7 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
       style={{
         zIndex: 30 - absDepth,
         filter: absDepth === 0 ? "none" : `saturate(${1 - absDepth * 0.08}) brightness(${1 - absDepth * 0.1})`,
+        pointerEvents: isFocused ? "auto" : "none",
       }}
       aria-label={`Open project ${project[lang].title}`}
     >
@@ -53,6 +66,8 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
 export default function HeroProjectSlider({ projects, lang, isVisible, onOpenProject }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [parallaxX, setParallaxX] = useState(0);
+  const [isFocusedHovered, setIsFocusedHovered] = useState(false);
+  const lastWheelAtRef = useRef(0);
 
   const stack = useMemo(() => {
     return projects
@@ -75,6 +90,7 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
   const focusedProject = projects[activeIndex];
   const hasPrev = activeIndex > 0;
   const hasNext = activeIndex < projects.length - 1;
+  const showTitle = isVisible && isFocusedHovered;
 
   useEffect(() => {
     if (!isVisible) {
@@ -99,6 +115,19 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
     };
   }, [isVisible]);
 
+  useEffect(() => {
+    setIsFocusedHovered(false);
+  }, [activeIndex]);
+
+  const handleWheelNavigation = (deltaY) => {
+    const now = Date.now();
+    if (now - lastWheelAtRef.current < 280) return;
+    lastWheelAtRef.current = now;
+
+    if (deltaY > 0) next();
+    if (deltaY < 0) prev();
+  };
+
   return (
     <motion.section
       className="hero-slider-shell"
@@ -120,6 +149,9 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
               lang={lang}
               onOpenProject={onOpenProject}
               parallaxX={parallaxX}
+              isFocused={offset === 0}
+              onFocusedHover={setIsFocusedHovered}
+              onFocusedWheel={handleWheelNavigation}
             />
           ))}
         </div>
@@ -133,7 +165,7 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
           </button>
         </motion.div>
 
-        <motion.div className="hero-slider-title" initial={{ opacity: 0, x: 24 }} animate={isVisible ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }} transition={{ duration: 0.35, delay: isVisible ? 0.25 : 0 }}>
+        <motion.div className="hero-slider-title" initial={{ opacity: 0, x: 24 }} animate={showTitle ? { opacity: 1, x: 0 } : { opacity: 0, x: 28 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}>
           {focusedProject?.[lang].title}
         </motion.div>
       </div>
