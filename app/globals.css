@@ -467,14 +467,6 @@
   transition: color 0.32s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.brand-layer {
-  position: fixed;
-  top: 32px;
-  left: 40px;
-  z-index: 9999;
-  pointer-events: none;
-}
-
 .brand-spacer {
   width: max-content;
   min-width: 220px;
@@ -483,11 +475,6 @@
 }
 
 @media (max-width: 768px) {
-  .brand-layer {
-    top: 18px;
-    left: 14px;
-  }
-
   .brand-spacer {
     min-width: 190px;
   }
