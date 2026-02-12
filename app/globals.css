@@ -650,6 +650,14 @@
 }
 
 /* Keep global interface controls above hero slider */
+.visual {
+  z-index: auto !important;
+}
+
+.visual-surface {
+  z-index: 0;
+}
+
 .visual-overlay {
   z-index: 20;
 }
@@ -659,6 +667,10 @@
 .content-close-wrap,
 .content-close-wrap-mobile {
   z-index: 30;
+}
+
+.projects-trigger-wrap {
+  z-index: 40 !important;
 }
 
 .content {
@@ -681,7 +693,7 @@
   height: 100vh;
   overflow: visible;
   pointer-events: none;
-  z-index: 2;
+  z-index: 1;
 }
 
 .hero-slide-card {

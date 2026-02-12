@@ -165,7 +165,12 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
           </button>
         </motion.div>
 
-        <motion.div className="hero-slider-title" initial={{ opacity: 0, x: 24 }} animate={showTitle ? { opacity: 1, x: 0 } : { opacity: 0, x: 28 }} transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div
+          className="hero-slider-title"
+          initial={{ opacity: 0, x: 26 }}
+          animate={showTitle ? { opacity: 1, x: 0 } : { opacity: 0, x: 32 }}
+          transition={{ duration: 0.48, ease: [0.22, 1, 0.36, 1] }}
+        >
           {focusedProject?.[lang].title}
         </motion.div>
       </div>
