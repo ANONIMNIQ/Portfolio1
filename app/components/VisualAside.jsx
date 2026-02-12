@@ -80,9 +80,8 @@ export default function VisualAside({
 
       <motion.div
         className="projects-trigger-wrap"
-        initial={{ scale: 0.72, opacity: 0, y: 120, x: "-50%" }}
+        initial={{ scale: 0.72, opacity: 0, y: 120 }}
         animate={{
-          x: "-50%",
           scale: showProjectsLike || !showProjectsTrigger ? 0.72 : 1,
           y: showProjectsLike || !showProjectsTrigger ? 120 : 0,
           opacity: showProjectsLike || !showProjectsTrigger ? 0 : 1,

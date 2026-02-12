@@ -186,12 +186,18 @@
 }
 
 .projects-trigger-wrap {
-  left: 50%;
-  transform: translateX(-50%);
+  left: auto !important;
+  right: 40px;
+  transform: none !important;
+}
+
+.app.projects-visible .projects-trigger-wrap {
+  transform: translateY(40px) !important;
 }
 
 @media (max-width: 1024px) {
   .projects-trigger-wrap {
+    right: 16px;
     bottom: max(24px, calc(env(safe-area-inset-bottom) + 14px));
   }
 

@@ -43,7 +43,7 @@ export default function Home() {
   const text = copy[lang];
   const hiddenByOverlay = isMenuOpen || showProjects || isModalOpen || isAboutOpen || isContactOpen;
   const showProjectsLike = showProjects || isAboutOpen || isContactOpen;
-  const canShowHeroSlider = !showLoader && !isMenuOpen && !showProjects && !isAboutOpen && !isContactOpen && !isModalOpen && !isHeroSliderExiting;
+  const canShowHeroSlider = !isSmallViewport && !showLoader && !isMenuOpen && !showProjects && !isAboutOpen && !isContactOpen && !isModalOpen && !isHeroSliderExiting;
 
   useWebGLBackground(canvasRef, !showLoader);
 
