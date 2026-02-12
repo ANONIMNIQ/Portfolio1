@@ -719,10 +719,7 @@
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.45), 0 8px 20px rgba(20, 20, 40, 0.3);
   transition: box-shadow 0.25s ease;
   pointer-events: auto;
-}
-
-.hero-slide-card:hover {
-  box-shadow: 0 28px 64px rgba(0, 0, 0, 0.52), 0 12px 26px rgba(20, 20, 40, 0.35);
+  will-change: transform, opacity, filter;
 }
 
 .hero-slide-image {
@@ -767,6 +764,56 @@
   gap: 10px;
   pointer-events: auto;
   z-index: 3;
+}
+
+.hero-slider-wheel-hint {
+  position: absolute;
+  left: max(14px, calc(50% - (var(--hero-card-w) / 2) - 64px));
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 98px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.wheel-hint-mouse {
+  width: 28px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 18px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.wheel-hint-dot {
+  width: 4px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  animation: wheelHintScroll 1.05s ease-in-out infinite;
+}
+
+@keyframes wheelHintScroll {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  75% {
+    transform: translateY(10px);
+    opacity: 0.24;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
 }
 
 .hero-slider-arrow {
@@ -815,6 +862,10 @@
   .hero-slider-controls {
     left: max(10px, calc(50% - (var(--hero-card-w) / 2) - 52px));
   }
+
+  .hero-slider-wheel-hint {
+    left: max(10px, calc(50% - (var(--hero-card-w) / 2) - 52px));
+  }
 }
 
 @media (max-width: 768px) {
@@ -827,6 +878,10 @@
   }
 
   .hero-slider-controls {
+    left: 12px;
+  }
+
+  .hero-slider-wheel-hint {
     left: 12px;
   }
 

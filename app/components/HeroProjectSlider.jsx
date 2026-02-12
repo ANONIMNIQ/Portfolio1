@@ -14,6 +14,7 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
   const scale = offset === 0 ? 1 : 0.82;
   const opacity = offset === 0 ? 1 : 0.72;
   const effectiveParallaxX = isFocused ? parallaxX : 0;
+  const depthFilter = absDepth === 0 ? "saturate(1) brightness(1)" : `saturate(${1 - absDepth * 0.08}) brightness(${1 - absDepth * 0.1})`;
 
   return (
     <motion.button
@@ -39,20 +40,19 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
         event.preventDefault();
         onFocusedWheel(event.deltaY);
       }}
-      initial={{ x: 760, y: baseY, scale: 0.84, opacity: 0 }}
+      initial={{ x: 760, y: baseY, scale: 0.84, opacity: 0, filter: `${depthFilter} blur(14px)` }}
       animate={
         isVisible
-          ? { x: baseX + hoverOffset.x + effectiveParallaxX, y: hoverY, scale, opacity }
-          : { x: -700, y: baseY, scale: 0.84, opacity: 0 }
+          ? { x: baseX + hoverOffset.x + effectiveParallaxX, y: hoverY, scale, opacity, filter: `${depthFilter} blur(0px)` }
+          : { x: -700, y: baseY, scale: 0.84, opacity: 0, filter: `${depthFilter} blur(14px)` }
       }
       transition={{
-        duration: isVisible ? 0.42 : 0.3,
+        duration: isVisible ? 0.5 : 0.34,
         delay: isVisible ? absDepth * 0.06 : 0,
         ease: [0.22, 1, 0.36, 1],
       }}
       style={{
         zIndex: 30 - absDepth,
-        filter: absDepth === 0 ? "none" : `saturate(${1 - absDepth * 0.08}) brightness(${1 - absDepth * 0.1})`,
         pointerEvents: isFocused ? "auto" : "none",
       }}
       aria-label={`Open project ${project[lang].title}`}
@@ -156,13 +156,30 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
           ))}
         </div>
 
-        <motion.div className="hero-slider-controls" initial={{ opacity: 0, y: 20 }} animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.35, delay: isVisible ? 0.3 : 0 }}>
+        <motion.div
+          className="hero-slider-controls"
+          initial={{ opacity: 0, y: 20, scale: 0.92 }}
+          animate={isVisible && !isFocusedHovered ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 10, scale: 0.9 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          style={{ pointerEvents: isFocusedHovered ? "none" : "auto" }}
+        >
           <button type="button" className="hero-slider-arrow" onClick={prev} aria-label="Previous project" disabled={!hasPrev}>
             <ChevronUp size={18} />
           </button>
           <button type="button" className="hero-slider-arrow" onClick={next} aria-label="Next project" disabled={!hasNext}>
             <ChevronDown size={18} />
           </button>
+        </motion.div>
+
+        <motion.div
+          className="hero-slider-wheel-hint"
+          initial={{ opacity: 0, y: 8, scale: 0.9 }}
+          animate={isVisible && isFocusedHovered ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 8, scale: 0.9 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <span className="wheel-hint-mouse" aria-hidden="true">
+            <span className="wheel-hint-dot" />
+          </span>
         </motion.div>
 
         <motion.div
