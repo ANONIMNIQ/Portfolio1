@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -10,14 +10,15 @@ function signedCyclicOffset(index, activeIndex, total) {
   return Math.abs(backward) < Math.abs(forward) ? backward : forward;
 }
 
-function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject }) {
+function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX }) {
   const [hoverOffset, setHoverOffset] = useState({ x: 0, y: 0 });
 
   const absDepth = Math.abs(depth);
-  const baseX = absDepth * 18;
+  const baseX = 0;
   const baseY = offset * 250;
   const scale = 1 - absDepth * 0.08;
   const opacity = 1 - absDepth * 0.2;
+  const depthParallaxFactor = 1 - absDepth * 0.18;
 
   return (
     <motion.button
@@ -34,7 +35,7 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject 
       initial={{ x: 760, y: baseY + offset * 60, scale: 0.84, opacity: 0 }}
       animate={
         isVisible
-          ? { x: baseX + hoverOffset.x, y: baseY + hoverOffset.y, scale, opacity }
+          ? { x: baseX + hoverOffset.x + parallaxX * depthParallaxFactor, y: baseY + hoverOffset.y, scale, opacity }
           : { x: -700, y: baseY, scale: 0.84, opacity: 0 }
       }
       transition={{
@@ -56,6 +57,7 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject 
 
 export default function HeroProjectSlider({ projects, lang, isVisible, onOpenProject }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [parallaxX, setParallaxX] = useState(0);
 
   const stack = useMemo(() => {
     const total = projects.length;
@@ -78,6 +80,29 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
 
   const focusedProject = projects[activeIndex];
 
+  useEffect(() => {
+    if (!isVisible) {
+      setParallaxX(0);
+      return undefined;
+    }
+
+    const onMouseMove = (event) => {
+      const centerX = window.innerWidth / 2;
+      const normalized = (event.clientX - centerX) / centerX;
+      setParallaxX(normalized * 18);
+    };
+
+    const onMouseLeave = () => setParallaxX(0);
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [isVisible]);
+
   return (
     <motion.section
       className="hero-slider-shell"
@@ -85,7 +110,7 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
       animate={isVisible ? { opacity: 1, x: 0 } : { opacity: 0, x: -320 }}
       transition={{ duration: isVisible ? 0.45 : 0.35, ease: [0.22, 1, 0.36, 1] }}
       aria-hidden={!isVisible}
-      style={{ pointerEvents: isVisible ? "auto" : "none" }}
+      style={{ pointerEvents: "none" }}
     >
       <div className="hero-slider-stage">
         <div className="hero-slider-stack" role="region" aria-label="Featured projects slider">
@@ -98,6 +123,7 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
               isVisible={isVisible}
               lang={lang}
               onOpenProject={onOpenProject}
+              parallaxX={parallaxX}
             />
           ))}
         </div>

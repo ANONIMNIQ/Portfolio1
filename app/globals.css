@@ -653,7 +653,7 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -52%);
+  transform: translate(-50%, -50%);
   display: grid;
   grid-template-columns: 56px minmax(0, 1fr) minmax(220px, 24vw);
   align-items: center;
@@ -669,7 +669,7 @@
   width: var(--hero-card-w);
   height: min(86vh, 860px);
   overflow: visible;
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .hero-slide-card {
@@ -688,6 +688,7 @@
   background: rgba(255, 255, 255, 0.04);
   box-shadow: 0 22px 54px rgba(0, 0, 0, 0.45), 0 8px 20px rgba(20, 20, 40, 0.3);
   transition: box-shadow 0.25s ease;
+  pointer-events: auto;
 }
 
 .hero-slide-card:hover {
@@ -756,7 +757,7 @@
 
 @media (max-width: 1024px) {
   .hero-slider-stage {
-    transform: translate(-50%, -51%);
+    transform: translate(-50%, -50%);
     grid-template-columns: 50px minmax(0, 1fr) minmax(170px, 26vw);
     column-gap: 20px;
     width: min(96vw, 980px);
