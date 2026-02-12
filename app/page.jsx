@@ -182,10 +182,6 @@ export default function Home() {
 
       <EmojiBurst items={burstItems} />
 
-      <div className="brand-layer">
-        <BrandTicker isMenuOpen={isMenuOpen} />
-      </div>
-
       <MenuOverlay
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
@@ -194,6 +190,10 @@ export default function Home() {
         onOpenContact={() => setIsContactOpen(true)}
         text={text}
       />
+
+      <div className="brand-layer">
+        <BrandTicker isMenuOpen={isMenuOpen} />
+      </div>
 
       <AboutOverlay isOpen={isAboutOpen} onClose={() => setIsAboutOpen(false)} text={text} />
 

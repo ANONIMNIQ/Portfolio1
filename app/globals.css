@@ -471,7 +471,7 @@
   position: fixed;
   top: 32px;
   left: 40px;
-  z-index: 220;
+  z-index: 9999;
   pointer-events: none;
 }
 
