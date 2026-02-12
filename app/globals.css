@@ -645,6 +645,7 @@
   position: fixed;
   inset: 0;
   z-index: 8;
+  overflow: visible;
   pointer-events: none;
 }
 
@@ -652,20 +653,23 @@
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -56%);
-  display: flex;
-  flex-direction: column;
+  transform: translate(-50%, -52%);
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) minmax(220px, 24vw);
   align-items: center;
-  gap: 18px;
-  width: min(980px, 88vw);
-  pointer-events: auto;
+  column-gap: 32px;
+  width: min(1180px, 94vw);
+  pointer-events: none;
 }
 
 .hero-slider-stack {
-  --hero-card-w: min(520px, 54vw);
+  --hero-card-w: min(560px, 58vw);
+  grid-column: 2;
   position: relative;
-  width: min(940px, 84vw);
-  height: min(540px, 62vh);
+  width: var(--hero-card-w);
+  height: min(86vh, 860px);
+  overflow: visible;
+  pointer-events: auto;
 }
 
 .hero-slide-card {
@@ -677,7 +681,7 @@
   margin-top: calc((var(--hero-card-w) * 10 / 16) / -2);
   aspect-ratio: 16 / 10;
   border: none;
-  border-radius: 20px;
+  border-radius: 0;
   overflow: hidden;
   cursor: pointer;
   padding: 0;
@@ -707,17 +711,25 @@
 }
 
 .hero-slider-title {
+  grid-column: 3;
   color: #f7f5ff;
   font-family: "Playfair Display", serif;
-  font-size: clamp(1.55rem, 2.9vw, 2.3rem);
-  line-height: 1.12;
-  text-align: center;
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  line-height: 1.08;
+  text-align: left;
   text-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+  align-self: center;
+  max-width: 14ch;
+  pointer-events: none;
 }
 
 .hero-slider-controls {
+  grid-column: 1;
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
+  align-self: center;
+  pointer-events: auto;
 }
 
 .hero-slider-arrow {
@@ -744,30 +756,40 @@
 
 @media (max-width: 1024px) {
   .hero-slider-stage {
-    transform: translate(-50%, -54%);
-    width: min(96vw, 760px);
+    transform: translate(-50%, -51%);
+    grid-template-columns: 50px minmax(0, 1fr) minmax(170px, 26vw);
+    column-gap: 20px;
+    width: min(96vw, 980px);
   }
 
   .hero-slider-stack {
-    --hero-card-w: min(500px, 70vw);
-    width: min(94vw, 740px);
-    height: min(470px, 52vh);
+    --hero-card-w: min(500px, 66vw);
+    height: min(82vh, 760px);
   }
 
   .hero-slide-card {
-    border-radius: 16px;
+    border-radius: 0;
   }
 }
 
 @media (max-width: 768px) {
   .hero-slider-stage {
-    transform: translate(-50%, -52%);
-    width: min(96vw, 620px);
+    transform: translate(-50%, -50%);
+    grid-template-columns: 44px minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 14px;
+    width: min(97vw, 760px);
   }
 
   .hero-slider-stack {
-    --hero-card-w: min(430px, 76vw);
-    width: min(96vw, 620px);
-    height: min(390px, 44vh);
+    --hero-card-w: min(430px, 78vw);
+    height: min(72vh, 620px);
+  }
+
+  .hero-slider-title {
+    grid-column: 1 / -1;
+    justify-self: center;
+    text-align: center;
+    max-width: 90vw;
   }
 }
