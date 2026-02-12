@@ -26,7 +26,7 @@ export const copy = {
     aboutTitle: "Използваме силата на AI и Next.js, за да дефинираме бъдещето на мрежата.",
     techTitle: "ТЕХНОЛОГИИ",
     techDesc:
-      "Разработваме с най-модерния стек: React, JavaScript и Next.js, осигурявайки светкавична скорост и перфектно SEO.",
+      "Разработваме с най-модерния стек: React, JavaScript и Next.js, осигурявайки светкавична скорост и перфектно SEO. В процеса използваме Codex, dyad и най-новите AI модели за кодинг от OpenAI и Google.",
     innovTitle: "ИНОВАЦИЯ",
     innovDesc:
       "Внедряваме изкуствен интелект и WebGL (Three.js), за да създадем интерактивни преживявания, които оставят следа.",
@@ -63,7 +63,7 @@ export const copy = {
     aboutTitle: "We use the power of AI and Next.js to define the future of the web.",
     techTitle: "TECHNOLOGIES",
     techDesc:
-      "We develop with the most modern stack: React, JavaScript, and Next.js, ensuring lightning speed and perfect SEO.",
+      "We develop with the most modern stack: React, JavaScript, and Next.js, ensuring lightning speed and perfect SEO. We also use Codex, dyad, and the latest coding AI models from OpenAI and Google.",
     innovTitle: "INNOVATION",
     innovDesc:
       "We implement artificial intelligence and WebGL (Three.js) to create interactive experiences that leave a mark.",

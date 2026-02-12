@@ -621,4 +621,21 @@
   .contact-modal-body {
     padding-bottom: calc(156px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px)) !important;
   }
+
+  .about-overlay {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .about-content {
+    align-items: flex-start !important;
+    min-height: auto !important;
+    padding-top: 24px;
+    padding-bottom: calc(40px + env(safe-area-inset-bottom) + var(--browser-ui-offset, 0px));
+  }
+
+  .about-inner {
+    width: 100%;
+    max-width: 100%;
+  }
 }
