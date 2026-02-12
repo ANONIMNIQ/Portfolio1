@@ -30,7 +30,8 @@ export default function IntroLoader({ isLoading, isMenuOpen, onComplete }) {
         initial={false}
         animate={{
           opacity: isLoading ? 1 : 0,
-          transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+          filter: isLoading ? "blur(0px)" : "blur(16px)",
+          transition: { duration: 1.05, ease: [0.22, 1, 0.36, 1] },
         }}
         style={{
           position: "absolute",
@@ -70,31 +71,59 @@ export default function IntroLoader({ isLoading, isMenuOpen, onComplete }) {
       >
         {WORDS.map((word, idx) => (
           <div key={word} style={{ overflow: "hidden" }}>
-            <motion.span
-              key={`${word}-${kickoff}`}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.9, delay: idx * 0.12, ease: [0.33, 1, 0.68, 1] }}
-              onAnimationComplete={() => {
-                if (isLoading && idx === WORDS.length - 1 && !didCompleteRef.current) {
-                  didCompleteRef.current = true;
-                  setTimeout(onComplete, 1600);
-                }
-              }}
-              style={{
-                display: "block",
-                color: brandColor,
-                fontSize: "clamp(1.2rem, 5vw, 4.5rem)",
-                fontFamily: '"Manrope", sans-serif',
-                fontWeight: 800,
-                letterSpacing: "0.02em",
-                lineHeight: 1,
-                textTransform: "uppercase",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {word}
-            </motion.span>
+            {isLoading ? (
+              <motion.span
+                key={`${word}-${kickoff}`}
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.86, delay: idx * 0.12, ease: [0.33, 1, 0.68, 1] }}
+                onAnimationComplete={() => {
+                  if (idx === WORDS.length - 1 && !didCompleteRef.current) {
+                    didCompleteRef.current = true;
+                    setTimeout(onComplete, 1600);
+                  }
+                }}
+                style={{
+                  display: "block",
+                  color: brandColor,
+                  fontSize: "clamp(1.2rem, 5vw, 4.5rem)",
+                  fontFamily: '"Manrope", sans-serif',
+                  fontWeight: 800,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {word}
+              </motion.span>
+            ) : (
+              <motion.span
+                initial={{ y: "100%" }}
+                animate={{ y: ["100%", "0%", "0%", "100%", "100%"] }}
+                transition={{
+                  duration: 3.6,
+                  delay: idx * 0.12,
+                  times: [0, 0.24, 0.58, 0.82, 1],
+                  ease: [0.33, 1, 0.68, 1],
+                  repeat: Infinity,
+                  repeatDelay: 0,
+                }}
+                style={{
+                  display: "block",
+                  color: brandColor,
+                  fontSize: "clamp(1.2rem, 5vw, 4.5rem)",
+                  fontFamily: '"Manrope", sans-serif',
+                  fontWeight: 800,
+                  letterSpacing: "0.02em",
+                  lineHeight: 1,
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {word}
+              </motion.span>
+            )}
           </div>
         ))}
       </motion.div>
