@@ -11,6 +11,7 @@ import ContactModal from "./components/ContactModal";
 import ProjectsPanel from "./components/ProjectsPanel";
 import ProjectModal from "./components/ProjectModal";
 import VisualAside from "./components/VisualAside";
+import HeroProjectSlider from "./components/HeroProjectSlider";
 import { useWebGLBackground } from "./hooks/useWebGLBackground";
 import { copy, EMOJIS, projects } from "./lib/siteData";
 
@@ -37,10 +38,12 @@ export default function Home() {
   const [bottomControlsVisible, setBottomControlsVisible] = useState(false);
   const [burstItems, setBurstItems] = useState([]);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
+  const [isHeroSliderExiting, setIsHeroSliderExiting] = useState(false);
 
   const text = copy[lang];
   const hiddenByOverlay = isMenuOpen || showProjects || isModalOpen || isAboutOpen || isContactOpen;
   const showProjectsLike = showProjects || isAboutOpen || isContactOpen;
+  const canShowHeroSlider = !showLoader && !isMenuOpen && !showProjects && !isAboutOpen && !isContactOpen && !isModalOpen && !isHeroSliderExiting;
 
   useWebGLBackground(canvasRef, !showLoader);
 
@@ -126,6 +129,12 @@ export default function Home() {
     });
   };
 
+  const openProjectFromHeroSlider = (project) => {
+    if (isHeroSliderExiting || isModalOpen || isClosing) return;
+    setIsHeroSliderExiting(true);
+    setTimeout(() => openProjectModal(project), 360);
+  };
+
   const closeProjectModal = () => {
     collapseIntentRef.current = false;
     setIsClosing(true);
@@ -137,6 +146,14 @@ export default function Home() {
       setIsClosing(false);
     }, 450);
   };
+
+  useEffect(() => {
+    if (!showLoader && !isMenuOpen && !showProjects && !isAboutOpen && !isContactOpen && !isModalOpen) {
+      const timer = setTimeout(() => setIsHeroSliderExiting(false), 80);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
+  }, [showLoader, isMenuOpen, showProjects, isAboutOpen, isContactOpen, isModalOpen]);
 
   const handleModalScroll = (event) => {
     if (isSmallViewport) return;
@@ -223,6 +240,15 @@ export default function Home() {
           showProjectsLike={showProjectsLike}
           isMenuOpen={isMenuOpen}
         />
+
+        {!showLoader && (
+          <HeroProjectSlider
+            projects={projects}
+            lang={lang}
+            isVisible={canShowHeroSlider}
+            onOpenProject={openProjectFromHeroSlider}
+          />
+        )}
 
         <AnimatePresence mode="wait">
           {showProjects && (
