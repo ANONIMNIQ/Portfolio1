@@ -644,9 +644,25 @@
 .hero-slider-shell {
   position: fixed;
   inset: 0;
-  z-index: 8;
+  z-index: 4;
   overflow: visible;
   pointer-events: none;
+}
+
+/* Keep global interface controls above hero slider */
+.visual-overlay {
+  z-index: 20;
+}
+
+.info-trigger-container,
+.projects-trigger-wrap,
+.content-close-wrap,
+.content-close-wrap-mobile {
+  z-index: 30;
+}
+
+.content {
+  z-index: 24;
 }
 
 .hero-slider-stage {
