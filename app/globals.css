@@ -655,19 +655,19 @@
   top: 50%;
   transform: translate(-50%, -50%);
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) minmax(220px, 24vw);
+  grid-template-columns: 64px minmax(0, 1fr) minmax(260px, 26vw);
   align-items: center;
-  column-gap: 32px;
-  width: min(1180px, 94vw);
+  column-gap: 22px;
+  width: min(1320px, 96vw);
   pointer-events: none;
 }
 
 .hero-slider-stack {
-  --hero-card-w: min(560px, 58vw);
+  --hero-card-w: min(700px, 66vw);
   grid-column: 2;
   position: relative;
   width: var(--hero-card-w);
-  height: min(86vh, 860px);
+  height: 100vh;
   overflow: visible;
   pointer-events: none;
 }
@@ -715,7 +715,7 @@
   grid-column: 3;
   color: #f7f5ff;
   font-family: "Playfair Display", serif;
-  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  font-size: clamp(1.7rem, 2.8vw, 2.5rem);
   line-height: 1.08;
   text-align: left;
   text-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
@@ -755,17 +755,23 @@
   border-color: rgba(255, 255, 255, 0.5);
 }
 
+.hero-slider-arrow:disabled {
+  opacity: 0.32;
+  cursor: default;
+  transform: none;
+}
+
 @media (max-width: 1024px) {
   .hero-slider-stage {
     transform: translate(-50%, -50%);
-    grid-template-columns: 50px minmax(0, 1fr) minmax(170px, 26vw);
-    column-gap: 20px;
-    width: min(96vw, 980px);
+    grid-template-columns: 50px minmax(0, 1fr) minmax(170px, 24vw);
+    column-gap: 16px;
+    width: min(98vw, 1080px);
   }
 
   .hero-slider-stack {
-    --hero-card-w: min(500px, 66vw);
-    height: min(82vh, 760px);
+    --hero-card-w: min(600px, 72vw);
+    height: 100vh;
   }
 
   .hero-slide-card {

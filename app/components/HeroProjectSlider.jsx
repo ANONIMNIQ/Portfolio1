@@ -4,20 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-function signedCyclicOffset(index, activeIndex, total) {
-  const forward = (index - activeIndex + total) % total;
-  const backward = forward - total;
-  return Math.abs(backward) < Math.abs(forward) ? backward : forward;
-}
-
 function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX }) {
   const [hoverOffset, setHoverOffset] = useState({ x: 0, y: 0 });
 
   const absDepth = Math.abs(depth);
   const baseX = 0;
-  const baseY = offset * 250;
-  const scale = 1 - absDepth * 0.08;
-  const opacity = 1 - absDepth * 0.2;
+  const baseY = offset === 0 ? 0 : `${offset > 0 ? "" : "-"}50vh`;
+  const hoverY = offset === 0 ? hoverOffset.y : `calc(${baseY} + ${hoverOffset.y}px)`;
+  const scale = offset === 0 ? 1 : 0.82;
+  const opacity = offset === 0 ? 1 : 0.72;
   const depthParallaxFactor = 1 - absDepth * 0.18;
 
   return (
@@ -32,10 +27,10 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
         setHoverOffset({ x, y });
       }}
       onMouseLeave={() => setHoverOffset({ x: 0, y: 0 })}
-      initial={{ x: 760, y: baseY + offset * 60, scale: 0.84, opacity: 0 }}
+      initial={{ x: 760, y: baseY, scale: 0.84, opacity: 0 }}
       animate={
         isVisible
-          ? { x: baseX + hoverOffset.x + parallaxX * depthParallaxFactor, y: baseY + hoverOffset.y, scale, opacity }
+          ? { x: baseX + hoverOffset.x + parallaxX * depthParallaxFactor, y: hoverY, scale, opacity }
           : { x: -700, y: baseY, scale: 0.84, opacity: 0 }
       }
       transition={{
@@ -60,25 +55,26 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
   const [parallaxX, setParallaxX] = useState(0);
 
   const stack = useMemo(() => {
-    const total = projects.length;
     return projects
       .map((project, index) => ({
         project,
-        offset: signedCyclicOffset(index, activeIndex, total),
+        offset: index - activeIndex,
       }))
-      .filter((item) => Math.abs(item.offset) <= 2)
+      .filter((item) => Math.abs(item.offset) <= 1)
       .sort((a, b) => Math.abs(b.offset) - Math.abs(a.offset));
   }, [projects, activeIndex]);
 
   const prev = () => {
-    setActiveIndex((value) => (value - 1 + projects.length) % projects.length);
+    setActiveIndex((value) => Math.max(value - 1, 0));
   };
 
   const next = () => {
-    setActiveIndex((value) => (value + 1) % projects.length);
+    setActiveIndex((value) => Math.min(value + 1, projects.length - 1));
   };
 
   const focusedProject = projects[activeIndex];
+  const hasPrev = activeIndex > 0;
+  const hasNext = activeIndex < projects.length - 1;
 
   useEffect(() => {
     if (!isVisible) {
@@ -129,10 +125,10 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
         </div>
 
         <motion.div className="hero-slider-controls" initial={{ opacity: 0, y: 20 }} animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }} transition={{ duration: 0.35, delay: isVisible ? 0.3 : 0 }}>
-          <button type="button" className="hero-slider-arrow" onClick={prev} aria-label="Previous project">
+          <button type="button" className="hero-slider-arrow" onClick={prev} aria-label="Previous project" disabled={!hasPrev}>
             <ChevronUp size={18} />
           </button>
-          <button type="button" className="hero-slider-arrow" onClick={next} aria-label="Next project">
+          <button type="button" className="hero-slider-arrow" onClick={next} aria-label="Next project" disabled={!hasNext}>
             <ChevronDown size={18} />
           </button>
         </motion.div>
