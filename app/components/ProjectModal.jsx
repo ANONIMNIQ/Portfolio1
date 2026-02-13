@@ -16,17 +16,17 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const image = clamp(primarySceneProgress / 0.16);
-    const note = clamp((primarySceneProgress - 0.14) / 0.62);
-    const follow = clamp((primarySceneProgress - 0.78) / 0.16);
-    return { image, note, follow };
+    const zoom = clamp(primarySceneProgress / 0.42);
+    const note = clamp((primarySceneProgress - 0.34) / 0.48);
+    const follow = clamp((primarySceneProgress - 0.84) / 0.14);
+    return { zoom, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const image = clamp(secondarySceneProgress / 0.18);
-    const note = clamp((secondarySceneProgress - 0.16) / 0.68);
-    return { image, note };
+    const zoom = clamp(secondarySceneProgress / 0.44);
+    const note = clamp((secondarySceneProgress - 0.34) / 0.5);
+    return { zoom, note };
   }, [secondarySceneProgress]);
 
   const noteLines = useMemo(() => {
@@ -131,8 +131,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - primaryPhases.image) * 50}%, 0, 0)`,
-                        opacity: 0.18 + primaryPhases.image * 0.82,
+                        transform: `translate3d(${(1 - primaryPhases.zoom) * 14}%, ${(1 - primaryPhases.zoom) * 10}px, 0) scale(${0.44 + primaryPhases.zoom * 0.5})`,
+                        opacity: 1,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
@@ -181,8 +181,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(-${(1 - secondaryPhases.image) * 50}%, 0, 0)`,
-                        opacity: 0.18 + secondaryPhases.image * 0.82,
+                        transform: `translate3d(-${(1 - secondaryPhases.zoom) * 14}%, ${(1 - secondaryPhases.zoom) * 10}px, 0) scale(${0.48 + secondaryPhases.zoom * 0.48})`,
+                        opacity: 1,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>

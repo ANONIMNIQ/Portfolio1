@@ -436,6 +436,7 @@
 
 .modal-scroll-media-primary {
   max-width: min(760px, 58vw);
+  transform-origin: right top;
 }
 
 .modal-scroll-media-primary .modal-media-img {
@@ -447,7 +448,8 @@
 }
 
 .modal-scroll-media-secondary {
-  max-width: min(240px, 18vw);
+  max-width: min(320px, 24vw);
+  transform-origin: left top;
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -545,11 +547,11 @@
 }
 
 .modal-scroll-scene-primary {
-  min-height: 132vh;
+  min-height: 112vh;
 }
 
 .modal-scroll-scene-secondary {
-  min-height: 154vh;
+  min-height: 124vh;
 }
 
 .modal-scroll-stage {
@@ -612,7 +614,7 @@
   }
 
   .modal-scroll-media-secondary {
-    max-width: min(180px, 56vw);
+    max-width: min(210px, 62vw);
   }
 
   .modal-responsive-note {
@@ -651,11 +653,11 @@
   }
 
   .modal-scroll-scene-primary {
-    min-height: 118vh;
+    min-height: 110vh;
   }
 
   .modal-scroll-scene-secondary {
-    min-height: 152vh;
+    min-height: 118vh;
   }
 }
 
@@ -946,6 +948,14 @@
 .project-modal .modal-scroll-stage-right .modal-responsive-note {
   justify-self: start;
   padding-top: clamp(4px, 1vh, 10px);
+}
+
+.project-modal .modal-scroll-stage-left {
+  grid-template-columns: minmax(0, 30%) minmax(0, 70%);
+}
+
+.project-modal .modal-scroll-stage-left .modal-scroll-media {
+  justify-self: end;
 }
 
 /* Unified mobile overlay sizing (menu/contact/project/about) */
