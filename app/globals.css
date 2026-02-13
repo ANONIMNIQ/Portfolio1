@@ -436,10 +436,10 @@
 
 .modal-scroll-media-primary .modal-media-img {
   object-fit: cover;
-  object-position: center top;
+  object-position: left top;
   max-height: min(60vh, 660px);
   /* remove captured browser scrollbar strip from the screenshot edge */
-  clip-path: inset(0 18px 0 0);
+  clip-path: inset(0 28px 0 0);
 }
 
 .modal-scroll-media-secondary {
@@ -457,6 +457,9 @@
 .modal-scroll-stage-right .modal-responsive-note {
   justify-self: end;
   text-align: left;
+  align-self: start;
+  margin-top: 0;
+  padding-top: clamp(2px, 0.8vh, 8px);
 }
 
 .modal-scroll-stage-left .modal-responsive-note {
@@ -539,7 +542,7 @@
   }
 
   .modal-scroll-media-primary .modal-media-img {
-    clip-path: inset(0 14px 0 0);
+    clip-path: inset(0 20px 0 0);
   }
 
   .modal-scroll-media-secondary {
