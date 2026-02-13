@@ -142,7 +142,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         />
                       </div>
                     </div>
-                    <div className="modal-responsive-note" aria-label={text.modalTech}>
+                    <div className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
                         const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * (noteLines.length + 0.75) - index));
                         return (
@@ -191,7 +191,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         />
                       </div>
                     </div>
-                    <div className="modal-responsive-note" aria-label={text.modalResponsive}>
+                    <div className="modal-responsive-note modal-responsive-note-secondary" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
                         const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * (responsiveLines.length + 0.75) - index));
                         return (

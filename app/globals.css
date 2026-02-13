@@ -391,6 +391,10 @@
   padding-top: clamp(6px, 1.8vh, 18px);
 }
 
+.modal-scroll-stage-right {
+  position: sticky;
+}
+
 .modal-scroll-media {
   grid-column: 1 / 2;
   width: 100%;
@@ -482,6 +486,19 @@
   margin-top: clamp(12px, 1.8vh, 20px);
 }
 
+.modal-responsive-note-primary {
+  position: absolute;
+  left: var(--modal-body-x, 64px);
+  top: clamp(18px, 2.8vh, 34px);
+  max-width: min(34ch, 30vw);
+  margin: 0;
+  z-index: 2;
+}
+
+.modal-responsive-note-secondary {
+  position: static;
+}
+
 .modal-responsive-line {
   display: block;
   transition: opacity 0.2s linear, transform 0.2s linear;
@@ -557,6 +574,13 @@
     margin-top: 4px;
   }
 
+  .modal-responsive-note-primary {
+    position: static;
+    left: auto;
+    top: auto;
+    z-index: auto;
+  }
+
   .modal-scroll-stage-right .modal-responsive-note,
   .modal-scroll-stage-left .modal-responsive-note {
     grid-column: 1;
@@ -573,6 +597,14 @@
 .project-modal .modal-body {
   --modal-body-x: 64px;
   overflow-x: clip;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-modal .modal-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 @media (max-width: 1024px) {
