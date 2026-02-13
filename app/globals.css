@@ -924,38 +924,60 @@
   }
 }
 
+.project-modal .modal-body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.project-modal .modal-body::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+}
+
 /* Project modal scene alignment fixes */
-.project-modal .modal-scroll-stage-right {
-  grid-template-columns: minmax(0, 36%) minmax(0, 64%);
-}
+@media (min-width: 981px) {
+  .project-modal .modal-scroll-stage-right {
+    grid-template-columns: minmax(0, 18%) minmax(0, 52%) minmax(0, 30%);
+  }
 
-.project-modal .modal-scroll-media-primary {
-  max-width: none;
-  width: 100%;
-}
+  .project-modal .modal-scroll-media-primary {
+    max-width: none;
+    width: 100%;
+    grid-column: 2 / 3;
+  }
 
-.project-modal .modal-scroll-stage-right .modal-scroll-media {
-  justify-self: stretch;
-}
+  .project-modal .modal-scroll-stage-right .modal-scroll-media {
+    justify-self: center;
+  }
 
-.project-modal .modal-responsive-note-primary {
-  position: static;
-  left: auto;
-  top: auto;
-  max-width: min(34ch, 32vw);
-}
+  .project-modal .modal-responsive-note-primary {
+    position: static;
+    left: auto;
+    top: auto;
+    max-width: min(34ch, 32vw);
+    grid-column: 3 / 4;
+  }
 
-.project-modal .modal-scroll-stage-right .modal-responsive-note {
-  justify-self: start;
-  padding-top: clamp(4px, 1vh, 10px);
-}
+  .project-modal .modal-scroll-stage-right .modal-responsive-note {
+    justify-self: start;
+    padding-top: clamp(4px, 1vh, 10px);
+  }
 
-.project-modal .modal-scroll-stage-left {
-  grid-template-columns: minmax(0, 30%) minmax(0, 70%);
-}
+  .project-modal .modal-scroll-stage-left {
+    grid-template-columns: minmax(0, 18%) minmax(0, 52%) minmax(0, 30%);
+  }
 
-.project-modal .modal-scroll-stage-left .modal-scroll-media {
-  justify-self: end;
+  .project-modal .modal-scroll-stage-left .modal-scroll-media {
+    grid-column: 2 / 3;
+    justify-self: center;
+  }
+
+  .project-modal .modal-scroll-stage-left .modal-responsive-note {
+    grid-column: 3 / 4;
+    justify-self: start;
+    text-align: left;
+  }
 }
 
 /* Unified mobile overlay sizing (menu/contact/project/about) */
