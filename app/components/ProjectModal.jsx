@@ -291,8 +291,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const effectivePrimaryZoom = Math.max(primaryPhases.zoom, primaryAutoZoomProgress);
   const effectiveSecondaryZoom = Math.max(secondaryPhases.zoom, secondaryAutoZoomProgress);
-  const effectivePrimaryNote = Math.min(1, primaryPhases.note + primaryNoteGateProgress * 0.44);
-  const effectiveSecondaryNote = Math.min(1, secondaryPhases.note + secondaryNoteGateProgress * 0.44);
+  const effectivePrimaryNote = Math.min(1, Math.max(primaryPhases.note, primaryNoteGateProgress * 1.15) + 0.06);
+  const effectiveSecondaryNote = Math.min(1, Math.max(secondaryPhases.note, secondaryNoteGateProgress * 1.15) + 0.06);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -356,8 +356,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
-                        const stagger = 0.11;
-                        const window = 0.26;
+                        const stagger = 0.085;
+                        const window = 0.2;
                         const start = index * stagger;
                         const lineProgress = Math.min(1, Math.max(0, (effectivePrimaryNote - start) / window));
                         const eased = Math.min(1, Math.max(0, lineProgress));
@@ -419,8 +419,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-secondary" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
-                        const stagger = 0.18;
-                        const window = 0.34;
+                        const stagger = 0.14;
+                        const window = 0.24;
                         const start = index * stagger;
                         const lineProgress = Math.min(1, Math.max(0, (effectiveSecondaryNote - start) / window));
                         const eased = Math.min(1, Math.max(0, lineProgress));
