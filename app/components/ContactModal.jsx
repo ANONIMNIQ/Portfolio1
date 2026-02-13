@@ -75,7 +75,8 @@ export default function ContactModal({ isOpen, onClose, text }) {
                           });
 
                           if (!response.ok) {
-                            throw new Error("Contact submit failed");
+                            const body = await response.json().catch(() => ({}));
+                            throw new Error(body?.error || "Contact submit failed");
                           }
 
                           form.reset();
@@ -84,8 +85,9 @@ export default function ContactModal({ isOpen, onClose, text }) {
                             setSubmitted(false);
                             onClose();
                           }, 3000);
-                        } catch {
-                          setError(text.contactError);
+                        } catch (err) {
+                          const message = err instanceof Error ? err.message : text.contactError;
+                          setError(message || text.contactError);
                         } finally {
                           setIsSubmitting(false);
                         }
