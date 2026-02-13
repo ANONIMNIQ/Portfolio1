@@ -295,6 +295,17 @@
   background: rgba(255, 255, 255, 0.45);
 }
 
+.modal-hero-media {
+  margin: 0 0 2rem;
+}
+
+.modal-hero-media .modal-media-wrap {
+  float: none;
+  width: 100%;
+  margin: 0;
+  border-radius: 16px;
+}
+
 .modal-media-skeleton {
   position: absolute;
   inset: 0;
@@ -402,7 +413,14 @@
   color: var(--ink-dark);
   text-wrap: balance;
   font-weight: 600;
-  transition: opacity 0.18s linear, transform 0.18s linear;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22em;
+}
+
+.modal-responsive-line {
+  display: block;
+  transition: opacity 0.2s linear, transform 0.2s linear;
   will-change: opacity, transform;
 }
 
