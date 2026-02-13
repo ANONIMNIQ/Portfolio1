@@ -440,12 +440,13 @@
 }
 
 .modal-scroll-media-primary .modal-media-img {
-  width: calc(100% + 38px);
-  max-width: none;
-  margin-right: -38px;
-  object-fit: cover;
-  object-position: left top;
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0;
+  object-fit: contain;
+  object-position: center top;
   max-height: min(60vh, 660px);
+  clip-path: inset(0 12px 0 0);
 }
 
 .modal-scroll-media-secondary {
@@ -454,11 +455,12 @@
 }
 
 .modal-scroll-media-secondary .modal-media-img {
-  width: calc(100% + 24px);
-  max-width: none;
-  margin-right: -24px;
-  object-fit: cover;
-  object-position: left top;
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0;
+  object-fit: contain;
+  object-position: center top;
+  clip-path: inset(0 10px 0 0);
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -1006,7 +1008,7 @@
     margin-top: 0;
     padding-top: 0;
     margin-left: clamp(10px, 0.9vw, 16px);
-    transform: translateY(-6px);
+    transform: translateY(-16px);
   }
 
   .project-modal .modal-scroll-stage-left {
