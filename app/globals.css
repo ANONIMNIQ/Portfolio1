@@ -512,6 +512,52 @@
   color: var(--ink-dark) !important;
 }
 
+/* Variant 1: denser editorial rhythm for the project modal */
+.project-modal .modal-text {
+  max-width: min(1320px, 100%);
+}
+
+.project-modal .modal-title {
+  font-size: clamp(2.9rem, 4.7vw, 4.8rem);
+  line-height: 0.98;
+  margin-bottom: 14px;
+}
+
+.project-modal .modal-desc,
+.project-modal .modal-paragraph {
+  max-width: min(22ch, 1080px);
+  font-size: clamp(3.05rem, 4.25vw, 4.9rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+  padding-top: clamp(8px, 1.3vh, 16px);
+  padding-bottom: clamp(10px, 1.6vh, 18px);
+}
+
+.project-modal .modal-desc {
+  margin-bottom: 0.4em;
+}
+
+.project-modal .modal-paragraph {
+  margin-bottom: 0.6em;
+}
+
+.modal-scroll-scene-primary {
+  min-height: 132vh;
+}
+
+.modal-scroll-scene-secondary {
+  min-height: 154vh;
+}
+
+.modal-scroll-stage {
+  min-height: min(58vh, 620px);
+}
+
+.modal-responsive-note-primary {
+  max-width: min(30ch, 28vw);
+}
+
 @media (max-width: 980px) {
   .modal-body {
     overflow-x: hidden;
@@ -587,11 +633,27 @@
     grid-column: 1;
     justify-self: start;
   }
-}
 
-@media (max-width: 980px) {
+  .project-modal .modal-title {
+    font-size: clamp(2.2rem, 9.2vw, 3.1rem);
+    line-height: 1.02;
+  }
+
+  .project-modal .modal-desc,
+  .project-modal .modal-paragraph {
+    max-width: 100%;
+    font-size: clamp(1.72rem, 7.4vw, 2.5rem);
+    line-height: 1.14;
+    padding-top: 4px;
+    padding-bottom: 8px;
+  }
+
+  .modal-scroll-scene-primary {
+    min-height: 118vh;
+  }
+
   .modal-scroll-scene-secondary {
-    min-height: 225vh;
+    min-height: 152vh;
   }
 }
 
