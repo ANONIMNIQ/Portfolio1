@@ -530,6 +530,20 @@
 /* Variant 1: denser editorial rhythm for the project modal */
 .project-modal .modal-text {
   max-width: min(1320px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.project-modal .modal-content-wrap {
+  width: min(1440px, calc(100vw - 96px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 980px) {
+  .project-modal .modal-content-wrap {
+    width: 100%;
+  }
 }
 
 .project-modal .modal-title {
@@ -547,6 +561,9 @@
   text-wrap: balance;
   padding-top: clamp(8px, 1.3vh, 16px);
   padding-bottom: clamp(10px, 1.6vh, 18px);
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .project-modal .modal-desc {
