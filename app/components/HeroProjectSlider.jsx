@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX, isFocused, onFocusedHover, onFocusedWheel }) {
+function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject, parallaxX, isFocused, onFocusedHover, onFocusedWheel, exitDirection }) {
   const [hoverOffset, setHoverOffset] = useState({ x: 0, y: 0 });
 
   const absDepth = Math.abs(depth);
@@ -15,6 +15,11 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
   const opacity = offset === 0 ? 1 : 0.72;
   const effectiveParallaxX = isFocused ? parallaxX : 0;
   const depthFilter = absDepth === 0 ? "saturate(1) brightness(1)" : `saturate(${1 - absDepth * 0.08}) brightness(${1 - absDepth * 0.1})`;
+  const exitY = offset === 0 ? "-120vh" : `calc(${baseY} - 120vh)`;
+  const exitState = exitDirection === "up"
+    ? { x: baseX, y: exitY, scale: 0.9, opacity: 0, filter: `${depthFilter} blur(18px)` }
+    : { x: -980, y: baseY, scale: 0.84, opacity: 0, filter: `${depthFilter} blur(18px)` };
+  const exitOrder = offset === 0 ? 0 : offset < 0 ? 1 : 2;
 
   return (
     <motion.button
@@ -44,11 +49,11 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
       animate={
         isVisible
           ? { x: baseX + hoverOffset.x + effectiveParallaxX, y: hoverY, scale, opacity, filter: `${depthFilter} blur(0px)` }
-          : { x: -700, y: baseY, scale: 0.84, opacity: 0, filter: `${depthFilter} blur(14px)` }
+          : exitState
       }
       transition={{
-        duration: isVisible ? 0.5 : 0.34,
-        delay: isVisible ? absDepth * 0.06 : 0,
+        duration: isVisible ? 0.56 : 0.92,
+        delay: isVisible ? absDepth * 0.08 : exitOrder * 0.13,
         ease: [0.22, 1, 0.36, 1],
       }}
       style={{
@@ -128,14 +133,14 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
     if (deltaY < 0) prev();
   };
 
-  const hiddenAnimation = exitDirection === "up" ? { opacity: 0, x: 0, y: -280 } : { opacity: 0, x: -320, y: 0 };
+  const hiddenAnimation = exitDirection === "up" ? { opacity: 0, x: 0, y: -100 } : { opacity: 0, x: -110, y: 0 };
 
   return (
     <motion.section
       className="hero-slider-shell"
       initial={{ opacity: 0, x: 220 }}
       animate={isVisible ? { opacity: 1, x: 0, y: 0 } : hiddenAnimation}
-      transition={{ duration: isVisible ? 0.52 : 0.62, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: isVisible ? 0.58 : 0.9, ease: [0.22, 1, 0.36, 1] }}
       aria-hidden={!isVisible}
       style={{ pointerEvents: "none" }}
     >
@@ -154,6 +159,7 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
               isFocused={offset === 0}
               onFocusedHover={setIsFocusedHovered}
               onFocusedWheel={handleWheelNavigation}
+              exitDirection={exitDirection}
             />
           ))}
         </div>

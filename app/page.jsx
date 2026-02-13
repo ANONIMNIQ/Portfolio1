@@ -134,7 +134,7 @@ export default function Home() {
     if (isHeroSliderExiting || isModalOpen || isClosing) return;
     setHeroSliderExitDirection("up");
     setIsHeroSliderExiting(true);
-    setTimeout(() => openProjectModal(project), 620);
+    setTimeout(() => openProjectModal(project), 1080);
   };
 
   const closeProjectModal = () => {
