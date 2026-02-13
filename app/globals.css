@@ -195,6 +195,23 @@
   transform: translateY(40px) !important;
 }
 
+/* Menu motion polish */
+.menu-close {
+  transition: transform 0.48s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.48s ease, background 0.42s ease !important;
+}
+
+.menu-link {
+  transition: opacity 0.42s ease, color 0.42s ease !important;
+}
+
+.menu-arrow {
+  transition: opacity 0.52s cubic-bezier(0.22, 1, 0.36, 1), transform 0.52s cubic-bezier(0.22, 1, 0.36, 1), width 0.52s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.menu-text {
+  transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
 @media (max-width: 1024px) {
   .projects-trigger-wrap {
     right: 16px;
