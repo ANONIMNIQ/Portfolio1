@@ -16,16 +16,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const zoom = clamp((primarySceneProgress - 0.08) / 0.38);
-    const note = clamp((primarySceneProgress - 0.48) / 0.36);
-    const follow = clamp((primarySceneProgress - 0.88) / 0.1);
+    const zoom = clamp((primarySceneProgress - 0.2) / 0.34);
+    const note = clamp((primarySceneProgress - 0.58) / 0.28);
+    const follow = clamp((primarySceneProgress - 0.9) / 0.08);
     return { zoom, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const zoom = clamp((secondarySceneProgress - 0.1) / 0.38);
-    const note = clamp((secondarySceneProgress - 0.5) / 0.34);
+    const zoom = clamp((secondarySceneProgress - 0.22) / 0.34);
+    const note = clamp((secondarySceneProgress - 0.6) / 0.26);
     return { zoom, note };
   }, [secondarySceneProgress]);
 
@@ -62,8 +62,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const sceneTop = scene.offsetTop;
     const sceneHeight = scene.offsetHeight;
     const viewportHeight = scroller.clientHeight;
-    const startOffset = isPrimaryScene ? 0.56 : 0.5;
-    const endOffset = isPrimaryScene ? 0.2 : 0.18;
+    const startOffset = isPrimaryScene ? 0.18 : 0.2;
+    const endOffset = isPrimaryScene ? 0.12 : 0.1;
     const start = sceneTop - viewportHeight * startOffset;
     const end = sceneTop + sceneHeight - viewportHeight * endOffset;
     const range = Math.max(end - start, 1);
@@ -131,7 +131,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - primaryPhases.zoom) * 3}%, ${(1 - primaryPhases.zoom) * 6}px, 0) scale(${0.52 + primaryPhases.zoom * 0.54})`,
+                        transform: `translate3d(${(1 - primaryPhases.zoom) * 1.5}%, ${(1 - primaryPhases.zoom) * 4}px, 0) scale(${0.6 + primaryPhases.zoom * 0.56})`,
                         opacity: 1,
                       }}
                     >
@@ -181,7 +181,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - secondaryPhases.zoom) * 3}%, ${(1 - secondaryPhases.zoom) * 6}px, 0) scale(${0.56 + secondaryPhases.zoom * 0.5})`,
+                        transform: `translate3d(${(1 - secondaryPhases.zoom) * 1.5}%, ${(1 - secondaryPhases.zoom) * 4}px, 0) scale(${0.62 + secondaryPhases.zoom * 0.46})`,
                         opacity: 1,
                       }}
                     >
