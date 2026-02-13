@@ -68,6 +68,7 @@ export default function ContactModal({ isOpen, onClose, text }) {
                           const name = String(formData.get("name") || "").trim();
                           const email = String(formData.get("email") || "").trim();
                           const message = String(formData.get("message") || "").trim();
+                          const honey = String(formData.get("_honey") || "");
                           if (!externalEndpoint) {
                             throw new Error("Missing NEXT_PUBLIC_CONTACT_FORM_ENDPOINT");
                           }
@@ -82,6 +83,7 @@ export default function ContactModal({ isOpen, onClose, text }) {
                               name,
                               email,
                               message,
+                              _honey: honey,
                               _captcha: "false",
                               _subject: `Website contact from ${name}`,
                             }),
@@ -106,6 +108,14 @@ export default function ContactModal({ isOpen, onClose, text }) {
                         }
                       }}
                     >
+                      <input
+                        name="_honey"
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        style={{ display: "none" }}
+                      />
+
                       <div>
                         <label style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--muted)", display: "block", marginBottom: "8px" }}>
                           {text.contactName}
