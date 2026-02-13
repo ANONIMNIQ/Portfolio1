@@ -1005,6 +1005,8 @@
     align-self: center;
     margin-top: 0;
     padding-top: 0;
+    margin-left: clamp(10px, 0.9vw, 16px);
+    transform: translateY(-6px);
   }
 
   .project-modal .modal-scroll-stage-left {
