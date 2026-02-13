@@ -82,7 +82,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const sceneHeight = scene.offsetHeight;
     const viewportHeight = scroller.clientHeight;
     const startOffset = isPrimaryScene ? 0.22 : 0.24;
-    const endOffset = isPrimaryScene ? 0.2 : 0.18;
+    const endOffset = isPrimaryScene ? 0.34 : 0.32;
     const start = sceneTop - viewportHeight * startOffset;
     const end = sceneTop + sceneHeight - viewportHeight * endOffset;
     const range = Math.max(end - start, 1);
@@ -291,8 +291,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const effectivePrimaryZoom = Math.max(primaryPhases.zoom, primaryAutoZoomProgress);
   const effectiveSecondaryZoom = Math.max(secondaryPhases.zoom, secondaryAutoZoomProgress);
-  const effectivePrimaryNote = Math.min(1, Math.max(primaryPhases.note, primaryNoteGateProgress * 1.15) + 0.06);
-  const effectiveSecondaryNote = Math.min(1, Math.max(secondaryPhases.note, secondaryNoteGateProgress * 1.15) + 0.06);
+  const primaryNoteDriver = Math.max(primaryPhases.note, primaryNoteGateProgress * 0.56 + primaryRevealProgress * 0.28);
+  const secondaryNoteDriver = Math.max(secondaryPhases.note, secondaryNoteGateProgress * 0.56 + secondaryRevealProgress * 0.28);
+  const effectivePrimaryNote = Math.min(1, Math.max(0, primaryNoteDriver));
+  const effectiveSecondaryNote = Math.min(1, Math.max(0, secondaryNoteDriver));
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -356,11 +358,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
-                        const stagger = 0.085;
-                        const window = 0.2;
+                        const stagger = 0.1;
+                        const window = 0.24;
                         const start = index * stagger;
                         const lineProgress = Math.min(1, Math.max(0, (effectivePrimaryNote - start) / window));
-                        const eased = Math.min(1, Math.max(0, lineProgress));
+                        const eased = lineProgress * lineProgress * (3 - 2 * lineProgress);
                         return (
                           <span
                             key={`${line}-${index}`}
@@ -419,11 +421,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-secondary" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
-                        const stagger = 0.14;
-                        const window = 0.24;
+                        const stagger = 0.16;
+                        const window = 0.28;
                         const start = index * stagger;
                         const lineProgress = Math.min(1, Math.max(0, (effectiveSecondaryNote - start) / window));
-                        const eased = Math.min(1, Math.max(0, lineProgress));
+                        const eased = lineProgress * lineProgress * (3 - 2 * lineProgress);
                         return (
                           <span
                             key={`${line}-${index}`}
