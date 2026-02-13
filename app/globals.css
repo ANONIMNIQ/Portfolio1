@@ -937,8 +937,24 @@
 
 /* Project modal scene alignment fixes */
 @media (min-width: 981px) {
+  .project-modal .modal-scroll-scene {
+    margin-top: clamp(2rem, 4vh, 3.25rem);
+    margin-bottom: clamp(2.25rem, 4.5vh, 3.5rem);
+  }
+
+  .project-modal .modal-scroll-stage {
+    top: clamp(76px, 14vh, 138px);
+    min-height: clamp(430px, 56vh, 620px);
+    max-width: min(1300px, calc(100vw - 128px));
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+    column-gap: clamp(16px, 2.2vw, 34px);
+    padding-top: 0;
+  }
+
   .project-modal .modal-scroll-stage-right {
-    grid-template-columns: minmax(0, 18%) minmax(0, 52%) minmax(0, 30%);
+    grid-template-columns: minmax(0, 20%) minmax(0, 50%) minmax(0, 30%);
   }
 
   .project-modal .modal-scroll-media-primary {
@@ -955,17 +971,19 @@
     position: static;
     left: auto;
     top: auto;
-    max-width: min(34ch, 32vw);
+    max-width: min(33ch, 28vw);
     grid-column: 3 / 4;
   }
 
   .project-modal .modal-scroll-stage-right .modal-responsive-note {
     justify-self: start;
-    padding-top: clamp(4px, 1vh, 10px);
+    align-self: center;
+    margin-top: 0;
+    padding-top: 0;
   }
 
   .project-modal .modal-scroll-stage-left {
-    grid-template-columns: minmax(0, 18%) minmax(0, 52%) minmax(0, 30%);
+    grid-template-columns: minmax(0, 20%) minmax(0, 50%) minmax(0, 30%);
   }
 
   .project-modal .modal-scroll-stage-left .modal-scroll-media {
@@ -977,6 +995,25 @@
     grid-column: 3 / 4;
     justify-self: start;
     text-align: left;
+    align-self: center;
+    margin-top: 0;
+  }
+
+  .project-modal .modal-scroll-media-primary {
+    transform-origin: center center;
+  }
+
+  .project-modal .modal-scroll-media-secondary {
+    max-width: min(360px, 24vw);
+    transform-origin: center center;
+  }
+
+  .project-modal .modal-scroll-media .modal-media-img {
+    max-height: min(52vh, 560px);
+  }
+
+  .project-modal .modal-scroll-media-primary .modal-media-img {
+    max-height: min(54vh, 580px);
   }
 }
 
