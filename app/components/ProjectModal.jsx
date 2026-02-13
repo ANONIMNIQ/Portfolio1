@@ -21,17 +21,19 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
+    const reveal = clamp((primarySceneProgress - 0.06) / 0.2);
     const zoom = clamp((primarySceneProgress - 0.14) / 0.28);
     const note = clamp((primarySceneProgress - 0.42) / 0.26);
     const follow = clamp((primarySceneProgress - 0.72) / 0.16);
-    return { zoom, note, follow };
+    return { reveal, zoom, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
+    const reveal = clamp((secondarySceneProgress - 0.06) / 0.2);
     const zoom = clamp((secondarySceneProgress - 0.16) / 0.28);
     const note = clamp((secondarySceneProgress - 0.44) / 0.26);
-    return { zoom, note };
+    return { reveal, zoom, note };
   }, [secondarySceneProgress]);
 
   const noteLines = useMemo(() => {
@@ -195,7 +197,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(${(1 - primaryPhases.zoom) * 1}%, ${(1 - primaryPhases.zoom) * 3}px, 0) scale(${0.58 + primaryPhases.zoom * 0.42})`,
-                        opacity: 1,
+                        opacity: primaryPhases.reveal,
+                        filter: `blur(${(1 - primaryPhases.reveal) * 14}px)`,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
@@ -245,7 +248,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(${(1 - secondaryPhases.zoom) * 1}%, ${(1 - secondaryPhases.zoom) * 3}px, 0) scale(${0.6 + secondaryPhases.zoom * 0.4})`,
-                        opacity: 1,
+                        opacity: secondaryPhases.reveal,
+                        filter: `blur(${(1 - secondaryPhases.reveal) * 14}px)`,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
