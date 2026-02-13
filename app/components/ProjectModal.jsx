@@ -17,7 +17,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const image = clamp(primarySceneProgress / 0.22);
     const note = clamp((primarySceneProgress - 0.2) / 0.7);
-    const follow = clamp((primarySceneProgress - 0.96) / 0.12);
+    const follow = clamp((primarySceneProgress - 0.9) / 0.08);
     return { image, note, follow };
   }, [primarySceneProgress]);
 
