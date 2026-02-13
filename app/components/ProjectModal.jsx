@@ -7,6 +7,7 @@ import Magnet from "./Magnet";
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
   const [isSecondarySceneImageLoaded, setIsSecondarySceneImageLoaded] = useState(false);
+  const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
   const [primarySceneProgress, setPrimarySceneProgress] = useState(0);
   const [secondarySceneProgress, setSecondarySceneProgress] = useState(0);
   const primarySceneRef = useRef(null);
@@ -86,6 +87,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     setIsSecondarySceneImageLoaded(false);
     setPrimarySceneProgress(0);
     setSecondarySceneProgress(0);
+    setSecondaryImageSrc(activeProject?.modalImage || activeProject?.image || "");
   }, [activeProject?.id]);
 
   useEffect(() => {
@@ -156,7 +158,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                             style={{
                               opacity: eased,
                               transform: `translate3d(0, ${(1 - eased) * 14}px, 0)`,
-                              maxHeight: `${eased * 1.9}em`,
                             }}
                           >
                             {line}
@@ -187,10 +188,17 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
                         <img
-                          src={activeProject.modalImage || activeProject.image}
+                          src={secondaryImageSrc}
                           alt={activeProject[lang].title}
                           className={`modal-media-img ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                           onLoad={() => setIsSecondarySceneImageLoaded(true)}
+                          onError={() => {
+                            if (secondaryImageSrc !== activeProject.image) {
+                              setSecondaryImageSrc(activeProject.image);
+                              return;
+                            }
+                            setIsSecondarySceneImageLoaded(true);
+                          }}
                           loading="eager"
                           decoding="async"
                         />
@@ -207,7 +215,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                             style={{
                               opacity: eased,
                               transform: `translate3d(0, ${(1 - eased) * 14}px, 0)`,
-                              maxHeight: `${eased * 1.9}em`,
                             }}
                           >
                             {line}
