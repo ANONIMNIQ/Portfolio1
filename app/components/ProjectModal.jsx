@@ -145,13 +145,15 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
                         const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * (noteLines.length + 0.75) - index));
+                        const eased = Math.min(1, Math.max(0, lineProgress));
                         return (
                           <span
                             key={`${line}-${index}`}
                             className="modal-responsive-line"
                             style={{
-                              opacity: lineProgress,
-                              transform: `translate3d(0, ${(1 - lineProgress) * 18}px, 0)`,
+                              opacity: eased,
+                              transform: `translate3d(0, ${(1 - eased) * 14}px, 0)`,
+                              maxHeight: `${eased * 1.9}em`,
                             }}
                           >
                             {line}
@@ -194,13 +196,15 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div className="modal-responsive-note modal-responsive-note-secondary" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
                         const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * (responsiveLines.length + 0.75) - index));
+                        const eased = Math.min(1, Math.max(0, lineProgress));
                         return (
                           <span
                             key={`${line}-${index}`}
                             className="modal-responsive-line"
                             style={{
-                              opacity: lineProgress,
-                              transform: `translate3d(0, ${(1 - lineProgress) * 18}px, 0)`,
+                              opacity: eased,
+                              transform: `translate3d(0, ${(1 - eased) * 14}px, 0)`,
+                              maxHeight: `${eased * 1.9}em`,
                             }}
                           >
                             {line}
