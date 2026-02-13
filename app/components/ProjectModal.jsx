@@ -12,14 +12,22 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const [secondarySceneProgress, setSecondarySceneProgress] = useState(0);
   const [primaryRevealProgress, setPrimaryRevealProgress] = useState(0);
   const [secondaryRevealProgress, setSecondaryRevealProgress] = useState(0);
+  const [primaryAutoZoomProgress, setPrimaryAutoZoomProgress] = useState(0);
+  const [secondaryAutoZoomProgress, setSecondaryAutoZoomProgress] = useState(0);
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   const bodyRef = useRef(null);
+  const primaryMediaRef = useRef(null);
+  const secondaryMediaRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const primaryAutoRafRef = useRef(null);
+  const secondaryAutoRafRef = useRef(null);
   const primaryProgressRef = useRef(0);
   const secondaryProgressRef = useRef(0);
   const primaryTargetProgressRef = useRef(0);
   const secondaryTargetProgressRef = useRef(0);
+  const primaryAutoTriggeredRef = useRef(false);
+  const secondaryAutoTriggeredRef = useRef(false);
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
@@ -88,6 +96,56 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     return clamp((start - sceneTopInViewport) / Math.max(start - end, 1));
   };
 
+  const isFullyVisibleInScroller = (element, scroller, threshold = 6) => {
+    if (!element || !scroller) return false;
+    const elementRect = element.getBoundingClientRect();
+    const scrollerRect = scroller.getBoundingClientRect();
+    return (
+      elementRect.top >= scrollerRect.top + threshold &&
+      elementRect.bottom <= scrollerRect.bottom - threshold
+    );
+  };
+
+  const triggerAutoZoom = (scene) => {
+    const duration = 620;
+    const easeOut = (t) => 1 - (1 - t) * (1 - t) * (1 - t);
+
+    if (scene === "primary") {
+      if (primaryAutoTriggeredRef.current) return;
+      primaryAutoTriggeredRef.current = true;
+      if (primaryAutoRafRef.current) cancelAnimationFrame(primaryAutoRafRef.current);
+      const startTs = performance.now();
+      const step = (ts) => {
+        const elapsed = ts - startTs;
+        const t = Math.min(1, elapsed / duration);
+        setPrimaryAutoZoomProgress(easeOut(t));
+        if (t < 1) {
+          primaryAutoRafRef.current = requestAnimationFrame(step);
+        } else {
+          primaryAutoRafRef.current = null;
+        }
+      };
+      primaryAutoRafRef.current = requestAnimationFrame(step);
+      return;
+    }
+
+    if (secondaryAutoTriggeredRef.current) return;
+    secondaryAutoTriggeredRef.current = true;
+    if (secondaryAutoRafRef.current) cancelAnimationFrame(secondaryAutoRafRef.current);
+    const startTs = performance.now();
+    const step = (ts) => {
+      const elapsed = ts - startTs;
+      const t = Math.min(1, elapsed / duration);
+      setSecondaryAutoZoomProgress(easeOut(t));
+      if (t < 1) {
+        secondaryAutoRafRef.current = requestAnimationFrame(step);
+      } else {
+        secondaryAutoRafRef.current = null;
+      }
+    };
+    secondaryAutoRafRef.current = requestAnimationFrame(step);
+  };
+
   const scheduleProgressAnimation = () => {
     if (animationFrameRef.current) return;
     const animate = () => {
@@ -142,6 +200,14 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
     setPrimaryRevealProgress(nextPrimaryReveal);
     setSecondaryRevealProgress(nextSecondaryReveal);
+
+    if (!primaryAutoTriggeredRef.current && isFullyVisibleInScroller(primaryMediaRef.current, scroller, 6)) {
+      triggerAutoZoom("primary");
+    }
+    if (!secondaryAutoTriggeredRef.current && isFullyVisibleInScroller(secondaryMediaRef.current, scroller, 6)) {
+      triggerAutoZoom("secondary");
+    }
+
     scheduleProgressAnimation();
   };
 
@@ -157,10 +223,22 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     setSecondarySceneProgress(0);
     setPrimaryRevealProgress(0);
     setSecondaryRevealProgress(0);
+    setPrimaryAutoZoomProgress(0);
+    setSecondaryAutoZoomProgress(0);
     primaryProgressRef.current = 0;
     secondaryProgressRef.current = 0;
     primaryTargetProgressRef.current = 0;
     secondaryTargetProgressRef.current = 0;
+    primaryAutoTriggeredRef.current = false;
+    secondaryAutoTriggeredRef.current = false;
+    if (primaryAutoRafRef.current) {
+      cancelAnimationFrame(primaryAutoRafRef.current);
+      primaryAutoRafRef.current = null;
+    }
+    if (secondaryAutoRafRef.current) {
+      cancelAnimationFrame(secondaryAutoRafRef.current);
+      secondaryAutoRafRef.current = null;
+    }
     setSecondaryImageSrc(activeProject?.modalImage || activeProject?.image || "");
   }, [activeProject?.id]);
 
@@ -178,8 +256,19 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
+      if (primaryAutoRafRef.current) {
+        cancelAnimationFrame(primaryAutoRafRef.current);
+        primaryAutoRafRef.current = null;
+      }
+      if (secondaryAutoRafRef.current) {
+        cancelAnimationFrame(secondaryAutoRafRef.current);
+        secondaryAutoRafRef.current = null;
+      }
     };
   }, []);
+
+  const effectivePrimaryZoom = Math.max(primaryPhases.zoom, primaryAutoZoomProgress);
+  const effectiveSecondaryZoom = Math.max(secondaryPhases.zoom, secondaryAutoZoomProgress);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -208,13 +297,22 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
               <div className="modal-text">
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
-                <p className="modal-desc">{activeProject[lang].description}</p>
+                <p
+                  className="modal-desc"
+                  style={{
+                    transform: `translate3d(0, -${primaryAutoZoomProgress * 26}px, 0)`,
+                    opacity: 1 - primaryAutoZoomProgress * 0.14,
+                  }}
+                >
+                  {activeProject[lang].description}
+                </p>
                 <section ref={primarySceneRef} className="modal-scroll-scene modal-scroll-scene-primary" aria-label="Project visual reveal">
                   <div className="modal-scroll-stage modal-scroll-stage-right">
                     <div
+                      ref={primaryMediaRef}
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - primaryPhases.zoom) * 1}%, ${(1 - primaryPhases.zoom) * 3}px, 0) scale(${0.58 + primaryPhases.zoom * 0.42})`,
+                        transform: `translate3d(${(1 - effectivePrimaryZoom) * 1}%, ${(1 - effectivePrimaryZoom) * 3}px, 0) scale(${0.58 + effectivePrimaryZoom * 0.42})`,
                         opacity: primaryRevealProgress,
                         filter: `blur(${(1 - primaryRevealProgress) * 14}px)`,
                       }}
@@ -254,8 +352,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 <p
                   className="modal-paragraph modal-followup-paragraph"
                   style={{
-                    opacity: primaryPhases.follow,
-                    transform: `translate3d(0, ${(1 - primaryPhases.follow) * 28}px, 0)`,
+                    opacity: primaryPhases.follow * (1 - secondaryAutoZoomProgress * 0.12),
+                    transform: `translate3d(0, ${(1 - primaryPhases.follow) * 28 - secondaryAutoZoomProgress * 22}px, 0)`,
                   }}
                 >
                   {text.modalStory}
@@ -263,9 +361,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 <section ref={secondarySceneRef} className="modal-scroll-scene modal-scroll-scene-secondary" aria-label="Responsive design visual reveal">
                   <div className="modal-scroll-stage modal-scroll-stage-left">
                     <div
+                      ref={secondaryMediaRef}
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - secondaryPhases.zoom) * 1}%, ${(1 - secondaryPhases.zoom) * 3}px, 0) scale(${0.6 + secondaryPhases.zoom * 0.4})`,
+                        transform: `translate3d(${(1 - effectiveSecondaryZoom) * 1}%, ${(1 - effectiveSecondaryZoom) * 3}px, 0) scale(${0.6 + effectiveSecondaryZoom * 0.4})`,
                         opacity: secondaryRevealProgress,
                         filter: `blur(${(1 - secondaryRevealProgress) * 14}px)`,
                       }}
