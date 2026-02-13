@@ -943,8 +943,8 @@
   }
 
   .project-modal .modal-scroll-stage {
-    top: clamp(88px, 14vh, 164px);
-    min-height: clamp(500px, 64vh, 760px);
+    top: clamp(180px, 26vh, 300px);
+    min-height: clamp(420px, 54vh, 620px);
     max-width: min(1420px, calc(100vw - 96px));
     margin-left: auto;
     margin-right: auto;
