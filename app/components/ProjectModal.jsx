@@ -130,7 +130,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         opacity: 0.18 + primaryPhases.image * 0.82,
                       }}
                     >
-                      <div className={`modal-media-wrap ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
+                      <div className={`modal-media-wrap modal-media-wrap-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
                         <img
                           src={activeProject.image}
@@ -179,7 +179,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         opacity: 0.18 + secondaryPhases.image * 0.82,
                       }}
                     >
-                      <div className={`modal-media-wrap ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
+                      <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
                         <img
                           src={activeProject.modalImage || activeProject.image}
