@@ -39,7 +39,9 @@ export const copy = {
     contactEmail: "Вашият имейл",
     contactMessage: "Вашето съобщение",
     contactSend: "Изпрати запитване",
+    contactSending: "Изпращане...",
     contactSuccess: "Благодарим ви! Ще се свържем с вас скоро.",
+    contactError: "Възникна грешка. Моля, опитайте отново след малко.",
   },
   en: {
     brand: "WE BUILD WEB PAGES",
@@ -76,7 +78,9 @@ export const copy = {
     contactEmail: "Your Email",
     contactMessage: "Your Message",
     contactSend: "Send Inquiry",
+    contactSending: "Sending...",
     contactSuccess: "Thank you! We will get back to you soon.",
+    contactError: "Something went wrong. Please try again in a moment.",
   },
 };
 

@@ -7,6 +7,8 @@ import Magnet from "./Magnet";
 
 export default function ContactModal({ isOpen, onClose, text }) {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <div className={`modal contact-modal ${isOpen ? "is-open" : ""}`} aria-hidden={!isOpen}>
@@ -51,40 +53,71 @@ export default function ContactModal({ isOpen, onClose, text }) {
                     <motion.form
                       key="form"
                       style={{ display: "grid", gap: "32px" }}
-                      onSubmit={(event) => {
+                      onSubmit={async (event) => {
                         event.preventDefault();
-                        setSubmitted(true);
-                        setTimeout(() => {
-                          setSubmitted(false);
-                          onClose();
-                        }, 3000);
+                        if (isSubmitting) return;
+
+                        setError("");
+                        setIsSubmitting(true);
+
+                        const form = event.currentTarget;
+                        const formData = new FormData(form);
+
+                        try {
+                          const response = await fetch("/api/contact", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              name: String(formData.get("name") || "").trim(),
+                              email: String(formData.get("email") || "").trim(),
+                              message: String(formData.get("message") || "").trim(),
+                            }),
+                          });
+
+                          if (!response.ok) {
+                            throw new Error("Contact submit failed");
+                          }
+
+                          form.reset();
+                          setSubmitted(true);
+                          setTimeout(() => {
+                            setSubmitted(false);
+                            onClose();
+                          }, 3000);
+                        } catch {
+                          setError(text.contactError);
+                        } finally {
+                          setIsSubmitting(false);
+                        }
                       }}
                     >
                       <div>
                         <label style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--muted)", display: "block", marginBottom: "8px" }}>
                           {text.contactName}
                         </label>
-                        <input type="text" required style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none" }} />
+                        <input name="name" type="text" required disabled={isSubmitting} style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none" }} />
                       </div>
 
                       <div>
                         <label style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--muted)", display: "block", marginBottom: "8px" }}>
                           {text.contactEmail}
                         </label>
-                        <input type="email" required style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none" }} />
+                        <input name="email" type="email" required disabled={isSubmitting} style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none" }} />
                       </div>
 
                       <div>
                         <label style={{ fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.2em", color: "var(--muted)", display: "block", marginBottom: "8px" }}>
                           {text.contactMessage}
                         </label>
-                        <textarea required rows="3" style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none", resize: "none" }} />
+                        <textarea name="message" required rows="3" disabled={isSubmitting} style={{ width: "100%", padding: "12px 0", background: "transparent", border: "none", borderBottom: "1px solid var(--line)", fontFamily: "inherit", fontSize: "18px", outline: "none", resize: "none" }} />
                       </div>
+
+                      {error && <p style={{ color: "#b00020", fontSize: "14px" }}>{error}</p>}
 
                       <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
                         <Magnet strength={0.2}>
-                          <button type="submit" className="projects-trigger" style={{ width: "auto", height: "auto", padding: "16px 40px", borderRadius: "999px", fontSize: "14px", gap: "12px" }}>
-                            {text.contactSend} <ArrowRight size={16} />
+                          <button type="submit" className="projects-trigger" disabled={isSubmitting} style={{ width: "auto", height: "auto", padding: "16px 40px", borderRadius: "999px", fontSize: "14px", gap: "12px", opacity: isSubmitting ? 0.7 : 1 }}>
+                            {isSubmitting ? text.contactSending : text.contactSend} <ArrowRight size={16} />
                           </button>
                         </Magnet>
                       </div>
