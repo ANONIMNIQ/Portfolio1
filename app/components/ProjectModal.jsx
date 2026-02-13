@@ -12,11 +12,15 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const [secondarySceneProgress, setSecondarySceneProgress] = useState(0);
   const [primaryRevealProgress, setPrimaryRevealProgress] = useState(0);
   const [secondaryRevealProgress, setSecondaryRevealProgress] = useState(0);
+  const [primaryNoteGateProgress, setPrimaryNoteGateProgress] = useState(0);
+  const [secondaryNoteGateProgress, setSecondaryNoteGateProgress] = useState(0);
   const [primaryAutoZoomProgress, setPrimaryAutoZoomProgress] = useState(0);
   const [secondaryAutoZoomProgress, setSecondaryAutoZoomProgress] = useState(0);
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   const bodyRef = useRef(null);
+  const descriptionRef = useRef(null);
+  const followupRef = useRef(null);
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
   const animationFrameRef = useRef(null);
@@ -32,7 +36,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const zoom = clamp((primarySceneProgress - 0.14) / 0.28);
-    const note = clamp((primarySceneProgress - 0.42) / 0.26);
+    const note = clamp((primarySceneProgress - 0.28) / 0.34);
     const follow = clamp((primarySceneProgress - 0.72) / 0.16);
     return { zoom, note, follow };
   }, [primarySceneProgress]);
@@ -40,7 +44,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const zoom = clamp((secondarySceneProgress - 0.16) / 0.28);
-    const note = clamp((secondarySceneProgress - 0.44) / 0.26);
+    const note = clamp((secondarySceneProgress - 0.3) / 0.34);
     return { zoom, note };
   }, [secondarySceneProgress]);
 
@@ -94,6 +98,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const start = viewportHeight * 0.98;
     const end = viewportHeight * 0.62;
     return clamp((start - sceneTopInViewport) / Math.max(start - end, 1));
+  };
+
+  const getParagraphExitProgress = (paragraph, scroller) => {
+    if (!paragraph || !scroller) return 0;
+    const clamp = (value) => Math.min(1, Math.max(0, value));
+    const paragraphRect = paragraph.getBoundingClientRect();
+    const scrollerRect = scroller.getBoundingClientRect();
+    const start = scrollerRect.top + 70;
+    const end = scrollerRect.top - 60;
+    return clamp((start - paragraphRect.bottom) / Math.max(start - end, 1));
   };
 
   const isFullyVisibleInScroller = (element, scroller, threshold = 6) => {
@@ -184,6 +198,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const nextSecondary = getSceneProgress(secondarySceneRef.current, scroller);
     const nextPrimaryReveal = getRevealProgress(primarySceneRef.current, scroller);
     const nextSecondaryReveal = getRevealProgress(secondarySceneRef.current, scroller);
+    const nextPrimaryGate = getParagraphExitProgress(descriptionRef.current, scroller);
+    const nextSecondaryGate = getParagraphExitProgress(followupRef.current, scroller);
 
     primaryTargetProgressRef.current = nextPrimary;
     secondaryTargetProgressRef.current = nextSecondary;
@@ -195,11 +211,15 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       setSecondarySceneProgress(nextSecondary);
       setPrimaryRevealProgress(nextPrimaryReveal);
       setSecondaryRevealProgress(nextSecondaryReveal);
+      setPrimaryNoteGateProgress(nextPrimaryGate);
+      setSecondaryNoteGateProgress(nextSecondaryGate);
       return;
     }
 
     setPrimaryRevealProgress(nextPrimaryReveal);
     setSecondaryRevealProgress(nextSecondaryReveal);
+    setPrimaryNoteGateProgress(nextPrimaryGate);
+    setSecondaryNoteGateProgress(nextSecondaryGate);
 
     if (!primaryAutoTriggeredRef.current && isFullyVisibleInScroller(primaryMediaRef.current, scroller, 6)) {
       triggerAutoZoom("primary");
@@ -223,6 +243,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     setSecondarySceneProgress(0);
     setPrimaryRevealProgress(0);
     setSecondaryRevealProgress(0);
+    setPrimaryNoteGateProgress(0);
+    setSecondaryNoteGateProgress(0);
     setPrimaryAutoZoomProgress(0);
     setSecondaryAutoZoomProgress(0);
     primaryProgressRef.current = 0;
@@ -269,6 +291,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const effectivePrimaryZoom = Math.max(primaryPhases.zoom, primaryAutoZoomProgress);
   const effectiveSecondaryZoom = Math.max(secondaryPhases.zoom, secondaryAutoZoomProgress);
+  const effectivePrimaryNote = primaryPhases.note * primaryNoteGateProgress;
+  const effectiveSecondaryNote = secondaryPhases.note * secondaryNoteGateProgress;
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -298,6 +322,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
                 <p
+                  ref={descriptionRef}
                   className="modal-desc"
                   style={{
                     transform: `translate3d(0, -${primaryAutoZoomProgress * 26}px, 0)`,
@@ -331,7 +356,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * (noteLines.length + 0.75) - index));
+                        const lineProgress = Math.min(1, Math.max(0, effectivePrimaryNote * (noteLines.length + 0.75) - index));
                         const eased = Math.min(1, Math.max(0, lineProgress));
                         return (
                           <span
@@ -350,6 +375,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                   </div>
                 </section>
                 <p
+                  ref={followupRef}
                   className="modal-paragraph modal-followup-paragraph"
                   style={{
                     opacity: primaryPhases.follow * (1 - secondaryAutoZoomProgress * 0.12),
@@ -390,7 +416,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note modal-responsive-note-secondary" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * (responsiveLines.length + 0.75) - index));
+                        const lineProgress = Math.min(1, Math.max(0, effectiveSecondaryNote * (responsiveLines.length + 0.75) - index));
                         const eased = Math.min(1, Math.max(0, lineProgress));
                         return (
                           <span
