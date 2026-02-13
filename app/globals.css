@@ -362,6 +362,7 @@
   position: relative;
   min-height: 190vh;
   margin: 1.2rem 0 1.8rem;
+  overflow-x: clip;
 }
 
 .modal-scroll-stage {
@@ -452,7 +453,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  align-self: center;
+  align-self: start;
 }
 
 .modal-responsive-line {
@@ -467,6 +468,10 @@
 }
 
 @media (max-width: 980px) {
+  .modal-body {
+    overflow-x: hidden;
+  }
+
   .modal-scroll-scene {
     min-height: 165vh;
     margin-top: 1rem;
@@ -504,6 +509,7 @@
     grid-column: 1;
     max-width: none;
     font-size: clamp(1rem, 4.2vw, 1.28rem);
+    align-self: start;
   }
 
   .modal-scroll-stage-right .modal-responsive-note,
@@ -515,7 +521,7 @@
 
 @media (max-width: 980px) {
   .modal-scroll-scene-secondary {
-    min-height: 188vh;
+    min-height: 225vh;
   }
 }
 
