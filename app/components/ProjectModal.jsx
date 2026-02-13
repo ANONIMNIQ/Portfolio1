@@ -5,54 +5,89 @@ import { ExternalLink, X } from "lucide-react";
 import Magnet from "./Magnet";
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
-  const [isSceneImageLoaded, setIsSceneImageLoaded] = useState(false);
-  const [sceneProgress, setSceneProgress] = useState(0);
-  const sceneRef = useRef(null);
+  const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
+  const [isSecondarySceneImageLoaded, setIsSecondarySceneImageLoaded] = useState(false);
+  const [primarySceneProgress, setPrimarySceneProgress] = useState(0);
+  const [secondarySceneProgress, setSecondarySceneProgress] = useState(0);
+  const primarySceneRef = useRef(null);
+  const secondarySceneRef = useRef(null);
   const bodyRef = useRef(null);
 
-  const phases = useMemo(() => {
+  const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const image = clamp(sceneProgress / 0.55);
-    const note = clamp((sceneProgress - 0.6) / 0.3);
+    const image = clamp(primarySceneProgress / 0.56);
+    const note = clamp((primarySceneProgress - 0.58) / 0.34);
     return { image, note };
-  }, [sceneProgress]);
+  }, [primarySceneProgress]);
+
+  const secondaryPhases = useMemo(() => {
+    const clamp = (value) => Math.min(1, Math.max(0, value));
+    const image = clamp(secondarySceneProgress / 0.56);
+    const note = clamp((secondarySceneProgress - 0.58) / 0.34);
+    return { image, note };
+  }, [secondarySceneProgress]);
 
   const noteLines = useMemo(() => {
-    return text.modalTech
-      .split(/(?<=[.!?])\s+/)
-      .map((line) => line.trim())
-      .filter(Boolean);
+    const maxLineLength = 30;
+    const words = text.modalTech.split(/\s+/).filter(Boolean);
+    const lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
+      const next = currentLine ? `${currentLine} ${word}` : word;
+      if (next.length > maxLineLength && currentLine) {
+        lines.push(currentLine);
+        currentLine = word;
+      } else {
+        currentLine = next;
+      }
+    });
+
+    if (currentLine) lines.push(currentLine);
+    return lines;
   }, [text.modalTech]);
 
-  const updateSceneProgress = (scroller) => {
-    if (!sceneRef.current || !scroller) return;
+  const responsiveLines = useMemo(() => {
+    if (lang === "bg") {
+      return ["Дизайнът е респонсив", "и оптимизиран за", "всички устройства."];
+    }
+    return ["The design is responsive", "and optimized for", "all devices."];
+  }, [lang]);
 
-    const sceneTop = sceneRef.current.offsetTop;
-    const sceneHeight = sceneRef.current.offsetHeight;
+  const getSceneProgress = (scene, scroller) => {
+    if (!scene || !scroller) return 0;
+    const sceneTop = scene.offsetTop;
+    const sceneHeight = scene.offsetHeight;
     const viewportHeight = scroller.clientHeight;
-    const start = sceneTop - viewportHeight * 0.52;
-    const end = sceneTop + sceneHeight - viewportHeight * 0.48;
+    const start = sceneTop - viewportHeight * 0.62;
+    const end = sceneTop + sceneHeight - viewportHeight * 0.4;
     const range = Math.max(end - start, 1);
     const value = (scroller.scrollTop - start) / range;
-    const clamped = Math.min(1, Math.max(0, value));
+    return Math.min(1, Math.max(0, value));
+  };
 
-    setSceneProgress(clamped);
+  const updateSceneProgresses = (scroller) => {
+    if (!scroller) return;
+    setPrimarySceneProgress(getSceneProgress(primarySceneRef.current, scroller));
+    setSecondarySceneProgress(getSceneProgress(secondarySceneRef.current, scroller));
   };
 
   const handleBodyScroll = (event) => {
     onScroll?.(event);
-    updateSceneProgress(event.currentTarget);
+    updateSceneProgresses(event.currentTarget);
   };
 
   useEffect(() => {
-    setIsSceneImageLoaded(false);
-    setSceneProgress(0);
+    setIsPrimarySceneImageLoaded(false);
+    setIsSecondarySceneImageLoaded(false);
+    setPrimarySceneProgress(0);
+    setSecondarySceneProgress(0);
   }, [activeProject?.id]);
 
   useEffect(() => {
     if (!isOpen) return;
     const timer = requestAnimationFrame(() => {
-      updateSceneProgress(bodyRef.current);
+      updateSceneProgresses(bodyRef.current);
     });
     return () => cancelAnimationFrame(timer);
   }, [isOpen, activeProject?.id]);
@@ -85,23 +120,22 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
                 <p className="modal-desc">{activeProject[lang].description}</p>
-                <p className="modal-paragraph">{text.modalStory}</p>
-                <section ref={sceneRef} className="modal-scroll-scene" aria-label="Project visual reveal">
-                  <div className="modal-scroll-stage">
+                <section ref={primarySceneRef} className="modal-scroll-scene" aria-label="Project visual reveal">
+                  <div className="modal-scroll-stage modal-scroll-stage-right">
                     <div
-                      className={`modal-scroll-media ${isSceneImageLoaded ? "is-loaded" : ""}`}
+                      className={`modal-scroll-media ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(-${(1 - phases.image) * 116}%, 0, 0)`,
-                        opacity: 0.2 + phases.image * 0.8,
+                        transform: `translate3d(-${(1 - primaryPhases.image) * 118}%, 0, 0)`,
+                        opacity: 0.18 + primaryPhases.image * 0.82,
                       }}
                     >
-                      <div className={`modal-media-wrap ${isSceneImageLoaded ? "is-loaded" : ""}`}>
+                      <div className={`modal-media-wrap ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
                         <img
                           src={activeProject.image}
                           alt={activeProject[lang].title}
-                          className={`modal-media-img ${isSceneImageLoaded ? "is-loaded" : ""}`}
-                          onLoad={() => setIsSceneImageLoaded(true)}
+                          className={`modal-media-img ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
+                          onLoad={() => setIsPrimarySceneImageLoaded(true)}
                           loading="eager"
                           decoding="async"
                         />
@@ -109,7 +143,48 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, phases.note * noteLines.length - index));
+                        const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * noteLines.length - index));
+                        return (
+                          <span
+                            key={`${line}-${index}`}
+                            className="modal-responsive-line"
+                            style={{
+                              opacity: lineProgress,
+                              transform: `translate3d(0, ${(1 - lineProgress) * 18}px, 0)`,
+                            }}
+                          >
+                            {line}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </section>
+                <p className="modal-paragraph">{text.modalStory}</p>
+                <section ref={secondarySceneRef} className="modal-scroll-scene" aria-label="Responsive design visual reveal">
+                  <div className="modal-scroll-stage modal-scroll-stage-left">
+                    <div
+                      className={`modal-scroll-media ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
+                      style={{
+                        transform: `translate3d(${(1 - secondaryPhases.image) * 118}%, 0, 0)`,
+                        opacity: 0.18 + secondaryPhases.image * 0.82,
+                      }}
+                    >
+                      <div className={`modal-media-wrap ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
+                        <div className="modal-media-skeleton" aria-hidden="true" />
+                        <img
+                          src={activeProject.modalImage || activeProject.image}
+                          alt={activeProject[lang].title}
+                          className={`modal-media-img ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
+                          onLoad={() => setIsSecondarySceneImageLoaded(true)}
+                          loading="eager"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                    <div className="modal-responsive-note" aria-label={text.modalResponsive}>
+                      {responsiveLines.map((line, index) => {
+                        const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * responsiveLines.length - index));
                         return (
                           <span
                             key={`${line}-${index}`}
