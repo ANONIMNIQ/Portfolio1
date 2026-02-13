@@ -131,7 +131,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - primaryPhases.zoom) * 1.5}%, ${(1 - primaryPhases.zoom) * 4}px, 0) scale(${0.6 + primaryPhases.zoom * 0.56})`,
+                        transform: `translate3d(${(1 - primaryPhases.zoom) * 1}%, ${(1 - primaryPhases.zoom) * 3}px, 0) scale(${0.58 + primaryPhases.zoom * 0.42})`,
                         opacity: 1,
                       }}
                     >
@@ -181,7 +181,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - secondaryPhases.zoom) * 1.5}%, ${(1 - secondaryPhases.zoom) * 4}px, 0) scale(${0.62 + secondaryPhases.zoom * 0.46})`,
+                        transform: `translate3d(${(1 - secondaryPhases.zoom) * 1}%, ${(1 - secondaryPhases.zoom) * 3}px, 0) scale(${0.6 + secondaryPhases.zoom * 0.4})`,
                         opacity: 1,
                       }}
                     >

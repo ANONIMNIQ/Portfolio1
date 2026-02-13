@@ -440,11 +440,12 @@
 }
 
 .modal-scroll-media-primary .modal-media-img {
-  object-fit: contain;
-  object-position: center top;
+  width: calc(100% + 38px);
+  max-width: none;
+  margin-right: -38px;
+  object-fit: cover;
+  object-position: left top;
   max-height: min(60vh, 660px);
-  /* remove captured browser scrollbar strip from the screenshot edge */
-  clip-path: inset(0 44px 0 0);
 }
 
 .modal-scroll-media-secondary {
@@ -453,8 +454,11 @@
 }
 
 .modal-scroll-media-secondary .modal-media-img {
-  /* hide captured page scrollbar strip in the secondary screenshot too */
-  clip-path: inset(0 28px 0 0);
+  width: calc(100% + 24px);
+  max-width: none;
+  margin-right: -24px;
+  object-fit: cover;
+  object-position: left top;
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -557,6 +561,14 @@
 
 .modal-scroll-scene-secondary {
   min-height: 124vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.modal-scroll-scene-secondary::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 .modal-scroll-stage {
@@ -1027,11 +1039,6 @@
 
   .project-modal .modal-scroll-media-primary .modal-media-img {
     max-height: min(68vh, 820px);
-    clip-path: inset(0 42px 0 0);
-  }
-
-  .project-modal .modal-scroll-media-secondary .modal-media-img {
-    clip-path: inset(0 24px 0 0);
   }
 }
 
