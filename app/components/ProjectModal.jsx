@@ -5,7 +5,6 @@ import { ExternalLink, X } from "lucide-react";
 import Magnet from "./Magnet";
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
-  const [isTopImageLoaded, setIsTopImageLoaded] = useState(false);
   const [isSceneImageLoaded, setIsSceneImageLoaded] = useState(false);
   const [sceneProgress, setSceneProgress] = useState(0);
   const sceneRef = useRef(null);
@@ -14,17 +13,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const phases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const image = clamp(sceneProgress / 0.55);
-    const note = clamp((sceneProgress - 0.58) / 0.26);
-    const final = clamp((sceneProgress - 0.86) / 0.14);
-    return { image, note, final };
+    const note = clamp((sceneProgress - 0.6) / 0.3);
+    return { image, note };
   }, [sceneProgress]);
 
-  const responsiveLines = useMemo(() => {
-    if (lang === "bg") {
-      return ["Дизайнът е респонсив", "и оптимизиран за", "всички устройства."];
-    }
-    return ["The design is responsive", "and optimized for", "all devices."];
-  }, [lang]);
+  const noteLines = useMemo(() => {
+    return text.modalTech
+      .split(/(?<=[.!?])\s+/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }, [text.modalTech]);
 
   const updateSceneProgress = (scroller) => {
     if (!sceneRef.current || !scroller) return;
@@ -47,7 +45,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   };
 
   useEffect(() => {
-    setIsTopImageLoaded(false);
     setIsSceneImageLoaded(false);
     setSceneProgress(0);
   }, [activeProject?.id]);
@@ -84,19 +81,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
           <div ref={bodyRef} className="modal-body" onScroll={handleBodyScroll} onWheel={onWheel}>
             <div className="modal-content-wrap">
-              <div className="modal-hero-media">
-                <div className={`modal-media-wrap ${isTopImageLoaded ? "is-loaded" : ""}`}>
-                  <div className="modal-media-skeleton" aria-hidden="true" />
-                  <img
-                    src={activeProject.image}
-                    alt={activeProject[lang].title}
-                    className={`modal-media-img ${isTopImageLoaded ? "is-loaded" : ""}`}
-                    onLoad={() => setIsTopImageLoaded(true)}
-                    loading="eager"
-                    decoding="async"
-                  />
-                </div>
-              </div>
               <div className="modal-text">
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
@@ -107,14 +91,14 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media ${isSceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - phases.image) * 116}%, 0, 0)`,
+                        transform: `translate3d(-${(1 - phases.image) * 116}%, 0, 0)`,
                         opacity: 0.2 + phases.image * 0.8,
                       }}
                     >
                       <div className={`modal-media-wrap ${isSceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
                         <img
-                          src={activeProject.modalImage || activeProject.image}
+                          src={activeProject.image}
                           alt={activeProject[lang].title}
                           className={`modal-media-img ${isSceneImageLoaded ? "is-loaded" : ""}`}
                           onLoad={() => setIsSceneImageLoaded(true)}
@@ -123,9 +107,9 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         />
                       </div>
                     </div>
-                    <div className="modal-responsive-note" aria-label={text.modalResponsive}>
-                      {responsiveLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, phases.note * responsiveLines.length - index));
+                    <div className="modal-responsive-note" aria-label={text.modalTech}>
+                      {noteLines.map((line, index) => {
+                        const lineProgress = Math.min(1, Math.max(0, phases.note * noteLines.length - index));
                         return (
                           <span
                             key={`${line}-${index}`}
@@ -142,15 +126,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                   </div>
                 </section>
-                <p
-                  className="modal-paragraph modal-final-paragraph"
-                  style={{
-                    opacity: phases.final,
-                    transform: `translate3d(0, ${(1 - phases.final) * 30}px, 0)`,
-                  }}
-                >
-                  {text.modalTech}
-                </p>
               </div>
             </div>
           </div>

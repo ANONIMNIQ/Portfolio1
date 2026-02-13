@@ -104,7 +104,6 @@ export const projects = [
     tags: ["UI Systems", "React", "Cinema"],
     theme: "three",
     image: "/assets/project-3.png",
-    modalImage: "/assets/project-4.png",
   },
   {
     id: "incognito",
@@ -123,7 +122,6 @@ export const projects = [
     tags: ["AI Integration", "Next.js", "Community"],
     theme: "one",
     image: "/assets/project-1.png",
-    modalImage: "/assets/project-2.png",
   },
   {
     id: "horizonti",
@@ -142,7 +140,6 @@ export const projects = [
     tags: ["Editorial", "Motion", "Podcast"],
     theme: "two",
     image: "/assets/project-2.png",
-    modalImage: "/assets/project-3.png",
   },
   {
     id: "wr1te-pages",
@@ -161,6 +158,5 @@ export const projects = [
     tags: ["Productivity", "SaaS", "Typography"],
     theme: "one",
     image: "/assets/project-4.png",
-    modalImage: "/assets/project-1.png",
   },
 ];
