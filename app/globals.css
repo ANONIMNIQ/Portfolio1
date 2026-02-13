@@ -360,19 +360,20 @@
 
 .modal-scroll-scene {
   position: relative;
-  min-height: 0;
-  margin: 1.2rem 0 1.6rem;
+  min-height: 190vh;
+  margin: 1.2rem 0 1.8rem;
 }
 
 .modal-scroll-stage {
-  position: relative;
-  top: auto;
-  height: auto;
+  position: sticky;
+  top: 68px;
+  min-height: min(66vh, 700px);
   display: grid;
   grid-template-columns: minmax(0, 42%) minmax(0, 58%);
   align-items: center;
   gap: clamp(1rem, 3vw, 2.2rem);
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .modal-scroll-media {
@@ -381,6 +382,7 @@
   transition: transform 0.14s linear, opacity 0.2s ease;
   will-change: transform, opacity;
   pointer-events: none;
+  align-self: center;
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -404,6 +406,7 @@
   width: 100%;
   margin: 0;
   border-radius: 18px;
+  overflow: hidden;
 }
 
 .modal-scroll-media .modal-media-img {
@@ -413,11 +416,11 @@
 }
 
 .modal-scroll-media-primary {
-  max-width: min(760px, 56vw);
+  max-width: min(760px, 58vw);
 }
 
 .modal-scroll-media-secondary {
-  max-width: min(330px, 26vw);
+  max-width: min(240px, 18vw);
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -428,17 +431,28 @@
   justify-self: start;
 }
 
+.modal-scroll-stage-right .modal-responsive-note {
+  justify-self: end;
+  text-align: left;
+}
+
+.modal-scroll-stage-left .modal-responsive-note {
+  justify-self: start;
+  text-align: left;
+}
+
 .modal-responsive-note {
   margin: 0;
-  max-width: 24ch;
-  font-size: clamp(1.02rem, 1.56vw, 1.34rem);
+  max-width: min(34ch, 30vw);
+  font-size: clamp(1.02rem, 1.5vw, 1.3rem);
   line-height: 1.38;
   color: var(--ink-dark);
-  text-wrap: balance;
+  text-wrap: pretty;
   font-weight: 500;
   display: flex;
   flex-direction: column;
   gap: 0.5em;
+  align-self: center;
 }
 
 .modal-responsive-line {
@@ -447,17 +461,25 @@
   will-change: opacity, transform;
 }
 
+.modal-followup-paragraph {
+  transition: opacity 0.22s linear, transform 0.22s linear;
+  will-change: opacity, transform;
+}
+
 @media (max-width: 980px) {
   .modal-scroll-scene {
+    min-height: 165vh;
     margin-top: 1rem;
   }
 
   .modal-scroll-stage {
+    top: 56px;
     height: auto;
-    min-height: 0;
+    min-height: 74vh;
     grid-template-columns: 1fr;
     gap: 1rem;
-    overflow: visible;
+    overflow-x: hidden;
+    overflow-y: visible;
   }
 
   .modal-scroll-media {
@@ -471,11 +493,11 @@
   }
 
   .modal-scroll-media .modal-media-img {
-    max-height: min(52vh, 460px);
+    max-height: min(46vh, 390px);
   }
 
   .modal-scroll-media-secondary {
-    max-width: min(220px, 68vw);
+    max-width: min(180px, 56vw);
   }
 
   .modal-responsive-note {
@@ -487,13 +509,21 @@
   .modal-scroll-stage-right .modal-responsive-note,
   .modal-scroll-stage-left .modal-responsive-note {
     grid-column: 1;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 980px) {
+  .modal-scroll-scene-secondary {
+    min-height: 188vh;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .modal-scroll-media,
   .modal-responsive-note,
-  .modal-responsive-line {
+  .modal-responsive-line,
+  .modal-followup-paragraph {
     transition: none;
   }
 }

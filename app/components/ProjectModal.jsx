@@ -15,15 +15,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const image = clamp(primarySceneProgress / 0.56);
-    const note = clamp((primarySceneProgress - 0.44) / 0.5);
-    return { image, note };
+    const image = clamp(primarySceneProgress / 0.62);
+    const note = clamp((primarySceneProgress - 0.62) / 0.36);
+    const follow = clamp((primarySceneProgress - 0.96) / 0.12);
+    return { image, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const image = clamp(secondarySceneProgress / 0.56);
-    const note = clamp((secondarySceneProgress - 0.44) / 0.5);
+    const image = clamp(secondarySceneProgress / 0.62);
+    const note = clamp((secondarySceneProgress - 0.62) / 0.36);
     return { image, note };
   }, [secondarySceneProgress]);
 
@@ -125,7 +126,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(-${(1 - primaryPhases.image) * 118}%, 0, 0)`,
+                        transform: `translate3d(-${(1 - primaryPhases.image) * 52}%, 0, 0)`,
                         opacity: 0.18 + primaryPhases.image * 0.82,
                       }}
                     >
@@ -143,7 +144,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note" aria-label={text.modalTech}>
                       {noteLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * noteLines.length - index));
+                        const lineProgress = Math.min(1, Math.max(0, primaryPhases.note * (noteLines.length + 0.75) - index));
                         return (
                           <span
                             key={`${line}-${index}`}
@@ -160,13 +161,21 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                   </div>
                 </section>
-                <p className="modal-paragraph">{text.modalStory}</p>
+                <p
+                  className="modal-paragraph modal-followup-paragraph"
+                  style={{
+                    opacity: primaryPhases.follow,
+                    transform: `translate3d(0, ${(1 - primaryPhases.follow) * 28}px, 0)`,
+                  }}
+                >
+                  {text.modalStory}
+                </p>
                 <section ref={secondarySceneRef} className="modal-scroll-scene modal-scroll-scene-secondary" aria-label="Responsive design visual reveal">
                   <div className="modal-scroll-stage modal-scroll-stage-left">
                     <div
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
-                        transform: `translate3d(${(1 - secondaryPhases.image) * 118}%, 0, 0)`,
+                        transform: `translate3d(${(1 - secondaryPhases.image) * 52}%, 0, 0)`,
                         opacity: 0.18 + secondaryPhases.image * 0.82,
                       }}
                     >
@@ -184,7 +193,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                     <div className="modal-responsive-note" aria-label={text.modalResponsive}>
                       {responsiveLines.map((line, index) => {
-                        const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * responsiveLines.length - index));
+                        const lineProgress = Math.min(1, Math.max(0, secondaryPhases.note * (responsiveLines.length + 0.75) - index));
                         return (
                           <span
                             key={`${line}-${index}`}
