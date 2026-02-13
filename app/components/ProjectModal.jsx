@@ -10,6 +10,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
   const [primarySceneProgress, setPrimarySceneProgress] = useState(0);
   const [secondarySceneProgress, setSecondarySceneProgress] = useState(0);
+  const [primaryRevealProgress, setPrimaryRevealProgress] = useState(0);
+  const [secondaryRevealProgress, setSecondaryRevealProgress] = useState(0);
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   const bodyRef = useRef(null);
@@ -21,19 +23,17 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const reveal = clamp((primarySceneProgress - 0.06) / 0.2);
     const zoom = clamp((primarySceneProgress - 0.14) / 0.28);
     const note = clamp((primarySceneProgress - 0.42) / 0.26);
     const follow = clamp((primarySceneProgress - 0.72) / 0.16);
-    return { reveal, zoom, note, follow };
+    return { zoom, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const reveal = clamp((secondarySceneProgress - 0.06) / 0.2);
     const zoom = clamp((secondarySceneProgress - 0.16) / 0.28);
     const note = clamp((secondarySceneProgress - 0.44) / 0.26);
-    return { reveal, zoom, note };
+    return { zoom, note };
   }, [secondarySceneProgress]);
 
   const noteLines = useMemo(() => {
@@ -78,6 +78,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     return Math.min(1, Math.max(0, value));
   };
 
+  const getRevealProgress = (scene, scroller) => {
+    if (!scene || !scroller) return 0;
+    const clamp = (value) => Math.min(1, Math.max(0, value));
+    const sceneTopInViewport = scene.offsetTop - scroller.scrollTop;
+    const viewportHeight = scroller.clientHeight;
+    const start = viewportHeight * 0.98;
+    const end = viewportHeight * 0.62;
+    return clamp((start - sceneTopInViewport) / Math.max(start - end, 1));
+  };
+
   const scheduleProgressAnimation = () => {
     if (animationFrameRef.current) return;
     const animate = () => {
@@ -114,6 +124,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     if (!scroller) return;
     const nextPrimary = getSceneProgress(primarySceneRef.current, scroller);
     const nextSecondary = getSceneProgress(secondarySceneRef.current, scroller);
+    const nextPrimaryReveal = getRevealProgress(primarySceneRef.current, scroller);
+    const nextSecondaryReveal = getRevealProgress(secondarySceneRef.current, scroller);
 
     primaryTargetProgressRef.current = nextPrimary;
     secondaryTargetProgressRef.current = nextSecondary;
@@ -123,9 +135,13 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       secondaryProgressRef.current = nextSecondary;
       setPrimarySceneProgress(nextPrimary);
       setSecondarySceneProgress(nextSecondary);
+      setPrimaryRevealProgress(nextPrimaryReveal);
+      setSecondaryRevealProgress(nextSecondaryReveal);
       return;
     }
 
+    setPrimaryRevealProgress(nextPrimaryReveal);
+    setSecondaryRevealProgress(nextSecondaryReveal);
     scheduleProgressAnimation();
   };
 
@@ -139,6 +155,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     setIsSecondarySceneImageLoaded(false);
     setPrimarySceneProgress(0);
     setSecondarySceneProgress(0);
+    setPrimaryRevealProgress(0);
+    setSecondaryRevealProgress(0);
     primaryProgressRef.current = 0;
     secondaryProgressRef.current = 0;
     primaryTargetProgressRef.current = 0;
@@ -197,8 +215,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(${(1 - primaryPhases.zoom) * 1}%, ${(1 - primaryPhases.zoom) * 3}px, 0) scale(${0.58 + primaryPhases.zoom * 0.42})`,
-                        opacity: primaryPhases.reveal,
-                        filter: `blur(${(1 - primaryPhases.reveal) * 14}px)`,
+                        opacity: primaryRevealProgress,
+                        filter: `blur(${(1 - primaryRevealProgress) * 14}px)`,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
@@ -248,8 +266,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(${(1 - secondaryPhases.zoom) * 1}%, ${(1 - secondaryPhases.zoom) * 3}px, 0) scale(${0.6 + secondaryPhases.zoom * 0.4})`,
-                        opacity: secondaryPhases.reveal,
-                        filter: `blur(${(1 - secondaryPhases.reveal) * 14}px)`,
+                        opacity: secondaryRevealProgress,
+                        filter: `blur(${(1 - secondaryRevealProgress) * 14}px)`,
                       }}
                     >
                       <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
