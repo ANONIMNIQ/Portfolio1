@@ -39,6 +39,7 @@ export default function Home() {
   const [burstItems, setBurstItems] = useState([]);
   const [isSmallViewport, setIsSmallViewport] = useState(false);
   const [isHeroSliderExiting, setIsHeroSliderExiting] = useState(false);
+  const [heroSliderExitDirection, setHeroSliderExitDirection] = useState("left");
 
   const text = copy[lang];
   const hiddenByOverlay = isMenuOpen || showProjects || isModalOpen || isAboutOpen || isContactOpen;
@@ -131,8 +132,9 @@ export default function Home() {
 
   const openProjectFromHeroSlider = (project) => {
     if (isHeroSliderExiting || isModalOpen || isClosing) return;
+    setHeroSliderExitDirection("up");
     setIsHeroSliderExiting(true);
-    setTimeout(() => openProjectModal(project), 360);
+    setTimeout(() => openProjectModal(project), 620);
   };
 
   const closeProjectModal = () => {
@@ -149,7 +151,10 @@ export default function Home() {
 
   useEffect(() => {
     if (!showLoader && !isMenuOpen && !showProjects && !isAboutOpen && !isContactOpen && !isModalOpen) {
-      const timer = setTimeout(() => setIsHeroSliderExiting(false), 80);
+      const timer = setTimeout(() => {
+        setIsHeroSliderExiting(false);
+        setHeroSliderExitDirection("left");
+      }, 80);
       return () => clearTimeout(timer);
     }
     return undefined;
@@ -247,6 +252,7 @@ export default function Home() {
             lang={lang}
             isVisible={canShowHeroSlider}
             onOpenProject={openProjectFromHeroSlider}
+            exitDirection={heroSliderExitDirection}
           />
         )}
 

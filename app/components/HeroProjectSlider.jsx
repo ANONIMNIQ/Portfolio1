@@ -63,7 +63,7 @@ function HeroSlideCard({ project, depth, offset, isVisible, lang, onOpenProject,
   );
 }
 
-export default function HeroProjectSlider({ projects, lang, isVisible, onOpenProject }) {
+export default function HeroProjectSlider({ projects, lang, isVisible, onOpenProject, exitDirection = "left" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [parallaxX, setParallaxX] = useState(0);
   const [isFocusedHovered, setIsFocusedHovered] = useState(false);
@@ -128,12 +128,14 @@ export default function HeroProjectSlider({ projects, lang, isVisible, onOpenPro
     if (deltaY < 0) prev();
   };
 
+  const hiddenAnimation = exitDirection === "up" ? { opacity: 0, x: 0, y: -280 } : { opacity: 0, x: -320, y: 0 };
+
   return (
     <motion.section
       className="hero-slider-shell"
       initial={{ opacity: 0, x: 220 }}
-      animate={isVisible ? { opacity: 1, x: 0 } : { opacity: 0, x: -320 }}
-      transition={{ duration: isVisible ? 0.45 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+      animate={isVisible ? { opacity: 1, x: 0, y: 0 } : hiddenAnimation}
+      transition={{ duration: isVisible ? 0.52 : 0.62, ease: [0.22, 1, 0.36, 1] }}
       aria-hidden={!isVisible}
       style={{ pointerEvents: "none" }}
     >
