@@ -16,16 +16,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const zoom = clamp((primarySceneProgress - 0.2) / 0.34);
-    const note = clamp((primarySceneProgress - 0.58) / 0.28);
-    const follow = clamp((primarySceneProgress - 0.9) / 0.08);
+    const zoom = clamp((primarySceneProgress - 0.16) / 0.3);
+    const note = clamp((primarySceneProgress - 0.46) / 0.34);
+    const follow = clamp((primarySceneProgress - 0.82) / 0.12);
     return { zoom, note, follow };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
-    const zoom = clamp((secondarySceneProgress - 0.22) / 0.34);
-    const note = clamp((secondarySceneProgress - 0.6) / 0.26);
+    const zoom = clamp((secondarySceneProgress - 0.18) / 0.3);
+    const note = clamp((secondarySceneProgress - 0.5) / 0.3);
     return { zoom, note };
   }, [secondarySceneProgress]);
 
@@ -62,8 +62,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const sceneTop = scene.offsetTop;
     const sceneHeight = scene.offsetHeight;
     const viewportHeight = scroller.clientHeight;
-    const startOffset = isPrimaryScene ? 0.18 : 0.2;
-    const endOffset = isPrimaryScene ? 0.12 : 0.1;
+    const startOffset = isPrimaryScene ? 0.2 : 0.22;
+    const endOffset = isPrimaryScene ? 0.42 : 0.4;
     const start = sceneTop - viewportHeight * startOffset;
     const end = sceneTop + sceneHeight - viewportHeight * endOffset;
     const range = Math.max(end - start, 1);

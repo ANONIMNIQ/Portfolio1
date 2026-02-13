@@ -942,6 +942,14 @@
     margin-bottom: clamp(2.8rem, 5.4vh, 4.2rem);
   }
 
+  .project-modal .modal-scroll-scene-primary {
+    min-height: 168vh;
+  }
+
+  .project-modal .modal-scroll-scene-secondary {
+    min-height: 176vh;
+  }
+
   .project-modal .modal-scroll-stage {
     top: clamp(180px, 26vh, 300px);
     min-height: clamp(420px, 54vh, 620px);
