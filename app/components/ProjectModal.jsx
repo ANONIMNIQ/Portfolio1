@@ -1,15 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, X } from "lucide-react";
 import Magnet from "./Magnet";
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [sceneProgress, setSceneProgress] = useState(0);
+  const sceneRef = useRef(null);
+  const bodyRef = useRef(null);
+
+  const phases = useMemo(() => {
+    const clamp = (value) => Math.min(1, Math.max(0, value));
+    const image = clamp(sceneProgress / 0.55);
+    const note = clamp((sceneProgress - 0.44) / 0.26);
+    const final = clamp((sceneProgress - 0.72) / 0.24);
+    return { image, note, final };
+  }, [sceneProgress]);
+
+  const updateSceneProgress = (scroller) => {
+    if (!sceneRef.current || !scroller) return;
+
+    const sceneTop = sceneRef.current.offsetTop;
+    const sceneHeight = sceneRef.current.offsetHeight;
+    const viewportHeight = scroller.clientHeight;
+    const start = sceneTop - viewportHeight * 0.52;
+    const end = sceneTop + sceneHeight - viewportHeight * 0.48;
+    const range = Math.max(end - start, 1);
+    const value = (scroller.scrollTop - start) / range;
+    const clamped = Math.min(1, Math.max(0, value));
+
+    setSceneProgress(clamped);
+  };
+
+  const handleBodyScroll = (event) => {
+    onScroll?.(event);
+    updateSceneProgress(event.currentTarget);
+  };
 
   useEffect(() => {
     setIsImageLoaded(false);
+    setSceneProgress(0);
   }, [activeProject?.id]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = requestAnimationFrame(() => {
+      updateSceneProgress(bodyRef.current);
+    });
+    return () => cancelAnimationFrame(timer);
+  }, [isOpen, activeProject?.id]);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -33,25 +73,54 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
             </div>
           </div>
 
-          <div className="modal-body" onScroll={onScroll} onWheel={onWheel}>
+          <div ref={bodyRef} className="modal-body" onScroll={handleBodyScroll} onWheel={onWheel}>
             <div className="modal-content-wrap">
-              <div className={`modal-media-wrap ${isImageLoaded ? "is-loaded" : ""}`}>
-                <div className="modal-media-skeleton" aria-hidden="true" />
-                <img
-                  src={activeProject.image}
-                  alt={activeProject[lang].title}
-                  className={`modal-media-img ${isImageLoaded ? "is-loaded" : ""}`}
-                  onLoad={() => setIsImageLoaded(true)}
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
               <div className="modal-text">
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
                 <p className="modal-desc">{activeProject[lang].description}</p>
                 <p className="modal-paragraph">{text.modalStory}</p>
-                <p className="modal-paragraph">{text.modalTech}</p>
+                <section ref={sceneRef} className="modal-scroll-scene" aria-label="Project visual reveal">
+                  <div className="modal-scroll-stage">
+                    <div
+                      className={`modal-scroll-media ${isImageLoaded ? "is-loaded" : ""}`}
+                      style={{
+                        transform: `translate3d(${(1 - phases.image) * 116}%, 0, 0)`,
+                        opacity: 0.2 + phases.image * 0.8,
+                      }}
+                    >
+                      <div className={`modal-media-wrap ${isImageLoaded ? "is-loaded" : ""}`}>
+                        <div className="modal-media-skeleton" aria-hidden="true" />
+                        <img
+                          src={activeProject.modalImage || activeProject.image}
+                          alt={activeProject[lang].title}
+                          className={`modal-media-img ${isImageLoaded ? "is-loaded" : ""}`}
+                          onLoad={() => setIsImageLoaded(true)}
+                          loading="eager"
+                          decoding="async"
+                        />
+                      </div>
+                    </div>
+                    <p
+                      className="modal-responsive-note"
+                      style={{
+                        opacity: phases.note,
+                        transform: `translate3d(0, ${(1 - phases.note) * 28}px, 0)`,
+                      }}
+                    >
+                      {text.modalResponsive}
+                    </p>
+                  </div>
+                </section>
+                <p
+                  className="modal-paragraph modal-final-paragraph"
+                  style={{
+                    opacity: phases.final,
+                    transform: `translate3d(0, ${(1 - phases.final) * 30}px, 0)`,
+                  }}
+                >
+                  {text.modalTech}
+                </p>
               </div>
             </div>
           </div>

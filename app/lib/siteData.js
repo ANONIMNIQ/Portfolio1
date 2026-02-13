@@ -32,6 +32,7 @@ export const copy = {
       "Внедряваме изкуствен интелект и WebGL (Three.js), за да създадем интерактивни преживявания, които оставят следа.",
     modalStory:
       "Проектът е реализиран с акцент върху визуалния разказ и потребителското изживяване. Всяка анимация е проектирана да подсилва съдържанието, без да го натоварва.",
+    modalResponsive: "Дизайнът е респонсив и оптимизиран за всички устройства.",
     modalTech:
       "Интеграцията на най-модерните фронт-енд технологии позволява постигането на плавност, която се усеща органично. Използването на AI инструменти оптимизира процеса на разработка и добавя интелигентни функционалности, които правят сайта жив.",
     contactTitle: "Да изградим нещо значимо заедно.",
@@ -71,6 +72,7 @@ export const copy = {
       "We implement artificial intelligence and WebGL (Three.js) to create interactive experiences that leave a mark.",
     modalStory:
       "The project was realized with an emphasis on visual storytelling and user experience. Each animation is designed to enhance the content without overwhelming it.",
+    modalResponsive: "The design is responsive and optimized for all devices.",
     modalTech:
       "The integration of cutting-edge front-end technologies allows for a fluidity that feels organic. Using AI tools optimizes the development process and adds intelligent features that make the site alive.",
     contactTitle: "Let's build something meaningful together.",
@@ -102,6 +104,7 @@ export const projects = [
     tags: ["UI Systems", "React", "Cinema"],
     theme: "three",
     image: "/assets/project-3.png",
+    modalImage: "/assets/project-4.png",
   },
   {
     id: "incognito",
@@ -120,6 +123,7 @@ export const projects = [
     tags: ["AI Integration", "Next.js", "Community"],
     theme: "one",
     image: "/assets/project-1.png",
+    modalImage: "/assets/project-2.png",
   },
   {
     id: "horizonti",
@@ -138,6 +142,7 @@ export const projects = [
     tags: ["Editorial", "Motion", "Podcast"],
     theme: "two",
     image: "/assets/project-2.png",
+    modalImage: "/assets/project-3.png",
   },
   {
     id: "wr1te-pages",
@@ -156,5 +161,6 @@ export const projects = [
     tags: ["Productivity", "SaaS", "Typography"],
     theme: "one",
     image: "/assets/project-4.png",
+    modalImage: "/assets/project-1.png",
   },
 ];
