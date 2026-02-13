@@ -68,22 +68,23 @@ export default function ContactModal({ isOpen, onClose, text }) {
                           const name = String(formData.get("name") || "").trim();
                           const email = String(formData.get("email") || "").trim();
                           const message = String(formData.get("message") || "").trim();
+                          if (!externalEndpoint) {
+                            throw new Error("Missing NEXT_PUBLIC_CONTACT_FORM_ENDPOINT");
+                          }
 
-                          const response = await fetch(externalEndpoint || "/api/contact", {
+                          const response = await fetch(externalEndpoint, {
                             method: "POST",
                             headers: {
                               "Content-Type": "application/json",
                               Accept: "application/json",
                             },
-                            body: externalEndpoint
-                              ? JSON.stringify({
-                                  name,
-                                  email,
-                                  message,
-                                  _captcha: "false",
-                                  _subject: `Website contact from ${name}`,
-                                })
-                              : JSON.stringify({ name, email, message }),
+                            body: JSON.stringify({
+                              name,
+                              email,
+                              message,
+                              _captcha: "false",
+                              _subject: `Website contact from ${name}`,
+                            }),
                           });
 
                           if (!response.ok) {
