@@ -13,6 +13,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   const bodyRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const primaryProgressRef = useRef(0);
+  const secondaryProgressRef = useRef(0);
+  const primaryTargetProgressRef = useRef(0);
+  const secondaryTargetProgressRef = useRef(0);
 
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
@@ -71,10 +76,55 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     return Math.min(1, Math.max(0, value));
   };
 
-  const updateSceneProgresses = (scroller) => {
+  const scheduleProgressAnimation = () => {
+    if (animationFrameRef.current) return;
+    const animate = () => {
+      const smoothing = 0.2;
+      const snap = 0.0015;
+
+      const nextPrimary =
+        primaryProgressRef.current + (primaryTargetProgressRef.current - primaryProgressRef.current) * smoothing;
+      const nextSecondary =
+        secondaryProgressRef.current +
+        (secondaryTargetProgressRef.current - secondaryProgressRef.current) * smoothing;
+
+      const primaryDistance = Math.abs(primaryTargetProgressRef.current - nextPrimary);
+      const secondaryDistance = Math.abs(secondaryTargetProgressRef.current - nextSecondary);
+
+      primaryProgressRef.current = primaryDistance < snap ? primaryTargetProgressRef.current : nextPrimary;
+      secondaryProgressRef.current = secondaryDistance < snap ? secondaryTargetProgressRef.current : nextSecondary;
+
+      setPrimarySceneProgress(primaryProgressRef.current);
+      setSecondarySceneProgress(secondaryProgressRef.current);
+
+      if (primaryDistance < snap && secondaryDistance < snap) {
+        animationFrameRef.current = null;
+        return;
+      }
+
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
+  };
+
+  const updateSceneProgresses = (scroller, immediate = false) => {
     if (!scroller) return;
-    setPrimarySceneProgress(getSceneProgress(primarySceneRef.current, scroller));
-    setSecondarySceneProgress(getSceneProgress(secondarySceneRef.current, scroller));
+    const nextPrimary = getSceneProgress(primarySceneRef.current, scroller);
+    const nextSecondary = getSceneProgress(secondarySceneRef.current, scroller);
+
+    primaryTargetProgressRef.current = nextPrimary;
+    secondaryTargetProgressRef.current = nextSecondary;
+
+    if (immediate) {
+      primaryProgressRef.current = nextPrimary;
+      secondaryProgressRef.current = nextSecondary;
+      setPrimarySceneProgress(nextPrimary);
+      setSecondarySceneProgress(nextSecondary);
+      return;
+    }
+
+    scheduleProgressAnimation();
   };
 
   const handleBodyScroll = (event) => {
@@ -87,16 +137,29 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     setIsSecondarySceneImageLoaded(false);
     setPrimarySceneProgress(0);
     setSecondarySceneProgress(0);
+    primaryProgressRef.current = 0;
+    secondaryProgressRef.current = 0;
+    primaryTargetProgressRef.current = 0;
+    secondaryTargetProgressRef.current = 0;
     setSecondaryImageSrc(activeProject?.modalImage || activeProject?.image || "");
   }, [activeProject?.id]);
 
   useEffect(() => {
     if (!isOpen) return;
     const timer = requestAnimationFrame(() => {
-      updateSceneProgresses(bodyRef.current);
+      updateSceneProgresses(bodyRef.current, true);
     });
     return () => cancelAnimationFrame(timer);
   }, [isOpen, activeProject?.id]);
+
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+  }, []);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
