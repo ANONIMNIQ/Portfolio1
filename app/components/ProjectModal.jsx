@@ -105,8 +105,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const paragraphRect = paragraph.getBoundingClientRect();
     const scrollerRect = scroller.getBoundingClientRect();
-    const start = scrollerRect.top + 70;
-    const end = scrollerRect.top - 60;
+    const start = scrollerRect.top + 28;
+    const end = scrollerRect.top - 18;
     return clamp((start - paragraphRect.bottom) / Math.max(start - end, 1));
   };
 
@@ -291,8 +291,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
   const effectivePrimaryZoom = Math.max(primaryPhases.zoom, primaryAutoZoomProgress);
   const effectiveSecondaryZoom = Math.max(secondaryPhases.zoom, secondaryAutoZoomProgress);
-  const effectivePrimaryNote = primaryPhases.note * primaryNoteGateProgress;
-  const effectiveSecondaryNote = secondaryPhases.note * secondaryNoteGateProgress;
+  const effectivePrimaryNote = Math.min(1, primaryPhases.note + primaryNoteGateProgress * 0.44);
+  const effectiveSecondaryNote = Math.min(1, secondaryPhases.note + secondaryNoteGateProgress * 0.44);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
