@@ -9,6 +9,7 @@ export default function ContactModal({ isOpen, onClose, text }) {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const externalEndpoint = process.env.NEXT_PUBLIC_CONTACT_FORM_ENDPOINT || "";
 
   return (
     <div className={`modal contact-modal ${isOpen ? "is-open" : ""}`} aria-hidden={!isOpen}>
@@ -64,14 +65,25 @@ export default function ContactModal({ isOpen, onClose, text }) {
                         const formData = new FormData(form);
 
                         try {
-                          const response = await fetch("/api/contact", {
+                          const name = String(formData.get("name") || "").trim();
+                          const email = String(formData.get("email") || "").trim();
+                          const message = String(formData.get("message") || "").trim();
+
+                          const response = await fetch(externalEndpoint || "/api/contact", {
                             method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              name: String(formData.get("name") || "").trim(),
-                              email: String(formData.get("email") || "").trim(),
-                              message: String(formData.get("message") || "").trim(),
-                            }),
+                            headers: {
+                              "Content-Type": "application/json",
+                              Accept: "application/json",
+                            },
+                            body: externalEndpoint
+                              ? JSON.stringify({
+                                  name,
+                                  email,
+                                  message,
+                                  _captcha: "false",
+                                  _subject: `Website contact from ${name}`,
+                                })
+                              : JSON.stringify({ name, email, message }),
                           });
 
                           if (!response.ok) {
