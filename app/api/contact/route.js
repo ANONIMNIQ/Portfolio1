@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 const RESEND_ENDPOINT = "https://api.resend.com/emails";
+export const runtime = "edge";
 
 function validatePayload(payload) {
   if (!payload || typeof payload !== "object") return "Invalid payload";
