@@ -16,14 +16,14 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const primaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const image = clamp(primarySceneProgress / 0.56);
-    const note = clamp((primarySceneProgress - 0.58) / 0.34);
+    const note = clamp((primarySceneProgress - 0.44) / 0.5);
     return { image, note };
   }, [primarySceneProgress]);
 
   const secondaryPhases = useMemo(() => {
     const clamp = (value) => Math.min(1, Math.max(0, value));
     const image = clamp(secondarySceneProgress / 0.56);
-    const note = clamp((secondarySceneProgress - 0.58) / 0.34);
+    const note = clamp((secondarySceneProgress - 0.44) / 0.5);
     return { image, note };
   }, [secondarySceneProgress]);
 
@@ -120,10 +120,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
                 <p className="modal-desc">{activeProject[lang].description}</p>
-                <section ref={primarySceneRef} className="modal-scroll-scene" aria-label="Project visual reveal">
+                <section ref={primarySceneRef} className="modal-scroll-scene modal-scroll-scene-primary" aria-label="Project visual reveal">
                   <div className="modal-scroll-stage modal-scroll-stage-right">
                     <div
-                      className={`modal-scroll-media ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
+                      className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(-${(1 - primaryPhases.image) * 118}%, 0, 0)`,
                         opacity: 0.18 + primaryPhases.image * 0.82,
@@ -161,10 +161,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                   </div>
                 </section>
                 <p className="modal-paragraph">{text.modalStory}</p>
-                <section ref={secondarySceneRef} className="modal-scroll-scene" aria-label="Responsive design visual reveal">
+                <section ref={secondarySceneRef} className="modal-scroll-scene modal-scroll-scene-secondary" aria-label="Responsive design visual reveal">
                   <div className="modal-scroll-stage modal-scroll-stage-left">
                     <div
-                      className={`modal-scroll-media ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
+                      className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}
                       style={{
                         transform: `translate3d(${(1 - secondaryPhases.image) * 118}%, 0, 0)`,
                         opacity: 0.18 + secondaryPhases.image * 0.82,
