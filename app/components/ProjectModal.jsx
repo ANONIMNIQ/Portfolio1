@@ -5,9 +5,10 @@ import { ExternalLink, X } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Observer } from "gsap/Observer";
+import { ScrollSmoother } from "gsap/ScrollSmoother";
 import Magnet from "./Magnet";
 
-gsap.registerPlugin(ScrollTrigger, Observer);
+gsap.registerPlugin(ScrollTrigger, Observer, ScrollSmoother);
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
@@ -15,6 +16,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const [secondaryImageSrc, setSecondaryImageSrc] = useState("");
 
   const bodyRef = useRef(null);
+  const contentWrapRef = useRef(null);
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   const primaryMediaRef = useRef(null);
@@ -60,12 +62,26 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   }, [activeProject?.id]);
 
   useLayoutEffect(() => {
-    if (!isOpen || !activeProject || !bodyRef.current) return;
+    if (!isOpen || !activeProject || !bodyRef.current || !contentWrapRef.current) return;
 
     const scroller = bodyRef.current;
     let observer;
+    let smoother;
 
     const ctx = gsap.context(() => {
+      const existingSmoother = ScrollSmoother.get();
+      if (existingSmoother) existingSmoother.kill();
+
+      smoother = ScrollSmoother.create({
+        wrapper: scroller,
+        content: contentWrapRef.current,
+        smooth: 0.9,
+        smoothTouch: 0.12,
+        normalizeScroll: true,
+        effects: false,
+        ignoreMobileResize: true,
+      });
+
       const primaryLines = primaryLineRefs.current.filter(Boolean);
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
 
@@ -215,6 +231,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
     return () => {
       if (observer) observer.kill();
+      if (smoother) smoother.kill();
       ctx.revert();
     };
   }, [isOpen, activeProject?.id, noteLines, responsiveLines]);
@@ -242,7 +259,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           </div>
 
           <div ref={bodyRef} className="modal-body" onScroll={onScroll} onWheel={onWheel}>
-            <div className="modal-content-wrap">
+            <div ref={contentWrapRef} className="modal-content-wrap">
               <div className="modal-text">
                 <h2 className="modal-title">{activeProject[lang].title}</h2>
                 <div className="modal-tags">{activeProject.tags.join(" • ")}</div>
