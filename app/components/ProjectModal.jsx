@@ -4,10 +4,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, X } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Observer } from "gsap/Observer";
 import Magnet from "./Magnet";
 
-gsap.registerPlugin(ScrollTrigger, Observer);
+gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
@@ -63,7 +62,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     if (!isOpen || !activeProject || !bodyRef.current) return;
 
     const scroller = bodyRef.current;
-    let observer;
 
     const ctx = gsap.context(() => {
       const primaryLines = primaryLineRefs.current.filter(Boolean);
@@ -100,7 +98,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           scroller,
           start: "top 84%",
           end: "bottom 44%",
-          scrub: 0.55,
+          scrub: 1.05,
+          fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
       })
@@ -154,7 +153,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           scroller,
           start: "top 84%",
           end: "bottom 44%",
-          scrub: 0.55,
+          scrub: 1.05,
+          fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
       })
@@ -202,19 +202,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           0.36
         );
 
-      observer = Observer.create({
-        target: scroller,
-        type: "wheel,touch",
-        tolerance: 2,
-        preventDefault: false,
-        onChangeY: () => ScrollTrigger.update(),
-      });
-
       ScrollTrigger.refresh();
     }, bodyRef);
 
     return () => {
-      if (observer) observer.kill();
       ctx.revert();
     };
   }, [isOpen, activeProject?.id, noteLines, responsiveLines]);
