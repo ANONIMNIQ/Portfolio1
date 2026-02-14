@@ -4,9 +4,10 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { ExternalLink, X } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Observer } from "gsap/Observer";
 import Magnet from "./Magnet";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Observer);
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
   const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
@@ -62,168 +63,186 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     if (!isOpen || !activeProject || !bodyRef.current) return;
 
     const scroller = bodyRef.current;
+    let observer;
 
     const ctx = gsap.context(() => {
       const primaryLines = primaryLineRefs.current.filter(Boolean);
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
+      let primaryRevealTl;
+      let primarySettleTl;
+      let secondaryRevealTl;
+      let secondarySettleTl;
 
-      gsap.set(primaryMediaRef.current, {
-        autoAlpha: 0,
-        filter: "blur(14px)",
-        scale: 0.58,
-        xPercent: 1,
-        y: 72,
-        transformOrigin: "center top",
-      });
+      const computeMediaOffsets = (element) => {
+        gsap.set(element, { x: 0, y: 0, clearProps: "scale,filter,xPercent" });
+        const rect = element.getBoundingClientRect();
+        const scrollerRect = scroller.getBoundingClientRect();
+        const centerX = scrollerRect.left + scroller.clientWidth / 2;
+        const finalCenterX = rect.left + rect.width / 2;
 
-      gsap.set(secondaryMediaRef.current, {
-        autoAlpha: 0,
-        filter: "blur(14px)",
-        scale: 0.6,
-        xPercent: 1,
-        y: 68,
-        transformOrigin: "center top",
-      });
+        const hiddenTop = scrollerRect.top + scroller.clientHeight + rect.height * 0.18;
+        const peekTop = scrollerRect.top + scroller.clientHeight - rect.height * 0.5;
+        const centeredTop = scrollerRect.top + (scroller.clientHeight - rect.height) / 2;
 
-      gsap.set(primaryNoteRef.current, { autoAlpha: 0 });
-      gsap.set(secondaryNoteRef.current, { autoAlpha: 0 });
-      gsap.set(primaryLines, { autoAlpha: 0, y: 14 });
-      gsap.set(secondaryLines, { autoAlpha: 0, y: 14 });
-      gsap.set(descriptionRef.current, { y: 0, autoAlpha: 1 });
-      gsap.set(followupRef.current, { y: 0, autoAlpha: 1 });
+        return {
+          xCenter: centerX - finalCenterX,
+          yHidden: hiddenTop - rect.top,
+          yPeek: peekTop - rect.top,
+          yCenter: centeredTop - rect.top,
+        };
+      };
 
-      const primaryIntroTl = gsap.timeline({ paused: true }).to(
+      const buildSceneTimelines = (mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
+        const m = computeMediaOffsets(mediaEl);
+
+        gsap.set(mediaEl, {
+          autoAlpha: 1,
+          x: m.xCenter,
+          y: m.yHidden,
+        });
+
+        gsap.set(revealRef.current, { autoAlpha: 0 });
+        gsap.set(lines, { autoAlpha: 0, y: 14 });
+        gsap.set(paragraphEl, { y: 0, autoAlpha: 1 });
+
+        const revealTl = gsap
+          .timeline({ paused: true })
+          .to(mediaEl, {
+            x: m.xCenter,
+            y: m.yPeek,
+            duration: 0.6,
+            ease: "power2.out",
+          })
+          .to(
+            paragraphEl,
+            {
+              yPercent: -48,
+              autoAlpha: 0.4,
+              duration: 0.54,
+              ease: "power1.out",
+            },
+            0.04
+          );
+
+        const settleTl = gsap
+          .timeline({ paused: true })
+          .to(mediaEl, {
+            x: m.xCenter,
+            y: m.yCenter,
+            duration: 0.46,
+            ease: "power2.inOut",
+          })
+          .to(mediaEl, {
+            x: 0,
+            y: 0,
+            duration: 0.42,
+            ease: "power2.out",
+          })
+          .to(
+            paragraphEl,
+            {
+              yPercent: -115,
+              autoAlpha: 0,
+              duration: 0.5,
+              ease: "power1.inOut",
+            },
+            0
+          );
+
+        const revealStart = isPrimary ? "top 86%" : "top 86%";
+        const revealEnd = isPrimary ? "bottom 94%" : "bottom 94%";
+        const settleStart = isPrimary ? "bottom 6%" : "bottom 6%";
+        const settleEnd = isPrimary ? "bottom -28%" : "bottom -28%";
+        const noteStart = isPrimary ? "top 44%" : "top 44%";
+
+        ScrollTrigger.create({
+          trigger: paragraphEl,
+          scroller,
+          start: revealStart,
+          end: revealEnd,
+          invalidateOnRefresh: true,
+          onEnter: () => revealTl.play(),
+          onEnterBack: () => revealTl.play(),
+          onLeaveBack: () => revealTl.reverse(),
+        });
+
+        ScrollTrigger.create({
+          trigger: paragraphEl,
+          scroller,
+          start: settleStart,
+          end: settleEnd,
+          invalidateOnRefresh: true,
+          onEnter: () => settleTl.play(),
+          onEnterBack: () => settleTl.play(),
+          onLeaveBack: () => settleTl.reverse(),
+        });
+
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: isPrimary ? primarySceneRef.current : secondarySceneRef.current,
+            scroller,
+            start: noteStart,
+            end: "bottom 44%",
+            scrub: 0.86,
+            fastScrollEnd: true,
+            invalidateOnRefresh: true,
+          },
+        }).to(
+          revealRef.current,
+          {
+            autoAlpha: 1,
+            duration: 0.06,
+            ease: "none",
+          },
+          0
+        ).to(
+          lines,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: isPrimary ? 0.22 : 0.24,
+            stagger: isPrimary ? 0.12 : 0.16,
+            ease: "none",
+          },
+          0.02
+        );
+
+        return { revealTl, settleTl };
+      };
+
+      ({ revealTl: primaryRevealTl, settleTl: primarySettleTl } = buildSceneTimelines(
         primaryMediaRef.current,
-        {
-          autoAlpha: 1,
-          filter: "blur(0px)",
-          scale: 1,
-          xPercent: 0,
-          y: -22,
-          duration: 0.74,
-          ease: "power2.out",
-        },
-        0
-      ).to(
         descriptionRef.current,
-        {
-          yPercent: -90,
-          autoAlpha: 0,
-          duration: 0.76,
-          ease: "power1.inOut",
-        },
-        0.06
-      );
-
-      ScrollTrigger.create({
-        trigger: primarySceneRef.current,
-        scroller,
-        start: "top 84%",
-        end: "top 58%",
-        invalidateOnRefresh: true,
-        onEnter: () => primaryIntroTl.play(),
-        onEnterBack: () => primaryIntroTl.play(),
-        onLeaveBack: () => primaryIntroTl.reverse(),
-      });
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: primarySceneRef.current,
-          scroller,
-          start: "top 46%",
-          end: "bottom 44%",
-          scrub: 0.92,
-          fastScrollEnd: true,
-          invalidateOnRefresh: true,
-        },
-      }).to(
-        primaryNoteRef.current,
-        {
-          autoAlpha: 1,
-          duration: 0.06,
-          ease: "none",
-        },
-        0
-      ).to(
+        primaryNoteRef,
         primaryLines,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.22,
-          stagger: 0.12,
-          ease: "none",
-        },
-        0.02
-      );
+        true
+      ));
 
-      const secondaryIntroTl = gsap.timeline({ paused: true }).to(
+      ({ revealTl: secondaryRevealTl, settleTl: secondarySettleTl } = buildSceneTimelines(
         secondaryMediaRef.current,
-        {
-          autoAlpha: 1,
-          filter: "blur(0px)",
-          scale: 1,
-          xPercent: 0,
-          y: -18,
-          duration: 0.72,
-          ease: "power2.out",
-        },
-        0
-      ).to(
         followupRef.current,
-        {
-          yPercent: -86,
-          autoAlpha: 0,
-          duration: 0.72,
-          ease: "power1.inOut",
-        },
-        0.06
-      );
-
-      ScrollTrigger.create({
-        trigger: secondarySceneRef.current,
-        scroller,
-        start: "top 84%",
-        end: "top 58%",
-        invalidateOnRefresh: true,
-        onEnter: () => secondaryIntroTl.play(),
-        onEnterBack: () => secondaryIntroTl.play(),
-        onLeaveBack: () => secondaryIntroTl.reverse(),
-      });
-
-      gsap.timeline({
-        scrollTrigger: {
-          trigger: secondarySceneRef.current,
-          scroller,
-          start: "top 46%",
-          end: "bottom 44%",
-          scrub: 0.92,
-          fastScrollEnd: true,
-          invalidateOnRefresh: true,
-        },
-      }).to(
-        secondaryNoteRef.current,
-        {
-          autoAlpha: 1,
-          duration: 0.06,
-          ease: "none",
-        },
-        0
-      ).to(
+        secondaryNoteRef,
         secondaryLines,
-        {
-          autoAlpha: 1,
-          y: 0,
-          duration: 0.24,
-          stagger: 0.16,
-          ease: "none",
-        },
-        0.02
-      );
+        false
+      ));
+
+      observer = Observer.create({
+        target: scroller,
+        type: "wheel,touch,pointer",
+        tolerance: 1,
+        preventDefault: false,
+        onChangeY: () => ScrollTrigger.update(),
+      });
 
       ScrollTrigger.refresh();
     }, bodyRef);
 
     return () => {
+      if (observer) observer.kill();
+      if (primaryRevealTl) primaryRevealTl.kill();
+      if (primarySettleTl) primarySettleTl.kill();
+      if (secondaryRevealTl) secondaryRevealTl.kill();
+      if (secondarySettleTl) secondarySettleTl.kill();
       ctx.revert();
     };
   }, [isOpen, activeProject?.id, noteLines, responsiveLines]);
