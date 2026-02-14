@@ -79,6 +79,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       const buildSceneTimelines = (stageEl, mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
         const finalXPercent = 0;
         let autoScrollTween = null;
+        let stepEnableCall = null;
+        let stepTl = null;
 
         gsap.set(mediaEl, {
           autoAlpha: 0,
@@ -177,24 +179,47 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
               ease: "power2.out",
               overwrite: "auto",
             });
+
+            if (stepEnableCall) stepEnableCall.kill();
+            if (stepTl?.scrollTrigger) {
+              stepTl.scrollTrigger.disable();
+            }
+            stepEnableCall = gsap.delayedCall(0.64, () => {
+              if (stepTl?.scrollTrigger) {
+                stepTl.scrollTrigger.enable();
+                ScrollTrigger.refresh();
+              }
+            });
           },
           onEnterBack: () => {
+            if (stepEnableCall) stepEnableCall.kill();
             if (autoScrollTween) autoScrollTween.kill();
+            if (stepTl?.scrollTrigger) {
+              stepTl.scrollTrigger.disable();
+            }
+            gsap.set(revealRef.current, { autoAlpha: 0 });
+            gsap.set(lines, { autoAlpha: 0, y: 14 });
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
           onLeaveBack: () => {
+            if (stepEnableCall) stepEnableCall.kill();
             if (autoScrollTween) autoScrollTween.kill();
+            if (stepTl?.scrollTrigger) {
+              stepTl.scrollTrigger.disable();
+            }
+            gsap.set(revealRef.current, { autoAlpha: 0 });
+            gsap.set(lines, { autoAlpha: 0, y: 14 });
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
         });
 
-        gsap.timeline({
+        stepTl = gsap.timeline({
           scrollTrigger: {
-            trigger: paragraphEl,
+            trigger: stageEl,
             scroller,
-            start: "bottom top+=16",
+            start: "top top+=48",
             end: isPrimary ? "+=1280" : "+=980",
             pin: stageEl,
             pinSpacing: true,
@@ -222,6 +247,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           },
           0.02
         );
+
+        if (stepTl.scrollTrigger) {
+          stepTl.scrollTrigger.disable();
+        }
       };
 
       buildSceneTimelines(primaryStageRef.current, primaryMediaRef.current, descriptionRef.current, primaryNoteRef, primaryLines, true);
