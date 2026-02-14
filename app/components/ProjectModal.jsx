@@ -72,7 +72,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         filter: "blur(14px)",
         scale: 0.58,
         xPercent: 1,
-        y: 3,
+        y: 72,
         transformOrigin: "center top",
       });
 
@@ -81,7 +81,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         filter: "blur(14px)",
         scale: 0.6,
         xPercent: 1,
-        y: 3,
+        y: 68,
         transformOrigin: "center top",
       });
 
@@ -99,20 +99,20 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           filter: "blur(0px)",
           scale: 1,
           xPercent: 0,
-          y: 0,
-          duration: 0.46,
-          ease: "power3.out",
+          y: -22,
+          duration: 0.74,
+          ease: "power2.out",
         },
         0
       ).to(
         descriptionRef.current,
         {
-          yPercent: -128,
+          yPercent: -90,
           autoAlpha: 0,
-          duration: 0.42,
-          ease: "power2.out",
+          duration: 0.76,
+          ease: "power1.inOut",
         },
-        0.02
+        0.06
       );
 
       ScrollTrigger.create({
@@ -130,7 +130,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         scrollTrigger: {
           trigger: primarySceneRef.current,
           scroller,
-          start: "top 56%",
+          start: "top 46%",
           end: "bottom 44%",
           scrub: 0.92,
           fastScrollEnd: true,
@@ -163,20 +163,20 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           filter: "blur(0px)",
           scale: 1,
           xPercent: 0,
-          y: 0,
-          duration: 0.46,
-          ease: "power3.out",
+          y: -18,
+          duration: 0.72,
+          ease: "power2.out",
         },
         0
       ).to(
         followupRef.current,
         {
-          yPercent: -118,
+          yPercent: -86,
           autoAlpha: 0,
-          duration: 0.4,
-          ease: "power2.out",
+          duration: 0.72,
+          ease: "power1.inOut",
         },
-        0.02
+        0.06
       );
 
       ScrollTrigger.create({
@@ -194,7 +194,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         scrollTrigger: {
           trigger: secondarySceneRef.current,
           scroller,
-          start: "top 56%",
+          start: "top 46%",
           end: "bottom 44%",
           scrub: 0.92,
           fastScrollEnd: true,
