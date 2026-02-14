@@ -73,6 +73,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
       const buildSceneTimelines = (stageEl, mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
         const finalXPercent = isPrimary ? -11 : -8;
+        let autoScrollTween = null;
 
         gsap.set(mediaEl, {
           autoAlpha: 0,
@@ -158,12 +159,27 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
             revealTl.progress(1);
             settleToCenterTl.play();
             settleTl.play();
+
+            if (autoScrollTween) autoScrollTween.kill();
+            const stageRect = stageEl.getBoundingClientRect();
+            const scrollerRect = scroller.getBoundingClientRect();
+            const centerDelta = stageRect.top + stageRect.height / 2 - (scrollerRect.top + scroller.clientHeight / 2);
+            const targetScrollTop = Math.max(0, scroller.scrollTop + centerDelta);
+
+            autoScrollTween = gsap.to(scroller, {
+              scrollTop: targetScrollTop,
+              duration: 0.58,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
           },
           onEnterBack: () => {
+            if (autoScrollTween) autoScrollTween.kill();
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
           onLeaveBack: () => {
+            if (autoScrollTween) autoScrollTween.kill();
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
