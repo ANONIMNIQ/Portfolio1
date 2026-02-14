@@ -79,7 +79,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           x: 0,
           y: 0,
           xPercent: 0,
-          yPercent: 118,
+          yPercent: 126,
         });
 
         gsap.set(revealRef.current, { autoAlpha: 0 });
@@ -88,7 +88,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         const revealTl = gsap.timeline({ paused: true }).to(mediaEl, {
           autoAlpha: 1,
-          yPercent: 36,
+          yPercent: 20,
           duration: 0.68,
           ease: "power2.out",
         });
@@ -137,7 +137,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
             revealTl.progress(1);
             settleTl.play();
           },
-          onEnterBack: () => settleTl.play(),
+          onEnterBack: () => settleTl.reverse(),
           onLeaveBack: () => settleTl.reverse(),
         });
 
