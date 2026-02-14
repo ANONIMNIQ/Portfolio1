@@ -125,27 +125,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         ScrollTrigger.create({
           trigger: paragraphEl,
           scroller,
-          start: "top top",
-          end: "bottom top",
-          pin: mediaEl,
-          pinSpacing: false,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-          onEnter: () => {
-            revealTl.play();
-          },
-          onEnterBack: () => {
-            revealTl.play();
-          },
-          onLeaveBack: () => {
-            settleTl.pause(0);
-            revealTl.reverse();
-          },
-        });
-
-        ScrollTrigger.create({
-          trigger: paragraphEl,
-          scroller,
           start: "bottom top",
           end: "bottom top",
           invalidateOnRefresh: true,

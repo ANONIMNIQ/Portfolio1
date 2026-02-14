@@ -388,6 +388,7 @@
   gap: clamp(1rem, 3vw, 2.2rem);
   overflow: visible;
   padding-top: clamp(6px, 1.8vh, 18px);
+  z-index: 5;
 }
 
 .modal-scroll-stage-right {
@@ -401,6 +402,8 @@
   will-change: transform, opacity;
   pointer-events: none;
   align-self: start;
+  position: relative;
+  z-index: 6;
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -568,6 +571,8 @@
   margin-left: auto;
   margin-right: auto;
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .project-modal .modal-desc {
