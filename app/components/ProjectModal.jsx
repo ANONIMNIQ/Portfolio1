@@ -90,71 +90,53 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
       const buildSceneTimelines = (mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
         const m = computeMediaOffsets(mediaEl);
+        const leftNudge = -Math.min(96, Math.max(44, scroller.clientWidth * 0.058));
+        const finalX = m.xCenter + leftNudge;
+        const finalY = m.yCenter;
 
         gsap.set(mediaEl, {
-          autoAlpha: 1,
+          autoAlpha: 0,
           x: m.xCenter,
           y: m.yHidden,
         });
 
         gsap.set(revealRef.current, { autoAlpha: 0 });
         gsap.set(lines, { autoAlpha: 0, y: 14 });
-        gsap.set(paragraphEl, { y: 0, autoAlpha: 1 });
+        gsap.set(paragraphEl, { yPercent: 0, autoAlpha: 1 });
 
-        const revealTl = gsap.timeline({ paused: true }).to(
-          mediaEl,
-          {
-            x: m.xCenter,
-            y: m.yPeek,
-            duration: 0.52,
-            ease: "power2.out",
-          },
-          0
-        ).to(
-          paragraphEl,
-          {
-            yPercent: -36,
-            autoAlpha: 0.64,
-            duration: 0.5,
-            ease: "power1.out",
-          },
-          0.04
-        );
+        const revealTl = gsap.timeline({ paused: true }).to(mediaEl, {
+          autoAlpha: 1,
+          x: m.xCenter,
+          y: m.yPeek,
+          duration: 0.56,
+          ease: "power2.out",
+        });
 
         const settleTl = gsap.timeline({ paused: true }).to(
           mediaEl,
           {
             x: m.xCenter,
             y: m.yCenter,
-            duration: 0.48,
-            ease: "power2.inOut",
+            duration: 0.46,
+            ease: "power2.out",
           },
           0
         ).to(
           mediaEl,
           {
-            x: 0,
-            y: 0,
-            duration: 0.44,
+            x: finalX,
+            y: finalY,
+            duration: 0.42,
             ease: "power2.out",
           },
-          0.48
-        ).to(
-          paragraphEl,
-          {
-            yPercent: -112,
-            autoAlpha: 0,
-            duration: 0.58,
-            ease: "power1.inOut",
-          },
-          0
+          0.46
         );
 
         ScrollTrigger.create({
           trigger: paragraphEl,
           scroller,
-          start: "bottom bottom",
-          end: "bottom bottom",
+          start: "top top",
+          end: "top top",
           invalidateOnRefresh: true,
           onEnter: () => revealTl.play(),
           onEnterBack: () => revealTl.play(),
@@ -174,10 +156,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         gsap.timeline({
           scrollTrigger: {
-            trigger: isPrimary ? primarySceneRef.current : secondarySceneRef.current,
+            trigger: paragraphEl,
             scroller,
-            start: "top 40%",
-            end: "bottom 44%",
+            start: "bottom top",
+            end: "bottom top+=360",
             scrub: 0.86,
             fastScrollEnd: true,
             invalidateOnRefresh: true,
