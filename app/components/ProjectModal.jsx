@@ -48,6 +48,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     return lines;
   }, [text.modalTech]);
 
+  const primaryNoteColumns = useMemo(() => {
+    const middle = Math.ceil(noteLines.length / 2);
+    return [noteLines.slice(0, middle), noteLines.slice(middle)];
+  }, [noteLines]);
+
   const responsiveLines = useMemo(() => {
     if (lang === "bg") {
       return ["Дизайнът е респонсив", "и оптимизиран за", "всички устройства."];
@@ -72,7 +77,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
 
       const buildSceneTimelines = (stageEl, mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
-        const finalXPercent = isPrimary ? -11 : -8;
+        const finalXPercent = 0;
         let autoScrollTween = null;
 
         gsap.set(mediaEl, {
@@ -283,17 +288,24 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       </div>
                     </div>
 
-                    <div ref={primaryNoteRef} className="modal-responsive-note modal-responsive-note-primary" aria-label={text.modalTech}>
-                      {noteLines.map((line, index) => (
-                        <span
-                          key={`${line}-${index}`}
-                          ref={(node) => {
-                            primaryLineRefs.current[index] = node;
-                          }}
-                          className="modal-responsive-line"
-                        >
-                          {line}
-                        </span>
+                    <div ref={primaryNoteRef} className="modal-responsive-note modal-responsive-note-primary modal-responsive-note-primary-cols" aria-label={text.modalTech}>
+                      {primaryNoteColumns.map((column, colIndex) => (
+                        <div key={`col-${colIndex}`} className="modal-note-col">
+                          {column.map((line, lineIndex) => {
+                            const absoluteIndex = colIndex === 0 ? lineIndex : primaryNoteColumns[0].length + lineIndex;
+                            return (
+                              <span
+                                key={`${line}-${absoluteIndex}`}
+                                ref={(node) => {
+                                  primaryLineRefs.current[absoluteIndex] = node;
+                                }}
+                                className="modal-responsive-line"
+                              >
+                                {line}
+                              </span>
+                            );
+                          })}
+                        </div>
                       ))}
                     </div>
                   </div>

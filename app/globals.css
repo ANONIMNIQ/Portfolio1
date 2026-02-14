@@ -1032,14 +1032,17 @@
   }
 
   .project-modal .modal-responsive-note-primary {
-    position: absolute;
-    right: clamp(36px, 7vw, 120px);
+    position: static;
+    right: auto;
     left: auto;
-    top: 50%;
-    max-width: min(32ch, 26vw);
-    transform: translateY(-50%);
-    grid-column: auto !important;
+    top: auto;
+    max-width: var(--project-media-width);
+    transform: none;
+    grid-column: 1 / 2 !important;
     z-index: 8;
+    width: min(100%, var(--project-media-width));
+    justify-self: center;
+    margin-top: clamp(10px, 1.4vh, 16px);
   }
 
   .project-modal .modal-scroll-stage-right .modal-responsive-note {
@@ -1048,6 +1051,21 @@
     margin-top: 0;
     padding-top: 0;
     margin-left: 0;
+  }
+
+  .project-modal .modal-responsive-note-primary-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(18px, 2.2vw, 30px);
+    row-gap: 0.45em;
+    font-size: clamp(0.95rem, 1.08vw, 1.08rem);
+    line-height: 1.45;
+  }
+
+  .project-modal .modal-note-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
   }
 
   .project-modal .modal-scroll-stage-left {
