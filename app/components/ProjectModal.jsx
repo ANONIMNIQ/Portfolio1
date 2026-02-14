@@ -101,58 +101,33 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         gsap.set(lines, { autoAlpha: 0, y: 14 });
         gsap.set(paragraphEl, { y: 0, autoAlpha: 1 });
 
-        const revealStart = "bottom 96%";
-        const revealEnd = "bottom 62%";
-        const settleStart = "bottom 62%";
-        const settleEnd = "bottom 8%";
-        const noteStart = isPrimary ? "top 44%" : "top 44%";
-
-        gsap.timeline({
-          trigger: paragraphEl,
-          scrollTrigger: {
-            trigger: paragraphEl,
-            scroller,
-            start: revealStart,
-            end: revealEnd,
-            scrub: 0.72,
-            invalidateOnRefresh: true,
-          },
-        }).to(
+        const revealTl = gsap.timeline({ paused: true }).to(
           mediaEl,
           {
             x: m.xCenter,
             y: m.yPeek,
-            duration: 1,
-            ease: "none",
+            duration: 0.52,
+            ease: "power2.out",
           },
           0
         ).to(
           paragraphEl,
           {
-            yPercent: -42,
-            autoAlpha: 0.56,
-            duration: 1,
-            ease: "none",
+            yPercent: -36,
+            autoAlpha: 0.64,
+            duration: 0.5,
+            ease: "power1.out",
           },
-          0
+          0.04
         );
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: paragraphEl,
-            scroller,
-            start: settleStart,
-            end: settleEnd,
-            scrub: 0.78,
-            invalidateOnRefresh: true,
-          },
-        }).to(
+        const settleTl = gsap.timeline({ paused: true }).to(
           mediaEl,
           {
             x: m.xCenter,
             y: m.yCenter,
-            duration: 0.55,
-            ease: "none",
+            duration: 0.48,
+            ease: "power2.inOut",
           },
           0
         ).to(
@@ -160,26 +135,48 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           {
             x: 0,
             y: 0,
-            duration: 0.45,
-            ease: "none",
+            duration: 0.44,
+            ease: "power2.out",
           },
-          0.55
+          0.48
         ).to(
           paragraphEl,
           {
             yPercent: -112,
             autoAlpha: 0,
-            duration: 1,
-            ease: "none",
+            duration: 0.58,
+            ease: "power1.inOut",
           },
           0
         );
+
+        ScrollTrigger.create({
+          trigger: paragraphEl,
+          scroller,
+          start: "bottom bottom",
+          end: "bottom bottom",
+          invalidateOnRefresh: true,
+          onEnter: () => revealTl.play(),
+          onEnterBack: () => revealTl.play(),
+          onLeaveBack: () => revealTl.reverse(),
+        });
+
+        ScrollTrigger.create({
+          trigger: paragraphEl,
+          scroller,
+          start: "bottom top",
+          end: "bottom top",
+          invalidateOnRefresh: true,
+          onEnter: () => settleTl.play(),
+          onEnterBack: () => settleTl.play(),
+          onLeaveBack: () => settleTl.reverse(),
+        });
 
         gsap.timeline({
           scrollTrigger: {
             trigger: isPrimary ? primarySceneRef.current : secondarySceneRef.current,
             scroller,
-            start: noteStart,
+            start: "top 40%",
             end: "bottom 44%",
             scrub: 0.86,
             fastScrollEnd: true,
