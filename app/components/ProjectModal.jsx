@@ -92,115 +92,133 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       gsap.set(descriptionRef.current, { y: 0, autoAlpha: 1 });
       gsap.set(followupRef.current, { y: 0, autoAlpha: 1 });
 
+      const primaryIntroTl = gsap.timeline({ paused: true }).to(
+        primaryMediaRef.current,
+        {
+          autoAlpha: 1,
+          filter: "blur(0px)",
+          scale: 1,
+          xPercent: 0,
+          y: 0,
+          duration: 0.46,
+          ease: "power3.out",
+        },
+        0
+      ).to(
+        descriptionRef.current,
+        {
+          yPercent: -128,
+          autoAlpha: 0,
+          duration: 0.42,
+          ease: "power2.out",
+        },
+        0.02
+      );
+
+      ScrollTrigger.create({
+        trigger: primarySceneRef.current,
+        scroller,
+        start: "top 84%",
+        end: "top 58%",
+        invalidateOnRefresh: true,
+        onEnter: () => primaryIntroTl.play(),
+        onEnterBack: () => primaryIntroTl.play(),
+        onLeaveBack: () => primaryIntroTl.reverse(),
+      });
+
       gsap.timeline({
         scrollTrigger: {
           trigger: primarySceneRef.current,
           scroller,
-          start: "top 84%",
+          start: "top 56%",
           end: "bottom 44%",
-          scrub: 1.05,
+          scrub: 0.92,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
-      })
-        .to(
-          primaryMediaRef.current,
-          {
-            autoAlpha: 1,
-            filter: "blur(0px)",
-            scale: 1,
-            xPercent: 0,
-            y: 0,
-            duration: 0.44,
-            ease: "none",
-          },
-          0
-        )
-        .to(
-          descriptionRef.current,
-          {
-            y: -24,
-            autoAlpha: 0.88,
-            duration: 0.32,
-            ease: "none",
-          },
-          0.08
-        )
-        .to(
-          primaryNoteRef.current,
-          {
-            autoAlpha: 1,
-            duration: 0.08,
-            ease: "none",
-          },
-          0.34
-        )
-        .to(
-          primaryLines,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.2,
-            stagger: 0.1,
-            ease: "none",
-          },
-          0.36
-        );
+      }).to(
+        primaryNoteRef.current,
+        {
+          autoAlpha: 1,
+          duration: 0.06,
+          ease: "none",
+        },
+        0
+      ).to(
+        primaryLines,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.22,
+          stagger: 0.12,
+          ease: "none",
+        },
+        0.02
+      );
+
+      const secondaryIntroTl = gsap.timeline({ paused: true }).to(
+        secondaryMediaRef.current,
+        {
+          autoAlpha: 1,
+          filter: "blur(0px)",
+          scale: 1,
+          xPercent: 0,
+          y: 0,
+          duration: 0.46,
+          ease: "power3.out",
+        },
+        0
+      ).to(
+        followupRef.current,
+        {
+          yPercent: -118,
+          autoAlpha: 0,
+          duration: 0.4,
+          ease: "power2.out",
+        },
+        0.02
+      );
+
+      ScrollTrigger.create({
+        trigger: secondarySceneRef.current,
+        scroller,
+        start: "top 84%",
+        end: "top 58%",
+        invalidateOnRefresh: true,
+        onEnter: () => secondaryIntroTl.play(),
+        onEnterBack: () => secondaryIntroTl.play(),
+        onLeaveBack: () => secondaryIntroTl.reverse(),
+      });
 
       gsap.timeline({
         scrollTrigger: {
           trigger: secondarySceneRef.current,
           scroller,
-          start: "top 84%",
+          start: "top 56%",
           end: "bottom 44%",
-          scrub: 1.05,
+          scrub: 0.92,
           fastScrollEnd: true,
           invalidateOnRefresh: true,
         },
-      })
-        .to(
-          secondaryMediaRef.current,
-          {
-            autoAlpha: 1,
-            filter: "blur(0px)",
-            scale: 1,
-            xPercent: 0,
-            y: 0,
-            duration: 0.44,
-            ease: "none",
-          },
-          0
-        )
-        .to(
-          followupRef.current,
-          {
-            y: -22,
-            autoAlpha: 0.9,
-            duration: 0.3,
-            ease: "none",
-          },
-          0.08
-        )
-        .to(
-          secondaryNoteRef.current,
-          {
-            autoAlpha: 1,
-            duration: 0.08,
-            ease: "none",
-          },
-          0.34
-        )
-        .to(
-          secondaryLines,
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.22,
-            stagger: 0.14,
-            ease: "none",
-          },
-          0.36
-        );
+      }).to(
+        secondaryNoteRef.current,
+        {
+          autoAlpha: 1,
+          duration: 0.06,
+          ease: "none",
+        },
+        0
+      ).to(
+        secondaryLines,
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.24,
+          stagger: 0.16,
+          ease: "none",
+        },
+        0.02
+      );
 
       ScrollTrigger.refresh();
     }, bodyRef);
