@@ -1006,18 +1006,20 @@
     margin-left: auto;
     margin-right: auto;
     align-items: center;
+    justify-items: center;
+    grid-template-columns: minmax(0, 1fr);
     column-gap: clamp(16px, 2vw, 30px);
     padding-top: 0;
   }
 
   .project-modal .modal-scroll-stage-right {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 60%) minmax(270px, 24%) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .project-modal .modal-scroll-media-primary {
     max-width: none;
     width: 100%;
-    grid-column: 2 / 3 !important;
+    grid-column: 1 / 2 !important;
   }
 
   .project-modal .modal-scroll-stage-right .modal-scroll-media {
@@ -1025,37 +1027,45 @@
   }
 
   .project-modal .modal-responsive-note-primary {
-    position: static;
+    position: absolute;
+    right: clamp(36px, 7vw, 120px);
     left: auto;
-    top: auto;
+    top: 50%;
     max-width: min(32ch, 26vw);
-    grid-column: 3 / 4 !important;
+    transform: translateY(-50%);
+    grid-column: auto !important;
+    z-index: 8;
   }
 
   .project-modal .modal-scroll-stage-right .modal-responsive-note {
-    justify-self: start;
-    align-self: center;
+    justify-self: auto;
+    align-self: auto;
     margin-top: 0;
     padding-top: 0;
-    margin-left: clamp(10px, 0.9vw, 16px);
-    transform: translateY(-16px);
+    margin-left: 0;
   }
 
   .project-modal .modal-scroll-stage-left {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 60%) minmax(270px, 24%) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .project-modal .modal-scroll-stage-left .modal-scroll-media {
-    grid-column: 2 / 3 !important;
+    grid-column: 1 / 2 !important;
     justify-self: center;
   }
 
   .project-modal .modal-scroll-stage-left .modal-responsive-note {
-    grid-column: 3 / 4 !important;
-    justify-self: start;
+    position: absolute;
+    right: clamp(36px, 7vw, 120px);
+    left: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    grid-column: auto !important;
+    justify-self: auto;
     text-align: left;
-    align-self: center;
+    align-self: auto;
     margin-top: 0;
+    z-index: 8;
   }
 
   .project-modal .modal-scroll-media-primary {

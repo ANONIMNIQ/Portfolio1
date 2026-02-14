@@ -80,6 +80,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           y: 0,
           xPercent: 0,
           yPercent: 126,
+          filter: "drop-shadow(0 0 0 rgba(17, 24, 39, 0))",
         });
 
         gsap.set(revealRef.current, { autoAlpha: 0 });
@@ -88,29 +89,41 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         const revealTl = gsap.timeline({ paused: true }).to(mediaEl, {
           autoAlpha: 1,
-          yPercent: 20,
+          yPercent: 10,
           duration: 0.68,
           ease: "power2.out",
+        }).to(mediaEl, {
+          filter: "drop-shadow(0 34px 62px rgba(17, 24, 39, 0.34))",
+          duration: 0.42,
+          ease: "power1.out",
+        }, 0);
+
+        const settleToCenterTl = gsap.timeline({ paused: true }).to(mediaEl, {
+          autoAlpha: 1,
+          yPercent: 0,
+          xPercent: 0,
+          filter: "drop-shadow(0 18px 34px rgba(17, 24, 39, 0.22))",
+          duration: 0.52,
+          ease: "power2.inOut",
         });
 
         const settleTl = gsap.timeline({ paused: true }).to(
           mediaEl,
           {
             autoAlpha: 1,
-            yPercent: 0,
-            xPercent: 0,
-            duration: 0.52,
-            ease: "power2.inOut",
+            xPercent: finalXPercent,
+            duration: 0.44,
+            ease: "power2.out",
           },
           0
         ).to(
           mediaEl,
           {
-            xPercent: finalXPercent,
-            duration: 0.44,
-            ease: "power2.out",
+            filter: "drop-shadow(0 12px 24px rgba(17, 24, 39, 0.16))",
+            duration: 0.38,
+            ease: "power1.out",
           },
-          0.52
+          0
         );
 
         ScrollTrigger.create({
@@ -123,22 +136,37 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onEnter: () => revealTl.play(),
-          onEnterBack: () => revealTl.play(),
-          onLeaveBack: () => revealTl.reverse(),
+          onEnterBack: () => {
+            settleTl.pause(0);
+            settleToCenterTl.pause(0);
+            revealTl.play();
+          },
+          onLeaveBack: () => {
+            settleTl.pause(0);
+            settleToCenterTl.pause(0);
+            revealTl.reverse();
+          },
         });
 
         ScrollTrigger.create({
           trigger: paragraphEl,
           scroller,
-          start: "bottom top",
-          end: "bottom top",
+          start: "bottom top+=8",
+          end: "bottom top+=8",
           invalidateOnRefresh: true,
           onEnter: () => {
             revealTl.progress(1);
+            settleToCenterTl.play();
             settleTl.play();
           },
-          onEnterBack: () => settleTl.reverse(),
-          onLeaveBack: () => settleTl.reverse(),
+          onEnterBack: () => {
+            settleTl.reverse();
+            settleToCenterTl.reverse();
+          },
+          onLeaveBack: () => {
+            settleTl.reverse();
+            settleToCenterTl.reverse();
+          },
         });
 
         gsap.timeline({
