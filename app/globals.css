@@ -577,6 +577,7 @@
 
 .project-modal {
   --project-paragraph-width: min(22ch, 1080px);
+  --project-media-width: clamp(560px, 58vw, 980px);
 }
 
 .project-modal .modal-desc {
@@ -1021,8 +1022,8 @@
   }
 
   .project-modal .modal-scroll-media-primary {
-    max-width: var(--project-paragraph-width);
-    width: var(--project-paragraph-width);
+    max-width: var(--project-media-width);
+    width: min(100%, var(--project-media-width));
     grid-column: 1 / 2 !important;
   }
 
