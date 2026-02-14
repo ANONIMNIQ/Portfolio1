@@ -362,7 +362,7 @@
   position: relative;
   min-height: 190vh;
   margin: 1.2rem 0 1.8rem;
-  overflow-x: clip;
+  overflow: visible;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -386,8 +386,7 @@
   grid-template-columns: minmax(0, 42%) minmax(0, 58%);
   align-items: start;
   gap: clamp(1rem, 3vw, 2.2rem);
-  overflow-x: hidden;
-  overflow-y: visible;
+  overflow: visible;
   padding-top: clamp(6px, 1.8vh, 18px);
 }
 
@@ -446,7 +445,7 @@
   object-fit: contain;
   object-position: center top;
   max-height: min(60vh, 660px);
-  clip-path: inset(0 12px 0 0);
+  clip-path: none;
 }
 
 .modal-scroll-media-secondary {
@@ -460,7 +459,7 @@
   margin-right: 0;
   object-fit: contain;
   object-position: center top;
-  clip-path: inset(0 10px 0 0);
+  clip-path: none;
 }
 
 .modal-scroll-stage-right .modal-scroll-media {
@@ -995,8 +994,8 @@
   }
 
   .project-modal .modal-scroll-stage {
-    top: clamp(180px, 26vh, 300px);
-    min-height: clamp(420px, 54vh, 620px);
+    top: 0;
+    min-height: 100vh;
     max-width: min(1420px, calc(100vw - 96px));
     margin-left: auto;
     margin-right: auto;

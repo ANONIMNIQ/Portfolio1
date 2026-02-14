@@ -69,35 +69,15 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       const primaryLines = primaryLineRefs.current.filter(Boolean);
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
 
-      const computeMediaOffsets = (element) => {
-        gsap.set(element, { x: 0, y: 0, clearProps: "scale,filter,xPercent" });
-        const rect = element.getBoundingClientRect();
-        const scrollerRect = scroller.getBoundingClientRect();
-        const centerX = scrollerRect.left + scroller.clientWidth / 2;
-        const finalCenterX = rect.left + rect.width / 2;
-
-        const hiddenTop = scrollerRect.top + scroller.clientHeight + rect.height * 0.18;
-        const peekTop = scrollerRect.top + scroller.clientHeight - rect.height * 0.5;
-        const centeredTop = scrollerRect.top + (scroller.clientHeight - rect.height) / 2;
-
-        return {
-          xCenter: centerX - finalCenterX,
-          yHidden: hiddenTop - rect.top,
-          yPeek: peekTop - rect.top,
-          yCenter: centeredTop - rect.top,
-        };
-      };
-
       const buildSceneTimelines = (mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
-        const m = computeMediaOffsets(mediaEl);
-        const leftNudge = -Math.min(96, Math.max(44, scroller.clientWidth * 0.058));
-        const finalX = m.xCenter + leftNudge;
-        const finalY = m.yCenter;
+        const finalXPercent = isPrimary ? -11 : -8;
 
         gsap.set(mediaEl, {
           autoAlpha: 0,
-          x: m.xCenter,
-          y: m.yHidden,
+          x: 0,
+          y: 0,
+          xPercent: 0,
+          yPercent: 130,
         });
 
         gsap.set(revealRef.current, { autoAlpha: 0 });
@@ -106,30 +86,29 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         const revealTl = gsap.timeline({ paused: true }).to(mediaEl, {
           autoAlpha: 1,
-          x: m.xCenter,
-          y: m.yPeek,
-          duration: 0.56,
+          yPercent: 56,
+          duration: 0.62,
           ease: "power2.out",
         });
 
         const settleTl = gsap.timeline({ paused: true }).to(
           mediaEl,
           {
-            x: m.xCenter,
-            y: m.yCenter,
-            duration: 0.46,
-            ease: "power2.out",
+            autoAlpha: 1,
+            yPercent: 0,
+            xPercent: 0,
+            duration: 0.52,
+            ease: "power2.inOut",
           },
           0
         ).to(
           mediaEl,
           {
-            x: finalX,
-            y: finalY,
-            duration: 0.42,
+            xPercent: finalXPercent,
+            duration: 0.44,
             ease: "power2.out",
           },
-          0.46
+          0.52
         );
 
         ScrollTrigger.create({
@@ -149,7 +128,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           start: "bottom top",
           end: "bottom top",
           invalidateOnRefresh: true,
-          onEnter: () => settleTl.play(),
+          onEnter: () => {
+            revealTl.progress(1);
+            settleTl.play();
+          },
           onEnterBack: () => settleTl.play(),
           onLeaveBack: () => settleTl.reverse(),
         });
