@@ -192,12 +192,12 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         gsap.timeline({
           scrollTrigger: {
-            trigger: paragraphEl,
+            trigger: stageEl,
             scroller,
-            start: "bottom top",
-            end: "bottom top+=360",
-            scrub: 0.86,
-            fastScrollEnd: true,
+            start: "center center",
+            end: isPrimary ? "+=1180" : "+=920",
+            scrub: 0.92,
+            fastScrollEnd: false,
             invalidateOnRefresh: true,
           },
         }).to(

@@ -1032,17 +1032,17 @@
   }
 
   .project-modal .modal-responsive-note-primary {
-    position: static;
+    position: absolute;
     right: auto;
-    left: auto;
-    top: auto;
+    left: 50%;
+    top: 50%;
     max-width: var(--project-media-width);
-    transform: none;
-    grid-column: 1 / 2 !important;
+    transform: translate(-50%, clamp(200px, 23vh, 290px));
+    grid-column: auto !important;
     z-index: 8;
     width: min(100%, var(--project-media-width));
-    justify-self: center;
-    margin-top: clamp(10px, 1.4vh, 16px);
+    justify-self: auto;
+    margin-top: 0;
   }
 
   .project-modal .modal-scroll-stage-right .modal-responsive-note {
