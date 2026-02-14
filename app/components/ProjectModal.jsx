@@ -68,10 +68,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     const ctx = gsap.context(() => {
       const primaryLines = primaryLineRefs.current.filter(Boolean);
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
-      let primaryRevealTl;
-      let primarySettleTl;
-      let secondaryRevealTl;
-      let secondarySettleTl;
 
       const computeMediaOffsets = (element) => {
         gsap.set(element, { x: 0, y: 0, clearProps: "scale,filter,xPercent" });
@@ -105,77 +101,79 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         gsap.set(lines, { autoAlpha: 0, y: 14 });
         gsap.set(paragraphEl, { y: 0, autoAlpha: 1 });
 
-        const revealTl = gsap
-          .timeline({ paused: true })
-          .to(mediaEl, {
-            x: m.xCenter,
-            y: m.yPeek,
-            duration: 0.6,
-            ease: "power2.out",
-          })
-          .to(
-            paragraphEl,
-            {
-              yPercent: -48,
-              autoAlpha: 0.4,
-              duration: 0.54,
-              ease: "power1.out",
-            },
-            0.04
-          );
-
-        const settleTl = gsap
-          .timeline({ paused: true })
-          .to(mediaEl, {
-            x: m.xCenter,
-            y: m.yCenter,
-            duration: 0.46,
-            ease: "power2.inOut",
-          })
-          .to(mediaEl, {
-            x: 0,
-            y: 0,
-            duration: 0.42,
-            ease: "power2.out",
-          })
-          .to(
-            paragraphEl,
-            {
-              yPercent: -115,
-              autoAlpha: 0,
-              duration: 0.5,
-              ease: "power1.inOut",
-            },
-            0
-          );
-
-        const revealStart = isPrimary ? "top 86%" : "top 86%";
-        const revealEnd = isPrimary ? "bottom 94%" : "bottom 94%";
-        const settleStart = isPrimary ? "bottom 6%" : "bottom 6%";
-        const settleEnd = isPrimary ? "bottom -28%" : "bottom -28%";
+        const revealStart = "bottom 96%";
+        const revealEnd = "bottom 62%";
+        const settleStart = "bottom 62%";
+        const settleEnd = "bottom 8%";
         const noteStart = isPrimary ? "top 44%" : "top 44%";
 
-        ScrollTrigger.create({
+        gsap.timeline({
           trigger: paragraphEl,
-          scroller,
-          start: revealStart,
-          end: revealEnd,
-          invalidateOnRefresh: true,
-          onEnter: () => revealTl.play(),
-          onEnterBack: () => revealTl.play(),
-          onLeaveBack: () => revealTl.reverse(),
-        });
+          scrollTrigger: {
+            trigger: paragraphEl,
+            scroller,
+            start: revealStart,
+            end: revealEnd,
+            scrub: 0.72,
+            invalidateOnRefresh: true,
+          },
+        }).to(
+          mediaEl,
+          {
+            x: m.xCenter,
+            y: m.yPeek,
+            duration: 1,
+            ease: "none",
+          },
+          0
+        ).to(
+          paragraphEl,
+          {
+            yPercent: -42,
+            autoAlpha: 0.56,
+            duration: 1,
+            ease: "none",
+          },
+          0
+        );
 
-        ScrollTrigger.create({
-          trigger: paragraphEl,
-          scroller,
-          start: settleStart,
-          end: settleEnd,
-          invalidateOnRefresh: true,
-          onEnter: () => settleTl.play(),
-          onEnterBack: () => settleTl.play(),
-          onLeaveBack: () => settleTl.reverse(),
-        });
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: paragraphEl,
+            scroller,
+            start: settleStart,
+            end: settleEnd,
+            scrub: 0.78,
+            invalidateOnRefresh: true,
+          },
+        }).to(
+          mediaEl,
+          {
+            x: m.xCenter,
+            y: m.yCenter,
+            duration: 0.55,
+            ease: "none",
+          },
+          0
+        ).to(
+          mediaEl,
+          {
+            x: 0,
+            y: 0,
+            duration: 0.45,
+            ease: "none",
+          },
+          0.55
+        ).to(
+          paragraphEl,
+          {
+            yPercent: -112,
+            autoAlpha: 0,
+            duration: 1,
+            ease: "none",
+          },
+          0
+        );
 
         gsap.timeline({
           scrollTrigger: {
@@ -206,25 +204,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           },
           0.02
         );
-
-        return { revealTl, settleTl };
       };
 
-      ({ revealTl: primaryRevealTl, settleTl: primarySettleTl } = buildSceneTimelines(
-        primaryMediaRef.current,
-        descriptionRef.current,
-        primaryNoteRef,
-        primaryLines,
-        true
-      ));
-
-      ({ revealTl: secondaryRevealTl, settleTl: secondarySettleTl } = buildSceneTimelines(
-        secondaryMediaRef.current,
-        followupRef.current,
-        secondaryNoteRef,
-        secondaryLines,
-        false
-      ));
+      buildSceneTimelines(primaryMediaRef.current, descriptionRef.current, primaryNoteRef, primaryLines, true);
+      buildSceneTimelines(secondaryMediaRef.current, followupRef.current, secondaryNoteRef, secondaryLines, false);
 
       observer = Observer.create({
         target: scroller,
@@ -239,10 +222,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
     return () => {
       if (observer) observer.kill();
-      if (primaryRevealTl) primaryRevealTl.kill();
-      if (primarySettleTl) primarySettleTl.kill();
-      if (secondaryRevealTl) secondaryRevealTl.kill();
-      if (secondarySettleTl) secondarySettleTl.kill();
       ctx.revert();
     };
   }, [isOpen, activeProject?.id, noteLines, responsiveLines]);
