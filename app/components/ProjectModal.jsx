@@ -78,8 +78,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
       const buildSceneTimelines = (stageEl, mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
         const finalXPercent = 0;
-        let autoScrollTween = null;
-        let stepEnableCall = null;
         let stepTl = null;
 
         gsap.set(mediaEl, {
@@ -166,50 +164,12 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
             revealTl.progress(1);
             settleToCenterTl.play();
             settleTl.play();
-
-            if (autoScrollTween) autoScrollTween.kill();
-            const stageRect = stageEl.getBoundingClientRect();
-            const scrollerRect = scroller.getBoundingClientRect();
-            const centerDelta = stageRect.top + stageRect.height / 2 - (scrollerRect.top + scroller.clientHeight / 2);
-            const targetScrollTop = Math.max(0, scroller.scrollTop + centerDelta);
-
-            autoScrollTween = gsap.to(scroller, {
-              scrollTop: targetScrollTop,
-              duration: 0.58,
-              ease: "power2.out",
-              overwrite: "auto",
-            });
-
-            if (stepEnableCall) stepEnableCall.kill();
-            if (stepTl?.scrollTrigger) {
-              stepTl.scrollTrigger.disable();
-            }
-            stepEnableCall = gsap.delayedCall(0.64, () => {
-              if (stepTl?.scrollTrigger) {
-                stepTl.scrollTrigger.enable();
-                ScrollTrigger.refresh();
-              }
-            });
           },
           onEnterBack: () => {
-            if (stepEnableCall) stepEnableCall.kill();
-            if (autoScrollTween) autoScrollTween.kill();
-            if (stepTl?.scrollTrigger) {
-              stepTl.scrollTrigger.disable();
-            }
-            gsap.set(revealRef.current, { autoAlpha: 0 });
-            gsap.set(lines, { autoAlpha: 0, y: 14 });
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
           onLeaveBack: () => {
-            if (stepEnableCall) stepEnableCall.kill();
-            if (autoScrollTween) autoScrollTween.kill();
-            if (stepTl?.scrollTrigger) {
-              stepTl.scrollTrigger.disable();
-            }
-            gsap.set(revealRef.current, { autoAlpha: 0 });
-            gsap.set(lines, { autoAlpha: 0, y: 14 });
             settleTl.reverse();
             settleToCenterTl.reverse();
           },
@@ -217,9 +177,9 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
         stepTl = gsap.timeline({
           scrollTrigger: {
-            trigger: stageEl,
+            trigger: paragraphEl,
             scroller,
-            start: "top top+=48",
+            start: isPrimary ? "bottom top+=300" : "bottom top+=220",
             end: isPrimary ? "+=1280" : "+=980",
             pin: stageEl,
             pinSpacing: true,
@@ -247,10 +207,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           },
           0.02
         );
-
-        if (stepTl.scrollTrigger) {
-          stepTl.scrollTrigger.disable();
-        }
       };
 
       buildSceneTimelines(primaryStageRef.current, primaryMediaRef.current, descriptionRef.current, primaryNoteRef, primaryLines, true);
