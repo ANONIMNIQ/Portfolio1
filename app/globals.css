@@ -999,6 +999,7 @@
   }
 
   .project-modal .modal-scroll-stage {
+    position: relative;
     top: 0;
     min-height: 100vh;
     max-width: min(1420px, calc(100vw - 96px));

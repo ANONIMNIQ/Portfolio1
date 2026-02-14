@@ -19,6 +19,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const secondarySceneRef = useRef(null);
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
+  const primaryStageRef = useRef(null);
+  const secondaryStageRef = useRef(null);
   const primaryNoteRef = useRef(null);
   const secondaryNoteRef = useRef(null);
   const descriptionRef = useRef(null);
@@ -69,7 +71,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       const primaryLines = primaryLineRefs.current.filter(Boolean);
       const secondaryLines = secondaryLineRefs.current.filter(Boolean);
 
-      const buildSceneTimelines = (mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
+      const buildSceneTimelines = (stageEl, mediaEl, paragraphEl, revealRef, lines, isPrimary = true) => {
         const finalXPercent = isPrimary ? -11 : -8;
 
         gsap.set(mediaEl, {
@@ -115,7 +117,10 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           trigger: paragraphEl,
           scroller,
           start: "top top",
-          end: "top top",
+          end: "bottom top",
+          pin: stageEl,
+          pinSpacing: false,
+          anticipatePin: 1,
           invalidateOnRefresh: true,
           onEnter: () => revealTl.play(),
           onEnterBack: () => revealTl.play(),
@@ -167,8 +172,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         );
       };
 
-      buildSceneTimelines(primaryMediaRef.current, descriptionRef.current, primaryNoteRef, primaryLines, true);
-      buildSceneTimelines(secondaryMediaRef.current, followupRef.current, secondaryNoteRef, secondaryLines, false);
+      buildSceneTimelines(primaryStageRef.current, primaryMediaRef.current, descriptionRef.current, primaryNoteRef, primaryLines, true);
+      buildSceneTimelines(secondaryStageRef.current, secondaryMediaRef.current, followupRef.current, secondaryNoteRef, secondaryLines, false);
 
       observer = Observer.create({
         target: scroller,
@@ -219,7 +224,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 </p>
 
                 <section ref={primarySceneRef} className="modal-scroll-scene modal-scroll-scene-primary" aria-label="Project visual reveal">
-                  <div className="modal-scroll-stage modal-scroll-stage-right">
+                  <div ref={primaryStageRef} className="modal-scroll-stage modal-scroll-stage-right">
                     <div ref={primaryMediaRef} className={`modal-scroll-media modal-scroll-media-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
                       <div className={`modal-media-wrap modal-media-wrap-primary ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
@@ -255,7 +260,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                 </p>
 
                 <section ref={secondarySceneRef} className="modal-scroll-scene modal-scroll-scene-secondary" aria-label="Responsive design visual reveal">
-                  <div className="modal-scroll-stage modal-scroll-stage-left">
+                  <div ref={secondaryStageRef} className="modal-scroll-stage modal-scroll-stage-left">
                     <div ref={secondaryMediaRef} className={`modal-scroll-media modal-scroll-media-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
                       <div className={`modal-media-wrap modal-media-wrap-secondary ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`}>
                         <div className="modal-media-skeleton" aria-hidden="true" />
