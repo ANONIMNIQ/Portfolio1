@@ -9,11 +9,11 @@ import Magnet from "./Magnet";
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProject, text, lang, theme, onClose, onScroll, onWheel }) {
-  const [isPrimarySceneImageLoaded, setIsPrimarySceneImageLoaded] = useState(false);
-  const [isSecondarySceneImageLoaded, setIsSecondarySceneImageLoaded] = useState(false);
-
+  const [isMobile, setIsMobile] = useState(false);
+  const [primaryImageWidth, setPrimaryImageWidth] = useState(0);
   const bodyRef = useRef(null);
   const introRef = useRef(null);
+  const primaryImgRef = useRef(null);
   
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
@@ -21,8 +21,19 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
 
-  const primaryLineRefs = useRef([]);
-  const secondaryLineRefs = useRef([]);
+  // Проверка за размер на екрана и обновяване на ширината на изображението
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 1024);
+      if (primaryImgRef.current) {
+        setPrimaryImageWidth(primaryImgRef.current.offsetWidth);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [isOpen]);
 
   const noteLines = useMemo(() => {
     const maxLineLength = 35;
@@ -54,12 +65,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   }, [lang]);
 
   useLayoutEffect(() => {
-    if (!isOpen || !activeProject || !bodyRef.current) return;
+    if (!isOpen || !activeProject || !bodyRef.current || isMobile) return;
 
     const scroller = bodyRef.current;
     
     const ctx = gsap.context(() => {
-      // 1. ПАРАГРАФ АНИМАЦИЯ (БЪРЗО ИЗЧЕЗВАНЕ)
       const setupParagraphScroll = (scene) => {
         const paragraph = scene.querySelector('.scene-paragraph');
         gsap.to(paragraph, {
@@ -79,7 +89,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       setupParagraphScroll(primarySceneRef.current);
       setupParagraphScroll(secondarySceneRef.current);
 
-      // 2 & 3. МЕДИЯ И МАЛЪК ТЕКСТ (СЪКРАТЕН ПЪТ)
       const setupSceneFlow = (scene, media, introEl) => {
         if (!scene || !media) return;
 
@@ -94,7 +103,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           zIndex: 100
         });
 
-        // STAGE 1: Peek
         ScrollTrigger.create({
           trigger: introEl || scene,
           scroller: scroller,
@@ -119,7 +127,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           }
         });
 
-        // STAGE 2: Center Image (Много по-рано)
         ScrollTrigger.create({
           trigger: scene,
           scroller: scroller,
@@ -144,7 +151,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           }
         });
 
-        // STAGE 3: Small Text (Мигновено след центрирането)
         const noteEl = scene.querySelector('.modal-responsive-note');
         const lines = scene.querySelectorAll('.modal-responsive-line');
         
@@ -168,7 +174,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     }, bodyRef);
 
     return () => ctx.revert();
-  }, [isOpen, activeProject?.id, noteLines, responsiveLines]);
+  }, [isOpen, activeProject?.id, isMobile, noteLines, responsiveLines]);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -193,105 +199,113 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           </div>
 
           <div ref={bodyRef} className="modal-body" onScroll={onScroll} onWheel={onWheel} style={{ scrollBehavior: 'auto', paddingTop: 0, overflowX: 'hidden' }}>
-            <div className="modal-content-wrap">
+            <div className="modal-content-wrap" style={{ padding: isMobile ? '0 20px' : '0' }}>
               
-              <div ref={introRef} className="modal-intro" style={{ textAlign: 'center', padding: '12vh 20px 2vh' }}>
-                <h2 className="modal-title" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', marginBottom: '8px' }}>{activeProject[lang].title}</h2>
-                <div className="modal-tags" style={{ opacity: 0.5, fontSize: '11px', letterSpacing: '0.1em' }}>{activeProject.tags.join(" • ")}</div>
-              </div>
+              {isMobile ? (
+                <div className="mobile-layout" style={{ display: 'flex', flexDirection: 'column', gap: '40px', padding: '40px 0 80px' }}>
+                  <div style={{ textAlign: 'left' }}>
+                    <h2 style={{ fontSize: '1.8rem', marginBottom: '8px', color: 'var(--ink)' }}>{activeProject[lang].title}</h2>
+                    <div style={{ opacity: 0.6, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{activeProject.tags.join(" • ")}</div>
+                  </div>
 
-              {/* СЦЕНА 1 - Минимална височина */}
-              <section ref={primarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative' }}>
-                <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
-                  
-                  <p className="scene-paragraph modal-desc" style={{ 
-                    maxWidth: '1100px', 
-                    textAlign: 'center', 
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    padding: '0 40px', 
-                    position: 'absolute', 
-                    top: '4vh',
-                    zIndex: 10,
-                    fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', 
-                    lineHeight: 1.2,
-                    fontWeight: 500
-                  }}>
+                  <p style={{ fontSize: '1.15rem', lineHeight: 1.4, color: 'var(--ink-dark)', fontWeight: 500 }}>
                     {activeProject[lang].description}
                   </p>
 
-                  <div ref={primaryMediaRef} className="modal-scroll-media modal-scroll-media-primary" style={{ position: 'absolute', zIndex: 100 }}>
-                    <div className={`modal-media-wrap ${isPrimarySceneImageLoaded ? "is-loaded" : ""}`} style={{ background: '#fff' }}>
-                      <img
-                        src={activeProject.image}
-                        alt={activeProject[lang].title}
-                        className="modal-media-img"
-                        onLoad={() => setIsPrimarySceneImageLoaded(true)}
-                        style={{ maxHeight: '68vh', objectFit: 'contain' }}
-                      />
-                    </div>
+                  <div style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.15)', borderRadius: '12px', overflow: 'hidden' }}>
+                    <img src={activeProject.image} alt={activeProject[lang].title} style={{ width: '100%', height: 'auto', display: 'block' }} />
                   </div>
 
-                  <div className="modal-responsive-note modal-responsive-note-primary-cols" style={{ position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: '1100px', padding: '0 40px', zIndex: 20, opacity: 0 }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                      {primaryNoteColumns.map((column, colIndex) => (
-                        <div key={`col-${colIndex}`} className="modal-note-col">
-                          {column.map((line, lineIndex) => {
-                            const absIdx = colIndex === 0 ? lineIndex : primaryNoteColumns[0].length + lineIndex;
-                            return (
-                              <span key={absIdx} ref={el => primaryLineRefs.current[absIdx] = el} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>
-                                {line}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      ))}
-                    </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.95rem', color: 'var(--muted)', lineHeight: 1.5 }}>
+                    {noteLines.map((line, i) => <span key={i}>{line}</span>)}
                   </div>
-                </div>
-              </section>
 
-              {/* СЦЕНА 2 - Минимална височина */}
-              <section ref={secondarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative', marginTop: '5vh' }}>
-                <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
-                  
-                  <p className="scene-paragraph modal-paragraph" style={{ 
-                    maxWidth: '1100px', 
-                    textAlign: 'center', 
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    padding: '0 40px', 
-                    position: 'absolute', 
-                    top: '4vh',
-                    zIndex: 10,
-                    fontSize: 'clamp(1.8rem, 3.6vw, 3rem)',
-                    lineHeight: 1.2,
-                    fontWeight: 500
-                  }}>
+                  <div style={{ height: '1px', background: 'var(--line)' }} />
+
+                  <p style={{ fontSize: '1.15rem', lineHeight: 1.4, color: 'var(--muted)' }}>
                     {text.modalStory}
                   </p>
 
-                  <div ref={secondaryMediaRef} className="modal-scroll-media modal-scroll-media-secondary" style={{ position: 'absolute', zIndex: 100 }}>
-                    <div className={`modal-media-wrap ${isSecondarySceneImageLoaded ? "is-loaded" : ""}`} style={{ background: '#fff' }}>
-                      <img
-                        src={activeProject.modalImage || activeProject.image}
-                        alt="Responsive"
-                        className="modal-media-img"
-                        onLoad={() => setIsSecondarySceneImageLoaded(true)}
-                        style={{ maxHeight: '68vh', objectFit: 'contain' }}
-                      />
-                    </div>
+                  <div style={{ boxShadow: '0 20px 50px rgba(0,0,0,0.15)', borderRadius: '18px', overflow: 'hidden', width: '80%', alignSelf: 'center' }}>
+                    <img src={activeProject.modalImage || activeProject.image} alt="Mobile view" style={{ width: '100%', height: 'auto', display: 'block' }} />
                   </div>
 
-                  <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
-                    {responsiveLines.map((line, idx) => (
-                      <span key={idx} ref={el => secondaryLineRefs.current[idx] = el} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>
-                        {line}
-                      </span>
-                    ))}
+                  <div style={{ textAlign: 'center', fontSize: '0.95rem', color: 'var(--ink-dark)', fontWeight: 500 }}>
+                    {responsiveLines.join(" ")}
                   </div>
                 </div>
-              </section>
+              ) : (
+                <>
+                  <div ref={introRef} className="modal-intro" style={{ textAlign: 'center', padding: '12vh 20px 2vh' }}>
+                    <h2 className="modal-title" style={{ fontSize: 'clamp(2rem, 4.5vw, 3.6rem)', marginBottom: '8px' }}>{activeProject[lang].title}</h2>
+                    <div className="modal-tags" style={{ opacity: 0.5, fontSize: '11px', letterSpacing: '0.1em' }}>{activeProject.tags.join(" • ")}</div>
+                  </div>
+
+                  <section ref={primarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative' }}>
+                    <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
+                      <p className="scene-paragraph modal-desc" style={{ 
+                        maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
+                        padding: '0 40px', position: 'absolute', top: '4vh', zIndex: 10,
+                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500
+                      }}>
+                        {activeProject[lang].description}
+                      </p>
+                      <div ref={primaryMediaRef} className="modal-scroll-media modal-scroll-media-primary" style={{ position: 'absolute', zIndex: 100, width: 'fit-content' }}>
+                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', boxShadow: '0 40px 100px rgba(0,0,0,0.25), 0 10px 40px rgba(0,0,0,0.12)', borderRadius: '12px' }}>
+                          <img 
+                            ref={primaryImgRef}
+                            src={activeProject.image} 
+                            alt={activeProject[lang].title} 
+                            className="modal-media-img" 
+                            onLoad={(e) => setPrimaryImageWidth(e.target.offsetWidth)}
+                            style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '12px' }} 
+                          />
+                        </div>
+                      </div>
+                      <div className="modal-responsive-note modal-responsive-note-primary-cols" style={{ 
+                        position: 'absolute', bottom: '6vh', left: '50%', transform: 'translateX(-50%)', 
+                        width: primaryImageWidth ? `${primaryImageWidth}px` : 'var(--project-media-width)', 
+                        maxWidth: '100%', padding: '0', zIndex: 20, opacity: 0, textAlign: 'left'
+                      }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                          <div className="modal-note-col">
+                            {primaryNoteColumns[0].map((line, i) => (
+                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                            ))}
+                          </div>
+                          <div className="modal-note-col">
+                            {primaryNoteColumns[1].map((line, i) => (
+                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section ref={secondarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative', marginTop: '5vh' }}>
+                    <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
+                      <p className="scene-paragraph modal-paragraph" style={{ 
+                        maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
+                        padding: '0 40px', position: 'absolute', top: '4vh', zIndex: 10,
+                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500
+                      }}>
+                        {text.modalStory}
+                      </p>
+                      <div ref={secondaryMediaRef} className="modal-scroll-media modal-scroll-media-secondary" style={{ position: 'absolute', zIndex: 100, width: 'fit-content' }}>
+                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', boxShadow: '0 30px 80px rgba(0,0,0,0.2), 0 8px 30px rgba(0,0,0,0.1)', borderRadius: '18px' }}>
+                          <img src={activeProject.modalImage || activeProject.image} alt="Responsive" className="modal-media-img" style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '18px' }} />
+                        </div>
+                      </div>
+                      <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '6vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
+                        {responsiveLines.map((line, idx) => (
+                          <span key={idx} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </section>
+                </>
+              )}
 
               <div style={{ height: '10vh' }} />
 
