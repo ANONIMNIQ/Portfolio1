@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 export default function EmojiBurst({ items }) {
   return (
-    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 100, overflow: "hidden" }}>
+    <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 99999, overflow: "hidden" }}>
       <AnimatePresence>
         {items.map((item) => (
           <motion.div

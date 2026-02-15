@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink, X, ArrowUpRight } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Magnet from "./Magnet";
@@ -15,14 +15,16 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const introRef = useRef(null);
   const primaryImgRef = useRef(null);
   const cardRef = useRef(null);
+  const contentWrapRef = useRef(null);
   
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
+  const finalSceneRef = useRef(null);
   
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
+  const finalMediaRef = useRef(null);
 
-  // Дефиниране на градиентите според темата
   const gradients = useMemo(() => ({
     one: {
       light: "linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%)",
@@ -103,6 +105,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
       const setupParagraphScroll = (scene) => {
         const paragraph = scene.querySelector('.scene-paragraph');
+        if (!paragraph) return;
         gsap.to(paragraph, {
           y: "-60vh",
           autoAlpha: 0,
@@ -120,113 +123,100 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       setupParagraphScroll(primarySceneRef.current);
       setupParagraphScroll(secondarySceneRef.current);
 
-      const setupSceneFlow = (scene, media, introEl, isPrimary = true) => {
+      // Логика за снимките
+      const setupImageFlow = (scene, media, introEl, isPrimary = true) => {
         if (!scene || !media) return;
-
         const wrap = media.querySelector('.modal-media-wrap');
         
         gsap.set(media, { 
-          left: "50%",
-          xPercent: -50,
-          yPercent: -50,
-          top: 0,
-          y: "120vh", 
-          autoAlpha: 0, 
-          scale: 0.94,
-          zIndex: 100
+          left: "50%", xPercent: -50, yPercent: -50, top: 0, y: "120vh", autoAlpha: 0, scale: 0.94, zIndex: 100
         });
 
         gsap.set(wrap, {
-          opacity: 0.6,
-          boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)"
+          opacity: 0.6, boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)"
         });
 
         ScrollTrigger.create({
           trigger: introEl || scene,
           scroller: scroller,
-          start: introEl ? "bottom 40%" : "top 60%",
+          start: introEl ? "bottom 40%" : "top 85%",
           onEnter: () => {
-            gsap.to(media, {
-              y: "90vh",
-              autoAlpha: 1,
-              duration: 0.6,
-              ease: "power2.out",
-              overwrite: "auto"
-            });
+            gsap.to(media, { y: "90vh", autoAlpha: 1, duration: 0.6, ease: "power2.out", overwrite: "auto" });
           },
           onLeaveBack: () => {
-            gsap.to(media, {
-              y: "120vh",
-              autoAlpha: 0,
-              duration: 0.5,
-              ease: "power2.in",
-              overwrite: "auto"
-            });
+            gsap.to(media, { y: "120vh", autoAlpha: 0, duration: 0.5, ease: "power2.in", overwrite: "auto" });
           }
         });
 
         ScrollTrigger.create({
           trigger: scene,
           scroller: scroller,
-          start: "top -5%",
+          start: "top 10%",
           onEnter: () => {
-            gsap.to(media, {
-              y: "46vh", 
-              scale: 1,
-              duration: 1,
-              ease: "expo.out",
-              overwrite: "auto"
-            });
+            gsap.to(media, { y: "50vh", scale: 1, duration: 1, ease: "expo.out", overwrite: "auto" });
             gsap.to(wrap, {
               opacity: 1,
               boxShadow: isPrimary 
                 ? "0 40px 100px rgba(0,0,0,0.25), 0 10px 40px rgba(0,0,0,0.12)"
                 : "0 30px 80px rgba(0,0,0,0.2), 0 8px 30px rgba(0,0,0,0.1)",
-              duration: 1,
-              ease: "power2.out"
+              duration: 1, ease: "power2.out"
             });
           },
           onLeaveBack: () => {
-            gsap.to(media, {
-              y: "90vh",
-              scale: 0.96,
-              duration: 0.8,
-              ease: "power2.inOut",
-              overwrite: "auto"
-            });
+            gsap.to(media, { y: "90vh", scale: 0.96, duration: 0.8, ease: "power2.inOut", overwrite: "auto" });
             gsap.to(wrap, {
-              opacity: 0.6,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)",
-              duration: 0.8,
-              ease: "power2.inOut"
+              opacity: 0.6, boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)", duration: 0.8, ease: "power2.inOut"
             });
           }
         });
 
         const noteEl = scene.querySelector('.modal-responsive-note');
         const lines = scene.querySelectorAll('.modal-responsive-line');
-        
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: scene,
-            scroller: scroller,
-            start: "top -25%", 
-            end: "top -70%",   
-            scrub: true,
-          }
-        })
-        .to(noteEl, { autoAlpha: 1, y: 0, duration: 0.1 })
-        .to(lines, { autoAlpha: 1, y: 0, stagger: 0.05, ease: "none" });
+        if (noteEl && lines.length) {
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: scene, scroller: scroller, start: "top -10%", end: "top -50%", scrub: true,
+            }
+          })
+          .to(noteEl, { autoAlpha: 1, y: 0, duration: 0.1 })
+          .to(lines, { autoAlpha: 1, y: 0, stagger: 0.05, ease: "none" });
+        }
       };
 
-      setupSceneFlow(primarySceneRef.current, primaryMediaRef.current, introRef.current, true);
-      setupSceneFlow(secondarySceneRef.current, secondaryMediaRef.current, null, false);
+      // Логика за бутона (по-бърза и директна)
+      const setupButtonFlow = (scene, media) => {
+        if (!scene || !media) return;
+        
+        gsap.set(media, { 
+          left: "50%", xPercent: -50, yPercent: -50, top: 0, y: "110vh", autoAlpha: 0, scale: 0.8, zIndex: 100
+        });
+
+        ScrollTrigger.create({
+          trigger: scene,
+          scroller: scroller,
+          start: "top 95%", // Веднага щом сцената влезе в екрана
+          onEnter: () => {
+            gsap.to(media, {
+              y: "50vh", autoAlpha: 1, scale: 1, duration: 1.2, ease: "expo.out", overwrite: "auto"
+            });
+          },
+          onLeaveBack: () => {
+            gsap.to(media, {
+              y: "110vh", autoAlpha: 0, scale: 0.8, duration: 0.8, ease: "power2.in", overwrite: "auto"
+            });
+          }
+        });
+      };
+
+      setupImageFlow(primarySceneRef.current, primaryMediaRef.current, introRef.current, true);
+      setupImageFlow(secondarySceneRef.current, secondaryMediaRef.current, null, false);
+      setupButtonFlow(finalSceneRef.current, finalMediaRef.current);
 
       setTimeout(() => ScrollTrigger.refresh(), 400);
     }, bodyRef);
 
     return () => ctx.revert();
-  }, [isOpen, activeProject?.id, isMobile, noteLines, responsiveLines, theme, gradients]);
+  }, [isOpen, activeProject?.id, isMobile, noteLines, responsiveLines, theme, gradients, activeProject?.link]);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
@@ -259,7 +249,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           </div>
 
           <div ref={bodyRef} className="modal-body" onScroll={onScroll} onWheel={onWheel} style={{ scrollBehavior: 'auto', paddingTop: 0, overflowX: 'hidden' }}>
-            <div className="modal-content-wrap" style={{ padding: isMobile ? '0 20px' : '0' }}>
+            <div ref={contentWrapRef} className="modal-content-wrap" style={{ padding: isMobile ? '0 20px' : '0' }}>
               
               {isMobile ? (
                 <div className="mobile-layout" style={{ display: 'flex', flexDirection: 'column', gap: '40px', padding: '40px 0 80px' }}>
@@ -293,6 +283,20 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                   <div style={{ textAlign: 'center', fontSize: '0.95rem', color: 'var(--ink-dark)', fontWeight: 500 }}>
                     {responsiveLines.join(" ")}
                   </div>
+
+                  {activeProject.link && (
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                      <a 
+                        href={activeProject.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="projects-trigger" 
+                        style={{ width: 'auto', height: 'auto', padding: '16px 32px', borderRadius: '999px', fontSize: '14px', gap: '10px', textDecoration: 'none' }}
+                      >
+                        {text.liveSite} <ExternalLink size={16} />
+                      </a>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <>
@@ -301,7 +305,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     <div className="modal-tags" style={{ opacity: 0.5, fontSize: '11px', letterSpacing: '0.1em' }}>{activeProject.tags.join(" • ")}</div>
                   </div>
 
-                  <section ref={primarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative' }}>
+                  <section ref={primarySceneRef} className="scene-container" style={{ height: '150vh', position: 'relative' }}>
                     <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
                       <p className="scene-paragraph modal-desc" style={{ 
                         maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
@@ -318,7 +322,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                             alt={activeProject[lang].title} 
                             className="modal-media-img" 
                             onLoad={(e) => setPrimaryImageWidth(e.target.offsetWidth)}
-                            style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '12px' }} 
+                            style={{ maxHeight: '70vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '12px' }} 
                           />
                         </div>
                       </div>
@@ -343,7 +347,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                     </div>
                   </section>
 
-                  <section ref={secondarySceneRef} className="scene-container" style={{ height: '170vh', position: 'relative', marginTop: '5vh' }}>
+                  <section ref={secondarySceneRef} className="scene-container" style={{ height: '130vh', position: 'relative', marginTop: '2vh' }}>
                     <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
                       <p className="scene-paragraph modal-paragraph" style={{ 
                         maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
@@ -354,7 +358,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       </p>
                       <div ref={secondaryMediaRef} className="modal-scroll-media modal-scroll-media-secondary" style={{ position: 'absolute', zIndex: 100, width: 'fit-content' }}>
                         <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', borderRadius: '18px' }}>
-                          <img src={activeProject.modalImage || activeProject.image} alt="Responsive" className="modal-media-img" style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '18px' }} />
+                          <img src={activeProject.modalImage || activeProject.image} alt="Responsive" className="modal-media-img" style={{ maxHeight: '54vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '18px' }} />
                         </div>
                       </div>
                       <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
@@ -364,11 +368,48 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       </div>
                     </div>
                   </section>
+
+                  <section ref={finalSceneRef} className="scene-container" style={{ height: '60vh', position: 'relative' }}>
+                    <div style={{ position: 'sticky', top: 0, height: '60vh', width: '100%' }}>
+                      <div ref={finalMediaRef} className="final-cta-wrap" style={{ position: 'absolute', zIndex: 1000 }}>
+                        <Magnet strength={0.2}>
+                          <a 
+                            href={activeProject.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="final-cta-btn group"
+                            style={{ 
+                              display: 'flex', alignItems: 'center', gap: '24px', padding: '32px 64px', 
+                              background: 'var(--ink)', color: '#fff', borderRadius: '999px', 
+                              fontSize: '1.5rem', fontWeight: 600, textDecoration: 'none',
+                              boxShadow: '0 30px 60px rgba(44, 44, 214, 0.3)',
+                              transition: 'all 0.5s cubic-bezier(0.22, 1, 0.36, 1)',
+                              position: 'relative',
+                              overflow: 'hidden',
+                              whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'scale(1.05)';
+                              e.currentTarget.style.boxShadow = '0 40px 80px rgba(44, 44, 214, 0.45)';
+                              const icon = e.currentTarget.querySelector('.cta-icon');
+                              if (icon) icon.style.transform = 'translate(6px, -6px)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'scale(1)';
+                              e.currentTarget.style.boxShadow = '0 30px 60px rgba(44, 44, 214, 0.3)';
+                              const icon = e.currentTarget.querySelector('.cta-icon');
+                              if (icon) icon.style.transform = 'translate(0, 0)';
+                            }}
+                          >
+                            <span style={{ position: 'relative', zIndex: 2 }}>{text.liveSite}</span>
+                            <ArrowUpRight className="cta-icon" size={32} style={{ position: 'relative', zIndex: 2, transition: 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1)' }} />
+                          </a>
+                        </Magnet>
+                      </div>
+                    </div>
+                  </section>
                 </>
               )}
-
-              <div style={{ height: '10vh' }} />
-
             </div>
           </div>
         </div>
