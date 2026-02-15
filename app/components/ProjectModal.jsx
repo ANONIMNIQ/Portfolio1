@@ -21,7 +21,6 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
 
-  // Проверка за размер на екрана и обновяване на ширината на изображението
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 1024);
@@ -89,9 +88,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
       setupParagraphScroll(primarySceneRef.current);
       setupParagraphScroll(secondarySceneRef.current);
 
-      const setupSceneFlow = (scene, media, introEl) => {
+      const setupSceneFlow = (scene, media, introEl, isPrimary = true) => {
         if (!scene || !media) return;
 
+        const wrap = media.querySelector('.modal-media-wrap');
+        
         gsap.set(media, { 
           left: "50%",
           xPercent: -50,
@@ -101,6 +102,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
           autoAlpha: 0, 
           scale: 0.94,
           zIndex: 100
+        });
+
+        gsap.set(wrap, {
+          opacity: 0.6,
+          boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)"
         });
 
         ScrollTrigger.create({
@@ -139,6 +145,14 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
               ease: "expo.out",
               overwrite: "auto"
             });
+            gsap.to(wrap, {
+              opacity: 1,
+              boxShadow: isPrimary 
+                ? "0 40px 100px rgba(0,0,0,0.25), 0 10px 40px rgba(0,0,0,0.12)"
+                : "0 30px 80px rgba(0,0,0,0.2), 0 8px 30px rgba(0,0,0,0.1)",
+              duration: 1,
+              ease: "power2.out"
+            });
           },
           onLeaveBack: () => {
             gsap.to(media, {
@@ -147,6 +161,12 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
               duration: 0.8,
               ease: "power2.inOut",
               overwrite: "auto"
+            });
+            gsap.to(wrap, {
+              opacity: 0.6,
+              boxShadow: "0 15px 35px rgba(0,0,0,0.25), 0 5px 15px rgba(0,0,0,0.1)",
+              duration: 0.8,
+              ease: "power2.inOut"
             });
           }
         });
@@ -167,8 +187,8 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         .to(lines, { autoAlpha: 1, y: 0, stagger: 0.05, ease: "none" });
       };
 
-      setupSceneFlow(primarySceneRef.current, primaryMediaRef.current, introRef.current);
-      setupSceneFlow(secondarySceneRef.current, secondaryMediaRef.current, null);
+      setupSceneFlow(primarySceneRef.current, primaryMediaRef.current, introRef.current, true);
+      setupSceneFlow(secondarySceneRef.current, secondaryMediaRef.current, null, false);
 
       setTimeout(() => ScrollTrigger.refresh(), 400);
     }, bodyRef);
@@ -183,11 +203,19 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
         <div className="modal-card" role="dialog" aria-modal="true" style={{ background: 'var(--surface)' }}>
           <div className="modal-header" style={{ position: 'sticky', top: 0, zIndex: 500, background: 'inherit' }}>
             <div className="modal-header-left">
-              <Magnet strength={0.1}>
-                <button className="chip" style={{ border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}>
-                  {text.liveSite} <ExternalLink size={10} />
-                </button>
-              </Magnet>
+              {activeProject.link && (
+                <Magnet strength={0.1}>
+                  <a 
+                    href={activeProject.link} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="chip" 
+                    style={{ border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px", textDecoration: 'none' }}
+                  >
+                    {text.liveSite} <ExternalLink size={10} />
+                  </a>
+                </Magnet>
+              )}
             </div>
             <div className="modal-header-right">
               <Magnet strength={0.2}>
@@ -251,7 +279,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         {activeProject[lang].description}
                       </p>
                       <div ref={primaryMediaRef} className="modal-scroll-media modal-scroll-media-primary" style={{ position: 'absolute', zIndex: 100, width: 'fit-content' }}>
-                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', boxShadow: '0 40px 100px rgba(0,0,0,0.25), 0 10px 40px rgba(0,0,0,0.12)', borderRadius: '12px' }}>
+                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', borderRadius: '12px' }}>
                           <img 
                             ref={primaryImgRef}
                             src={activeProject.image} 
@@ -293,11 +321,11 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         {text.modalStory}
                       </p>
                       <div ref={secondaryMediaRef} className="modal-scroll-media modal-scroll-media-secondary" style={{ position: 'absolute', zIndex: 100, width: 'fit-content' }}>
-                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', boxShadow: '0 30px 80px rgba(0,0,0,0.2), 0 8px 30px rgba(0,0,0,0.1)', borderRadius: '18px' }}>
+                        <div className="modal-media-wrap is-loaded" style={{ background: 'transparent', borderRadius: '18px' }}>
                           <img src={activeProject.modalImage || activeProject.image} alt="Responsive" className="modal-media-img" style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '18px' }} />
                         </div>
                       </div>
-                      <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '6vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
+                      <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '4vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
                         {responsiveLines.map((line, idx) => (
                           <span key={idx} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
                         ))}

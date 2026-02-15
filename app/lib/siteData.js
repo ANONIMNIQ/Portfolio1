@@ -105,6 +105,7 @@ export const projects = [
     theme: "three",
     image: "/assets/project-3.png",
     modalImage: "/assets/project-3-mobile.PNG",
+    link: "https://my-movie-collection.pages.dev",
   },
   {
     id: "incognito",
@@ -162,5 +163,6 @@ export const projects = [
     theme: "one",
     image: "/assets/project-4.png",
     modalImage: "/assets/project-4-mobile.PNG",
+    link: "https://wr1te.pages.dev",
   },
 ];
