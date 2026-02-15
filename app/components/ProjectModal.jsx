@@ -14,12 +14,29 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
   const bodyRef = useRef(null);
   const introRef = useRef(null);
   const primaryImgRef = useRef(null);
+  const cardRef = useRef(null);
   
   const primarySceneRef = useRef(null);
   const secondarySceneRef = useRef(null);
   
   const primaryMediaRef = useRef(null);
   const secondaryMediaRef = useRef(null);
+
+  // Дефиниране на градиентите според темата
+  const gradients = useMemo(() => ({
+    one: {
+      light: "linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%)",
+      dark: "linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 100%)"
+    },
+    two: {
+      light: "linear-gradient(135deg, #f3f0ff 0%, #e0e6ff 100%)",
+      dark: "linear-gradient(135deg, #e6e6ff 0%, #ccccff 100%)"
+    },
+    three: {
+      light: "linear-gradient(135deg, #eefaf8 0%, #d0f5f0 100%)",
+      dark: "linear-gradient(135deg, #d0f0e8 0%, #b0e0d8 100%)"
+    }
+  }), []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -67,8 +84,23 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     if (!isOpen || !activeProject || !bodyRef.current || isMobile) return;
 
     const scroller = bodyRef.current;
+    const card = cardRef.current;
+    const currentThemeGradients = gradients[theme] || gradients.one;
     
     const ctx = gsap.context(() => {
+      // Анимация на фона на модала
+      gsap.to(card, {
+        background: currentThemeGradients.dark,
+        ease: "none",
+        scrollTrigger: {
+          trigger: secondarySceneRef.current,
+          scroller: scroller,
+          start: "top 80%",
+          end: "top 20%",
+          scrub: true,
+        }
+      });
+
       const setupParagraphScroll = (scene) => {
         const paragraph = scene.querySelector('.scene-paragraph');
         gsap.to(paragraph, {
@@ -194,14 +226,14 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
     }, bodyRef);
 
     return () => ctx.revert();
-  }, [isOpen, activeProject?.id, isMobile, noteLines, responsiveLines]);
+  }, [isOpen, activeProject?.id, isMobile, noteLines, responsiveLines, theme, gradients]);
 
   return (
     <div className={`modal project-modal ${isOpen ? "is-open" : ""} ${isClosing ? "is-closing" : ""} ${isExpanded ? "is-expanded" : ""}`} aria-hidden={!isOpen && !isClosing} data-theme={theme}>
       <div className="modal-backdrop" onClick={onClose} />
       {activeProject && (
-        <div className="modal-card" role="dialog" aria-modal="true" style={{ background: 'var(--surface)' }}>
-          <div className="modal-header" style={{ position: 'sticky', top: 0, zIndex: 500, background: 'inherit' }}>
+        <div ref={cardRef} className="modal-card" role="dialog" aria-modal="true" style={{ background: gradients[theme]?.light || 'var(--surface)' }}>
+          <div className="modal-header" style={{ position: 'sticky', top: 0, zIndex: 500, background: 'transparent' }}>
             <div className="modal-header-left">
               {activeProject.link && (
                 <Magnet strength={0.1}>
@@ -250,7 +282,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
 
                   <div style={{ height: '1px', background: 'var(--line)' }} />
 
-                  <p style={{ fontSize: '1.15rem', lineHeight: 1.4, color: 'var(--muted)' }}>
+                  <p style={{ fontSize: '1.15rem', lineHeight: 1.4, color: 'var(--ink-dark)', fontWeight: 500 }}>
                     {text.modalStory}
                   </p>
 
@@ -274,7 +306,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       <p className="scene-paragraph modal-desc" style={{ 
                         maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
                         padding: '0 40px', position: 'absolute', top: '4vh', zIndex: 10,
-                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500
+                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500, color: 'var(--ink-dark)'
                       }}>
                         {activeProject[lang].description}
                       </p>
@@ -298,12 +330,12 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
                           <div className="modal-note-col">
                             {primaryNoteColumns[0].map((line, i) => (
-                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)', fontSize: '0.95rem' }}>{line}</span>
                             ))}
                           </div>
                           <div className="modal-note-col">
                             {primaryNoteColumns[1].map((line, i) => (
-                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                              <span key={i} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)', fontSize: '0.95rem' }}>{line}</span>
                             ))}
                           </div>
                         </div>
@@ -316,7 +348,7 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                       <p className="scene-paragraph modal-paragraph" style={{ 
                         maxWidth: '1100px', textAlign: 'center', left: '50%', transform: 'translateX(-50%)',
                         padding: '0 40px', position: 'absolute', top: '4vh', zIndex: 10,
-                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500
+                        fontSize: 'clamp(1.8rem, 3.6vw, 3rem)', lineHeight: 1.2, fontWeight: 500, color: 'var(--ink-dark)'
                       }}>
                         {text.modalStory}
                       </p>
@@ -325,9 +357,9 @@ export default function ProjectModal({ isOpen, isClosing, isExpanded, activeProj
                           <img src={activeProject.modalImage || activeProject.image} alt="Responsive" className="modal-media-img" style={{ maxHeight: '74vh', width: 'auto', objectFit: 'contain', opacity: 1, filter: 'none', borderRadius: '18px' }} />
                         </div>
                       </div>
-                      <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '4vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
+                      <div className="modal-responsive-note" style={{ position: 'absolute', bottom: '8vh', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', zIndex: 20, opacity: 0 }}>
                         {responsiveLines.map((line, idx) => (
-                          <span key={idx} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)' }}>{line}</span>
+                          <span key={idx} className="modal-responsive-line" style={{ display: 'block', opacity: 0, transform: 'translateY(10px)', fontSize: '0.95rem' }}>{line}</span>
                         ))}
                       </div>
                     </div>
